@@ -1,8 +1,9 @@
-#' Unstructured geocode
+#' Unstructured geocoding
 #' @description
-#' Geocode an arbitrary text string.
+#' Geocode arbitrary text strings. Unstructured geocoding is more flexible but
+#' generally less accurate than \link[=structured]{structured geocoding}.
 #'
-#' @param text Character string of a text to geocode.
+#' @param text Character vector of a texts to geocode.
 #' @param limit Number of results to return. Defaults to 3.
 #' @param lang Language of the results
 #' @param bbox Any object that can be parsed by \code{\link[sf]{st_bbox}}.
@@ -14,9 +15,51 @@
 #' Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 #' \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 #' \code{"country"}, or \code{"other"}.
+#' @param location_bias Numeric vector of length 2 or an \code{sfg} point
+#' geometry that specifies a location bias for geocoding. Geocoding results
+#' are biased towards this point. The radius of the bias is controlled through
+#' \code{zoom} and its prominence through \code{location_bias_scale}.
+#' @param location_bias_scale Numeric vector specifying the prominence of
+#' point in \code{location_bias}. Defaults to 0.2.
+#' @param zoom Numeric vector specifying the radius of the \code{location_bias}.
+#' Corresponds to the zoom level in OpenStreetMap. Defaults to 16.
+#' @param progress If \code{TRUE}, shows a progress bar for longer queries.
+#'
+#' @returns An sf dataframe or tibble containing the following columns:
+#'
+#' \itemize{
+#'  \item{\code{id}: Internal ID specifying the index of the \code{texts}
+#'  parameter.}
+#'  \item{\code{osm_type}: Type of OSM element, one of N (node), W (way),
+#'  R (relation), or P (polygon).}
+#'  \item{\code{osm_id}: OpenStreetMap ID of the matched element.}
+#'  \item{\code{country}: Country of the matched place.}
+#'  \item{\code{city}: City of the matched place.}
+#'  \item{\code{osm_key}: OpenStreetMap key.}
+#'  \item{\code{countrycode}: ISO2 country code.}
+#'  \item{\code{housenumber}: House number, if applicable.}
+#'  \item{\code{postcode}: Post code, if applicable.}
+#'  \item{\code{locality}: Locality, if applicable.}
+#'  \item{\code{street}: Street, if applicable.}
+#'  \item{\code{district}: District name, if applicable.}
+#'  \item{\code{osm_value}: OpenStreetMap tag value.}
+#'  \item{\code{name}: Place name.}
+#'  \item{\code{type}: Layer type as described for the \code{layer} parameter.}
+#'  \item{\code{extent}: Boundary box of the match.}
+#' }
 #'
 #' @details
-#' Additional details...
+#' Filtering by OpenStreetMap tags follows a distinct syntax explained on
+#' \url{https://github.com/komoot/photon}. In particular:
+#'
+#' \itemize{
+#'  \item{Include places with tag: \code{key:value}}
+#'  \item{Exclude places with tag: \code{!key:value}}
+#'  \item{Include places with tag key: \code{key}}
+#'  \item{Include places wih tag value: \code{:value}}
+#'  \item{Exclude places with tag key: \code{!key}}
+#'  \item{Exclude places with tag value: \code{:!value}}
+#' }
 #'
 #' @export
 #'
@@ -39,18 +82,78 @@
 #'
 #' # limit to European cities
 #' geocode("Berlin", bbox = c(xmin = -71.18, ymin = 44.46, xmax = 13.39, ymax = 52.52))
+#'
+#' # search for museums in berlin
+#' geocode("Berlin", osm_tag = "tourism:museum")
+#'
+#' # search for touristic attractions in berlin
+#' geocode("Berlin", osm_tag = "tourism")
+#'
+#' # search for anything but tourism
+#' geocode("Berlin", osm_tag = "!tourism")
 #' }
-geocode <- function(text,
+geocode <- function(texts,
                     limit = 3,
                     lang = "en",
                     bbox = NULL,
                     osm_tag = NULL,
-                    layer = NULL) {
+                    layer = NULL,
+                    location_bias = NULL,
+                    location_bias_scale = NULL,
+                    zoom = NULL,
+                    progress = TRUE) {
+  assert_vector(texts, "character")
+  assert_vector(limit, "double", null = TRUE)
+  assert_vector(lang, "character", null = TRUE)
+  assert_vector(osm_tag, "character", null = TRUE)
+  assert_vector(layer, "character", null = TRUE)
+  assert_vector(location_bias_scale, "double", null = TRUE)
+  assert_vector(zoom, "double", null = TRUE)
+  assert_length(limit, null = TRUE)
+  assert_length(lang, null = TRUE)
+  assert_length(layer, null = TRUE)
+
   if (!is.null(bbox)) {
     bbox <- sf::st_bbox(bbox)
     bbox <- paste(bbox, collapse = ",")
   }
 
+  if (!is.null(location_bias)) {
+    location_bias <- as.numeric(location_bias)
+    lon <- location_bias[1]
+    lat <- location_bias[2]
+  }
+
+  iter <- if (progress) cli::cli_progress_along(texts) else seq_along(texts)
+  geocoded <- lapply(iter, function(i) {
+    res <- geocode_impl(
+      texts[[i]],
+      limit = limit,
+      lang = lang,
+      bbox = bbox,
+      osm_tag = osm_tag,
+      layer = layer,
+      lon = lon,
+      lat = lat,
+      location_bias_scale = location_bias_scale,
+      zoom = zoom
+    )
+    cbind(id = i, res)
+  })
+  as_data_frame(do.call(rbind.data.frame, geocoded))
+}
+
+
+geocode_impl <- function(text,
+                         limit,
+                         lang,
+                         bbox,
+                         osm_tag,
+                         layer,
+                         lon,
+                         lat,
+                         location_bias_scale,
+                         zoom) {
   req <- httr2::request(get_photon_url())
   req <- httr2::req_template(req, "GET api")
   req <- httr2::req_error(req, is_error = function(r) FALSE)
