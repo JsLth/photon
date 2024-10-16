@@ -1,7 +1,46 @@
 photon_env <- new.env(parent = emptyenv())
 
+#' Photon utilities
+#' @description
+#' Utilities to manage photon instances. These functions operate on mounted
+#' photon instances which can be initialized using \code{\link{new_photon}}.
+#'
+#' \itemize{
+#'  \item{\code{get_instance()} retrieves the active photon instance.}
+#'  \item{\code{get_photon_url()} retrieves the photon URL to send requests.}
+#' }
+#'
+#' @returns \code{get_instance} returns a R6 object of class \code{photon}.
+#' \code{get_photon_url()} returns a URL string.
+#'
+#' @export
+#'
+#' @examples
+#' # make a new photon instance
+#' new_photon()
+#'
+#' # retrieve it from the cache
+#' get_instance()
+#'
+#' # get the server url
+#' get_photon_url()
+get_instance <- function() {
+  instance <- get0("instance", envir = photon_env)
+
+  if (is.null(instance)) {
+    ph_stop(c(
+      "x" = "No photon instance found.",
+      "i" = "You can start a new instance using {.code new_photon()}."
+    ))
+  }
+
+  instance
+}
+
+#' @rdname get_instance
+#' @export
 get_photon_url <- function() {
-  instance <- get("instance", envir = photon_env)
+  instance <- get_instance()
   instance$get_url()
 }
 
@@ -164,6 +203,21 @@ photon <- R6::R6Class(
     },
 
     #' @description
+    #' Kill the photon process and remove the directory. Useful to get rid
+    #' of an instance entirely.
+    purge = function() {
+      cli::cli_inform(paste(
+        "Purging an instance kills the photon process",
+        "and removes the photon directory."
+      ))
+      yes_no("Continue?", no = cancel())
+
+      self$stop()
+      unlink(self$path, recursive = TRUE, force = TRUE)
+      invisible(NULL)
+    },
+
+    #' @description
     #' Start a local instance of the Photon geocoder. Runs the jar executable
     #' located in the instance directory.
     #'
@@ -182,8 +236,8 @@ photon <- R6::R6Class(
                      max_ram = 10,
                      host = "0.0.0.0",
                      port = "2322",
-                     java_options = list(),
-                     photon_options = list()) {
+                     java_options = NULL,
+                     photon_options = NULL) {
       assert_vector(min_ram, "double")
       assert_vector(max_ram, "double")
       assert_vector(host, "character")
@@ -221,6 +275,14 @@ photon <- R6::R6Class(
     get_url = function() {
       host <- private$host
       port <- private$port
+
+      if (is.null(host)) {
+        ph_stop(c(
+          "x" = "Photon server is not running.",
+          "i" = "Start it by calling {.code $start()}"
+        ))
+      }
+
       if (identical(host, "0.0.0.0")) host <- "localhost"
       sprintf("https://%s:%s/", host, port)
     }
@@ -230,19 +292,29 @@ photon <- R6::R6Class(
     consent = FALSE,
     quiet = FALSE,
     version = NULL,
+    host = NULL,
+    port = NULL,
     mount = function() {
       assign("instance", self, envir = photon_env)
     },
     finalize = function() {
-      if (proc$is_alive()) {
-        proc$kill()
+      if (self$proc$is_alive()) {
+        self$proc$kill()
       }
     }
   )
 )
 
 
-start_photon <- function(path, version, min_ram = 6, max_ram = 12, debug = FALSE) {
+start_photon <- function(path,
+                         version,
+                         min_ram = 6,
+                         max_ram = 12,
+                         host = "0.0.0.0",
+                         port = "2322",
+                         java_options = NULL,
+                         photon_options = NULL,
+                         debug = FALSE) {
   exec <- sprintf("photon-%s.jar", version)
 
   if (!length(exec)) {
@@ -252,12 +324,13 @@ start_photon <- function(path, version, min_ram = 6, max_ram = 12, debug = FALSE
   path <- normalizePath(path, winslash = "/")
 
   cmd <- c(
-    sprintf("-Xms%sg", min_ram), sprintf("-Xmx%sg", max_ram),
-    "-jar", exec
+    sprintf("-Xms%sg", min_ram), sprintf("-Xmx%sg", max_ram), java_options,
+    "-jar", exec, photon_options, "-listen-ip", host, "-listen-port", port
   )
 
+  java <- Sys.which("java")
   proc <- processx::process$new(
-    command = "java",
+    command = java,
     args = cmd,
     stdout = "|",
     stderr = "|",
@@ -276,7 +349,7 @@ start_photon <- function(path, version, min_ram = 6, max_ram = 12, debug = FALSE
     out <- proc$read_output()
     err <- proc$read_error()
 
-    if (nzchar(out) && debug) cat(out)
+    if (nzchar(out) && debug) cli::cli_verbatim(out)
 
     if (nzchar(err)) {
       stop(err)
@@ -308,7 +381,7 @@ photon_running <- function(proc) {
 setup_photon_directory <- function(path, version, ..., quiet = FALSE) {
   files <- list.files(path)
   if (!any(grepl("\\.jar$", files))) {
-    download_photon(path = path, version = photon_version, quiet = quiet)
+    download_photon(path = path, version = version, quiet = quiet)
   }
 
   if (!"photon_data" %in% files) {
