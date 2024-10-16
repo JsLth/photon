@@ -1,0 +1,20 @@
+structured <- function(street = NULL,
+                       housenumber = NULL,
+                       postcode = NULL,
+                       city = NULL,
+                       district = NULL,
+                       county = NULL,
+                       state = NULL,
+                       countrycode = NULL,
+                       limit = 3,
+                       lang = "en",
+                       layer = NULL,
+                       zoom = NULL,
+                       debug = FALSE,
+                       bbox = NULL,
+                       location_bias_scale = NULL,
+                       osm_tag = NULL,
+                       lon = NULL,
+                       lat = NULL) {
+
+}

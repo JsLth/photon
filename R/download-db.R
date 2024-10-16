@@ -1,0 +1,116 @@
+#' Download search index
+#' @description
+#' Finds and downloads the Elasticsearch index database necessary to set up
+#' Photon locally.
+#'
+#' @param path Path to a directory where the identified file should be stored.
+#' @param country Character string that can be identified by
+#' \code{\link[countrycode]{countryname}} as a country. An extract for this
+#' country will be downloaded. If \code{NULL}, downloads a global search index.
+#' @param date Character string or date-time object used to specify the creation
+#' date of the search index. If \code{"latest"}, will download the file tagged
+#' with "latest". If a character string, the value should be parseable by
+#' \code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
+#' compared to all available dates and the closest date will be selected.
+#' Otherwise, a file will be selected that exactly matches the input to
+#' \code{date}.
+#' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
+#' selects the date with lowest difference to the \code{date} parameter.
+#' @param only_url If \code{TRUE}, downloads the search index. Otherwise,
+#' only returns a link to the file.
+#' @returns If \code{only_url = FALSE}, returns the local path to the downloaded
+#' file. Otherwise, returns the URL to the remote file.
+#'
+#' @note
+#' Depending on the country, search index databases tend to be very large.
+#' The global search index is about 75 GB of size (10/2024). Keep that in mind
+#' when running this function.
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{# download the latest extract of Monaco
+#' get_searchindex(path = tempdir(), country = "Monaco")
+#'
+#' # download an extract from a month ago
+#' get_searchindex(path = tempdir(), country = "Monaco", date = Sys.time() - 2629800)
+#'
+#' # if possible, download an extract from today
+#' try(get_searchindex(path = tempdir(), country = "Monaco", date = Sys.Date(), exact = TRUE))
+#'
+#' # get the latest global coverage
+#' # NOTE: the file to be downloaded is several tens of gigabytes of size!
+#' if (FALSE) {
+#'   get_searchindex(path = tempdir())
+#' }}
+download_searchindex <- function(path = ".",
+                                 country = NULL,
+                                 date = "latest",
+                                 exact = FALSE,
+                                 only_url = FALSE,
+                                 quiet = FALSE) {
+  assert_length(country, 1, null = TRUE)
+  assert_length(date, 1, null = TRUE)
+  assert_length(exact, 1)
+  assert_vector(country, "character", null = TRUE)
+  assert_true_or_false(exact)
+  req <- httr2::request("https://download1.graphhopper.com/public/")
+
+  if (!is.null(country)) {
+    country <- tolower(countrycode::countryname(
+      country,
+      destination = "iso2c",
+      warn = FALSE
+    ))
+
+    if (is.na(country)) {
+      ph_stop("{.code country} is not a valid country name. See {.code ?countrycode::countryname()} for details.")
+    }
+
+    req <- httr2::req_url_path_append(req, "extracts", "by-country-code", country)
+  }
+
+  date_format <- "%y%m%d"
+  if (!identical(date, "latest") && !exact) {
+    date <- as.POSIXct(date)
+    html <- httr2::resp_body_string(httr2::req_perform(req))
+    html <- strsplit(html, "\n")[[1]]
+    all_dates <- regex_match(
+      html,
+      sprintf("photon-db-%s-([0-9]+)\\.tar\\.bz2</a>", country),
+      i = 2
+    )
+    all_dates <- as.POSIXct(drop_na(all_dates), format = date_format)
+    diff <- date - all_dates
+    date <- format(all_dates[diff == min(diff)], date_format)
+  } else if (exact) {
+    date <- format(as.POSIXct(date), date_format)
+  }
+
+  if (is.null(country)) {
+    file <- sprintf("photon-db-%s.tar.bz2", date)
+  } else {
+    file <- sprintf("photon-db-%s-%s.tar.bz2", country, date)
+  }
+
+  if (!quiet) {
+    date_fmt <- ifelse(
+      identical(date, "latest"),
+      date,
+      format(as.POSIXct(date, format = date_format), "%Y-%m-%d")
+    )
+    cli::cli_progress_step(
+      msg = "Fetching search index for {.field {country}}, created on {.field {date_fmt}}",
+      msg_done = "Successfully downloaded search index.",
+      msg_failed = "Failed to download search index."
+    )
+  }
+
+  path <- file.path(path, file)
+  req <- httr2::req_url_path_append(req, file)
+  if (only_url) return(req$url)
+  req <- httr2::req_retry(req, max_tries = getOption("photon_max_tries", 3))
+  req <- httr2::req_progress(req)
+  httr2::req_perform(req, path = path)
+  normalizePath(path, "/")
+}
