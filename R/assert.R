@@ -5,7 +5,7 @@ ignore_null <- function() {
   }
 }
 
-assert_length <- function(x, len, null = FALSE) {
+assert_length <- function(x, len = 1, null = FALSE) {
   ignore_null()
   cond <- length(x) == len
   if (!cond) {

@@ -39,3 +39,41 @@ is_url <- function(url) {
     perl = TRUE
   )
 }
+
+
+loadable <- function(x) {
+  suppressPackageStartupMessages(suppressWarnings(suppressWarnings(
+    requireNamespace(x)
+  )))
+}
+
+
+as_data_frame <- function(x) {
+  if (loadable("tibble")) {
+    tibble::as_tibble(x)
+  } else {
+    as.data.frame(x)
+  }
+}
+
+
+yes_no <- function(msg, yes = TRUE, no = FALSE, dflt = NULL, ask = TRUE) { # nocov start
+  if (!interactive() || !ask) {
+    return(dflt)
+  }
+
+  input <- readline(paste0(msg, " (y/N/Cancel) "))
+
+  # If neither yes or no is given as input, try again
+  if (!input %in% c("y", "N", "Cancel")) {
+    Recall(msg, yes = yes, no = no)
+  }
+
+  switch(input, y = yes, N = no, Cancel = cancel())
+}
+
+
+cancel <- function(msg = "Input interrupted.") {
+  cli::cli_inform(c("x" = msg))
+  invokeRestart("abort")
+} # nocov end

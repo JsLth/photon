@@ -3,5 +3,8 @@
 export(download_photon)
 export(download_searchindex)
 export(geocode)
+export(get_instance)
+export(get_photon_url)
 export(new_photon)
 export(photon)
+export(structured)

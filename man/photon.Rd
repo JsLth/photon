@@ -36,6 +36,7 @@ external process running photon.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-photon-new}{\code{photon$new()}}
+\item \href{#method-photon-purge}{\code{photon$purge()}}
 \item \href{#method-photon-start}{\code{photon$start()}}
 \item \href{#method-photon-stop}{\code{photon$stop()}}
 \item \href{#method-photon-is_running}{\code{photon$is_running()}}
@@ -102,6 +103,17 @@ Java. See \code{\link[rJavaEnv]{rje_consent}}.}
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon-purge"></a>}}
+\if{latex}{\out{\hypertarget{method-photon-purge}{}}}
+\subsection{Method \code{purge()}}{
+Kill the photon process and remove the directory. Useful to get rid
+of an instance entirely.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon$purge()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon-start"></a>}}
 \if{latex}{\out{\hypertarget{method-photon-start}{}}}
 \subsection{Method \code{start()}}{
@@ -113,8 +125,8 @@ located in the instance directory.
   max_ram = 10,
   host = "0.0.0.0",
   port = "2322",
-  java_options = list(),
-  photon_options = list()
+  java_options = NULL,
+  photon_options = NULL
 )}\if{html}{\out{</div>}}
 }
 

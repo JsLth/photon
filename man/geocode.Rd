@@ -2,20 +2,22 @@
 % Please edit documentation in R/geocode.R
 \name{geocode}
 \alias{geocode}
-\title{Unstructured geocode}
+\title{Unstructured geocoding}
 \usage{
 geocode(
-  text,
+  texts,
   limit = 3,
   lang = "en",
   bbox = NULL,
   osm_tag = NULL,
-  layer = NULL
+  layer = NULL,
+  location_bias = NULL,
+  location_bias_scale = NULL,
+  zoom = NULL,
+  progress = TRUE
 )
 }
 \arguments{
-\item{text}{Character string of a text to geocode.}
-
 \item{limit}{Number of results to return. Defaults to 3.}
 
 \item{lang}{Language of the results}
@@ -31,12 +33,62 @@ results by. See details.}
 Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
+
+\item{location_bias}{Numeric vector of length 2 or an \code{sfg} point
+geometry that specifies a location bias for geocoding. Geocoding results
+are biased towards this point. The radius of the bias is controlled through
+\code{zoom} and its prominence through \code{location_bias_scale}.}
+
+\item{location_bias_scale}{Numeric vector specifying the prominence of
+point in \code{location_bias}. Defaults to 0.2.}
+
+\item{zoom}{Numeric vector specifying the radius of the \code{location_bias}.
+Corresponds to the zoom level in OpenStreetMap. Defaults to 16.}
+
+\item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
+
+\item{text}{Character vector of a texts to geocode.}
+}
+\value{
+An sf dataframe or tibble containing the following columns:
+
+\itemize{
+ \item{\code{id}: Internal ID specifying the index of the \code{texts}
+ parameter.}
+ \item{\code{osm_type}: Type of OSM element, one of N (node), W (way),
+ R (relation), or P (polygon).}
+ \item{\code{osm_id}: OpenStreetMap ID of the matched element.}
+ \item{\code{country}: Country of the matched place.}
+ \item{\code{city}: City of the matched place.}
+ \item{\code{osm_key}: OpenStreetMap key.}
+ \item{\code{countrycode}: ISO2 country code.}
+ \item{\code{housenumber}: House number, if applicable.}
+ \item{\code{postcode}: Post code, if applicable.}
+ \item{\code{locality}: Locality, if applicable.}
+ \item{\code{street}: Street, if applicable.}
+ \item{\code{district}: District name, if applicable.}
+ \item{\code{osm_value}: OpenStreetMap tag value.}
+ \item{\code{name}: Place name.}
+ \item{\code{type}: Layer type as described for the \code{layer} parameter.}
+ \item{\code{extent}: Boundary box of the match.}
+}
 }
 \description{
-Geocode an arbitrary text string.
+Geocode arbitrary text strings. Unstructured geocoding is more flexible but
+generally less accurate than \link[=structured]{structured geocoding}.
 }
 \details{
-Additional details...
+Filtering by OpenStreetMap tags follows a distinct syntax explained on
+\url{https://github.com/komoot/photon}. In particular:
+
+\itemize{
+ \item{Include places with tag: \code{key:value}}
+ \item{Exclude places with tag: \code{!key:value}}
+ \item{Include places with tag key: \code{key}}
+ \item{Include places wih tag value: \code{:value}}
+ \item{Exclude places with tag key: \code{!key}}
+ \item{Exclude places with tag value: \code{:!value}}
+}
 }
 \examples{
 if (FALSE) {
@@ -57,5 +109,14 @@ geocode("Berlin", layer = "city")
 
 # limit to European cities
 geocode("Berlin", bbox = c(xmin = -71.18, ymin = 44.46, xmax = 13.39, ymax = 52.52))
+
+# search for museums in berlin
+geocode("Berlin", osm_tag = "tourism:museum")
+
+# search for touristic attractions in berlin
+geocode("Berlin", osm_tag = "tourism")
+
+# search for anything but tourism
+geocode("Berlin", osm_tag = "!tourism")
 }
 }

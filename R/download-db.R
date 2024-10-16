@@ -64,7 +64,10 @@ download_searchindex <- function(path = ".",
     ))
 
     if (is.na(country)) {
-      ph_stop("{.code country} is not a valid country name. See {.code ?countrycode::countryname()} for details.")
+      ph_stop(paste(
+        "{.code country} is not a valid country name. See",
+        "{.code ?countrycode::countryname()} for details."
+      ))
     }
 
     req <- httr2::req_url_path_append(req, "extracts", "by-country-code", country)
