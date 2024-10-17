@@ -61,7 +61,7 @@ get_photon_url <- function() {
 #' @param url If \code{type = "public"}, specifies the URL that geocoding
 #' requests are sent to. If \code{NULL} and \code{path} is also \code{NULL},
 #' connects to the public API under \url{photon.komoot.io}.
-#' @param ... Arguments passed to \code{\link{photon}$new()}.
+#' @param ... Arguments passed to \code{\link[=photon]{photon$new()}}.
 #'
 #' @returns An R6 object of class \code{photon}.
 #'
@@ -83,7 +83,7 @@ new_photon <- function(path = NULL, url = NULL, ...) {
   } else if (is.null(path)) {
     photon_remote$new(url = url)
   } else if (is.null(url)) {
-    photon$new(...)
+    photon$new(path = path, ...)
   }
 }
 
@@ -176,6 +176,9 @@ photon <- R6::R6Class(
                           exact = FALSE,
                           consent = FALSE,
                           quiet = FALSE) {
+      assert_true_or_false(consent)
+      assert_true_or_false(quiet)
+
       rJavaEnv::rje_consent(provided = consent)
       rJavaEnv::use_java(version = java_version, quiet = quiet, ...)
 
@@ -206,10 +209,10 @@ photon <- R6::R6Class(
     #' Kill the photon process and remove the directory. Useful to get rid
     #' of an instance entirely.
     purge = function() {
-      cli::cli_inform(paste(
+      cli::cli_inform(c("i" = paste(
         "Purging an instance kills the photon process",
         "and removes the photon directory."
-      ))
+      )))
       yes_no("Continue?", no = cancel())
 
       self$stop()
@@ -266,13 +269,14 @@ photon <- R6::R6Class(
     #' @description
     #' Kills the running photon process.
     stop = function() {
-      stop_photon(self$proc)
+      stop_photon(self)
+      invisible(self)
     },
 
     #' @description
     #' Checks whether the photon instance is running.
     is_running = function() {
-      photon_running(self$proc)
+      photon_running(self)
     },
 
     #' @description
@@ -283,7 +287,7 @@ photon <- R6::R6Class(
 
       if (is.null(host)) {
         ph_stop(c(
-          "x" = "Photon server is not running.",
+          "x" = "Photon server has not been started yet.",
           "i" = "Start it by calling {.code $start()}"
         ))
       }
@@ -303,8 +307,8 @@ photon <- R6::R6Class(
       assign("instance", self, envir = photon_env)
     },
     finalize = function() {
-      if (photon_running()) {
-        self$proc$kill()
+      if (self$is_running()) {
+        self$stop()
       }
     }
   )
@@ -365,17 +369,24 @@ start_photon <- function(path,
 }
 
 
-stop_photon <- function(proc) {
-  if (photon_running(proc)) {
-    proc <- proc$interrupt()
+stop_photon <- function(self) {
+  if (photon_running(self)) {
+    self$proc$kill()
   }
-
-  proc
 }
 
 
-photon_running <- function(proc) {
-  inherits(proc, "process") && proc$is_alive()
+photon_running <- function(self) {
+  inherits(self$proc, "process") && self$proc$is_alive() && photon_ready(self)
+}
+
+
+photon_ready <- function(self) {
+  req <- httr2::request(self$get_url())
+  req <- httr2::req_template(req, "GET api")
+  req <- httr2::req_error(req, is_error = function(r) FALSE)
+  resp <- httr2::req_perform(req)
+  resp$status_code == 400
 }
 
 
@@ -392,6 +403,54 @@ setup_photon_directory <- function(path, version, ..., quiet = FALSE) {
     } else {
       archive_path <- files[has_archive]
     }
-    untar(archive_path, files = "photon_data", exdir = path)
+    untared <- untar(archive_path, files = "photon_data", exdir = path)
+
+    if (!identical(untared, 0L)) {
+      ph_stop("Failed to untar the Elasticsearch index.")
+    }
+
+    store_searchindex_metadata(path, archive_path)
+  } else {
+    skip_searchindex_download(path)
+  }
+}
+
+
+store_searchindex_metadata <- function(path, archive_path) {
+  meta <- utils::strcapture(
+    pattern = "photon-db-?([a-z]{2})?-([0-9]+|latest)\\.tar\\.bz2",
+    x = basename(archive_path),
+    proto = data.frame(country = character(), date = character())
+  )
+  meta$date <- ifelse(
+    identical(meta$date, "latest"),
+    meta$date,
+    as.POSIXct(meta$date, format = "%y%m%d")
+  )
+  meta$country <- ifelse(
+    nzchar(meta$country),
+    countrycode::countrycode(meta$country, "iso2c", "country.name"),
+    "global"
+  )
+  saveRDS(meta, file.path(path, "photon_data", "rmeta.rds"))
+}
+
+
+skip_searchindex_download <- function(path) {
+  meta_path <- file.path(path, "photon_data", "rmeta.rds")
+
+  if (!file.exists(meta_path)) {
+    cli::cli_inform(paste(
+      "An unknown search index already exists at the given path.",
+      "Download will be skipped."
+    ))
+  } else {
+    meta <- readRDS(meta_path)
+    msg <- c(
+      "A search index already exists at the given path. Download will be skipped.",
+      "*" = sprintf("Coverage: %s", meta$country),
+      "*" = sprintf("Time: %s", meta$date)
+    )
+    cli::cli_inform(msg)
   }
 }
