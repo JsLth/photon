@@ -99,7 +99,7 @@ rbind_list <- function(args) {
       next
     }
   }
-  out <- do.call(rbind, args)
+  out <- suppressWarnings(do.call(rbind, args))
   rownames(out) <- NULL
   out
 }
