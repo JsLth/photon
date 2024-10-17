@@ -35,7 +35,7 @@ assert_true_or_false <- function(x, null = FALSE) {
 }
 
 
-assert_dir <- function(x, null = FALSE) {
+assert_dir <- function(x, null = FALSE, must_exist = FALSE) {
   ignore_null()
   cond <- is.character(x) && file.exists(x) && file.info(x)$isdir
   if (!cond) {
@@ -51,5 +51,26 @@ assert_url <- function(x, null = FALSE) {
   if (!cond) {
     var <- deparse(substitute(x))
     ph_stop("{.code {var}} must be a valid URL.")
+  }
+}
+
+
+assert_class <- function(x, class, null = FALSE) {
+  ignore_null()
+  cond <- inherits(x, class)
+  if (!cond) {
+    var <- deparse(substitute(x))
+    ph_stop("{.code {var}} must be a of class {.cls {class}}, not {.cls {class(x)}}.")
+  }
+}
+
+
+assert_named <- function(x, names, null = FALSE) {
+  ignore_null()
+  cond <- names(x) %in% names
+  if (!cond) {
+    var <- deparse(substitute(x))
+    names <- cli::cli_vec(names, style = list("vec-last" = ", "))
+    ph_stop("{.code {var}} must contain at least one of the following names: {.val {names}}")
   }
 }
