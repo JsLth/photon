@@ -18,8 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/JsLth/photon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/JsLth/photon?branch=main)
-[![CodeFactor](https://www.codefactor.io/repository/github/jslth/photon/badge/master)](https://www.codefactor.io/repository/github/jslth/photon/overview/master)
+coverage](https://codecov.io/gh/JsLth/photon/branch/main/graph/badge.svg)](https://app.codecov.io/gh/JsLth/photon?branch=main)
+[![CodeFactor](https://www.codefactor.io/repository/github/jslth/photon/badge/main)](https://www.codefactor.io/repository/github/jslth/photon/overview/main)
 <!-- badges: end -->
 
 `{photon}` is a simple interface and setup manager of the [photon](https://photon.komoot.io) OpenStreetMap geocoder. It features unstructured, structured, and reverse geocoding. The package allows requests to the public API but shines at setting up local instances to enable high-performance offline geocoding.

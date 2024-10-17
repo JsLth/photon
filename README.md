@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/JsLth/photon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/JsLth/photon?branch=main)
+coverage](https://codecov.io/gh/JsLth/photon/branch/main/graph/badge.svg)](https://app.codecov.io/gh/JsLth/photon?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/jslth/photon/badge/main)](https://www.codefactor.io/repository/github/jslth/photon/overview/main)
 <!-- badges: end -->
 
