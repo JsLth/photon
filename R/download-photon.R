@@ -1,12 +1,3 @@
-get_all_releases <- function() {
-  req <- httr2::request("https://api.github.com/repos/komoot/photon/tags")
-  resp <- httr2::resp_body_json(httr2::req_perform(req))
-  versions <- vapply(resp, FUN.VALUE = character(1), "[[", "name")
-  versions <- drop_na(numeric_version(versions, strict = FALSE))
-  sort(versions, decreasing = TRUE)
-}
-
-
 #' Download photon
 #' @description
 #' Download the photon executable from GitHub.

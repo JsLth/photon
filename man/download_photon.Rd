@@ -10,6 +10,8 @@ download_photon(path = ".", version = NULL, quiet = FALSE)
 \item{path}{Path to a directory to store the exectutable.}
 
 \item{version}{Version tag of the photon release.}
+
+\item{quiet}{If \code{TRUE}, suppresses all informative messages.}
 }
 \value{
 Character string giving the path to the downloaded file.

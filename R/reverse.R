@@ -8,7 +8,7 @@
 #' an \code{sfc} or \code{sf} object containing point geometries.
 #' @param radius Numeric specifying the range around the points in \code{.data}
 #' that is used for searching.
-#' @param sort_distance If \code{TRUE}, sorts the reverse geocoding results
+#' @param distance_sort If \code{TRUE}, sorts the reverse geocoding results
 #' based on the distance to the input point. Defaults to \code{TRUE}.
 #' @inheritParams geocode
 #' @inherit geocode details
@@ -33,11 +33,11 @@
 reverse <- function(.data,
                     radius = NULL,
                     limit = 3,
-                    lang = NULL,
+                    lang = "en",
                     osm_tag = NULL,
                     layer = NULL,
                     distance_sort = TRUE,
-                    progress = TRUE) {
+                    progress = interactive()) {
   assert_vector(radius, "double", null = TRUE)
   assert_vector(limit, "double", null = TRUE)
   assert_vector(lang, "character", null = TRUE)
@@ -48,12 +48,12 @@ reverse <- function(.data,
   .data <- format_points(.data)
 
   if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = NROW(.data))
+    cli::cli_progress_bar(name = "Geocoding", total = nrow(.data))
     env <- environment()
   }
 
   options <- list(env = environment())
-  .data$i <- seq_len(NROW(.data))
+  .data$i <- seq_len(nrow(.data))
   geocoded <- .mapply(.data, MoreArgs = options, FUN = reverse_impl)
   as_sf(rbind_list(geocoded))
 }
@@ -69,7 +69,7 @@ reverse_impl <- function(i, ..., env) {
     osm_tag = env$osm_tag,
     layer = env$layer
   )
-  cbind(idx = i, res)
+  cbind(idx = rep(i, nrow(res)), res)
 }
 
 
@@ -77,10 +77,11 @@ format_points <- function(.data) {
   if (inherits(.data, c("sf", "sfc"))) {
     check_geometry(.data, type = "POINT")
     .data <- sf::st_coordinates(.data)
-    .data <- list(lon = .data[, "X"], lat = .data[, "Y"])
+    .data <- data.frame(lon = .data[, "X"], lat = .data[, "Y"])
   } else {
     assert_class(.data, c("data.frame", "list"))
     assert_named(.data, c("lon", "lat"), all = TRUE)
+    .data <- as.data.frame(.data)
   }
 
   .data

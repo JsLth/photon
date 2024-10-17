@@ -1,0 +1,49 @@
+clear_cache()
+
+test_that("remote photons work", {
+  expect_error(get_instance(), class = "instance_missing")
+  photon <- new_photon()
+  expect_true(is_komoot(photon$get_url()))
+  expect_error(structured(), regexp = "disabled")
+  photon <- new_photon(url = "test.org")
+  expect_equal(photon$get_url(), "test.org")
+})
+
+skip_if_offline("graphhopper.com")
+skip_on_cran()
+
+test_that("search indices are matched", {
+  de_latest <- download_searchindex(only_url = TRUE, country = "Germany")
+  expect_equal(basename(de_latest), "photon-db-de-latest.tar.bz2")
+  global_latest <- download_searchindex(only_url = TRUE)
+  expect_equal(basename(global_latest), "photon-db-latest.tar.bz2")
+  global_time <- download_searchindex(only_url = TRUE, date = Sys.Date())
+  expect_match(basename(global_time), "photon-db-[0-9]+\\.tar\\.bz2")
+  expect_error(
+    download_searchindex(only_url = TRUE, date = Sys.Date(), exact = TRUE),
+    class = "no_index_match"
+  )
+  expect_error(
+    download_searchindex(only_url = TRUE, country = "not a country"),
+    class = "country_invalid"
+  )
+})
+
+skip_if_offline("github.com")
+skip_if_offline("corretto.aws")
+
+test_that("local setup works", {
+  on.exit(photon$purge())
+  photon <- new_photon(path = tempdir(), country = "samoa")
+  expect_no_error(print(photon))
+  photon <- new_photon(path = tempdir(), country = "samoa")
+  expect_error(photon$get_url(), class = "no_url_yet")
+
+  skip_if_not_installed("httpuv")
+  photon$start(port = httpuv::randomPort())
+  expect_true(photon$is_running())
+  expect_gt(nrow(geocode("Apai")), 0)
+  photon$stop()
+  expect_false(photon$is_running())
+})
+

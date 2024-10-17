@@ -14,7 +14,6 @@ structured(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
-  debug = FALSE,
   progress = TRUE
 )
 }
@@ -40,6 +39,14 @@ results by. See details.}
 Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
+
+\item{locbias}{Numeric vector of length 2 or an \code{sfg} point
+geometry that specifies a location bias for geocoding. Geocoding results
+are biased towards this point. The radius of the bias is controlled through
+\code{zoom} and its prominence through \code{location_bias_scale}.}
+
+\item{locbias_scale}{Numeric vector specifying the prominence of
+point in \code{location_bias}. Defaults to 0.2.}
 
 \item{zoom}{Numeric vector specifying the radius of the \code{location_bias}.
 Corresponds to the zoom level in OpenStreetMap. Defaults to 16.}

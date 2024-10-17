@@ -3,7 +3,7 @@
 #' Geocode arbitrary text strings. Unstructured geocoding is more flexible but
 #' generally less accurate than \link[=structured]{structured geocoding}.
 #'
-#' @param text Character vector of a texts to geocode.
+#' @param texts Character vector of a texts to geocode.
 #' @param limit Number of results to return. Defaults to 3.
 #' @param lang Language of the results.
 #' @param bbox Any object that can be parsed by \code{\link[sf]{st_bbox}}.
@@ -15,11 +15,11 @@
 #' Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 #' \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 #' \code{"country"}, or \code{"other"}.
-#' @param location_bias Numeric vector of length 2 or an \code{sfg} point
+#' @param locbias Numeric vector of length 2 or an \code{sfg} point
 #' geometry that specifies a location bias for geocoding. Geocoding results
 #' are biased towards this point. The radius of the bias is controlled through
 #' \code{zoom} and its prominence through \code{location_bias_scale}.
-#' @param location_bias_scale Numeric vector specifying the prominence of
+#' @param locbias_scale Numeric vector specifying the prominence of
 #' point in \code{location_bias}. Defaults to 0.2.
 #' @param zoom Numeric vector specifying the radius of the \code{location_bias}.
 #' Corresponds to the zoom level in OpenStreetMap. Defaults to 16.
@@ -101,7 +101,7 @@ geocode <- function(texts,
                     locbias = NULL,
                     locbias_scale = NULL,
                     zoom = NULL,
-                    progress = TRUE) {
+                    progress = interactive()) {
   assert_vector(texts, "character")
   assert_vector(limit, "double", null = TRUE)
   assert_vector(lang, "character", null = TRUE)
@@ -112,6 +112,7 @@ geocode <- function(texts,
   assert_length(limit, null = TRUE)
   assert_length(lang, null = TRUE)
   assert_length(layer, null = TRUE)
+  assert_range(locbias_scale, min = 0, max = 1, than = FALSE)
 
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
@@ -123,7 +124,7 @@ geocode <- function(texts,
   options <- list(env = environment())
   iter <- list(q = texts, i = seq_len(length(texts)))
   geocoded <- .mapply(iter, MoreArgs = options, FUN = geocode_impl)
-  as_data_frame(rbind_list(geocoded))
+  as_sf(rbind_list(geocoded))
 }
 
 
@@ -158,8 +159,7 @@ format_bbox <- function(bbox) {
 format_locbias <- function(locbias) {
   if (!is.null(locbias)) {
     locbias <- as.numeric(locbias)
-    lon <- locbias[1]
-    lat <- locbias[2]
+    locbias = list(lon = locbias[1], lat = locbias[2])
   }
   locbias
 }

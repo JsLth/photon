@@ -4,15 +4,20 @@ skip_on_cran()
 new_photon()
 
 test_that("basic requests work", {
-  res <- geocode("Berlin")
-  expect_s3_class(res, "sf")
-  expect_equal(nrow(res), 3)
+  res1 <- geocode("Berlin")
+  expect_s3_class(res1, "sf")
+  expect_equal(nrow(res1), 3)
 
-  res <- geocode(c("Berlin", "Berlin"))
-  expect_s3_class(res, "sf")
-  expect_equal(res$idx, rep(c(1, 2), each = 3))
+  res2 <- geocode(c("Berlin", "Berlin"))
+  expect_s3_class(res2, "sf")
+  expect_equal(res2$idx, rep(c(1, 2), each = 3))
+
+  res3 <- geocode("Berlin", bbox = c(xmin = 0, xmax = 13, ymin = 52, ymax = 53))
+  expect_failure(expect_equal(res1, res3))
+
+  res4 <- geocode("Berlin", locbias = c(0, 13), zoom = 10, locbias_scale = 1)
+  expect_failure(expect_equal(res1, res4))
 })
-
 
 test_that("basic reversing works", {
   df <- data.frame(lon = 8, lat = 52)
@@ -33,9 +38,17 @@ test_that("reversing with sf works", {
   expect_equal(nrow(res), 3)
 })
 
+test_that("reversing with list works", {
+  lst <- list(lon = 8, lat = 52)
+  res <- reverse(lst)
+  expect_s3_class(res, "sf")
+  expect_equal(nrow(res), 3)
+})
 
 test_that("reversing only works with points", {
   sf <- sf::st_sfc(sf::st_point(c(8, 52)), sf::st_point(c(7, 52)))
   sf <- sf::st_cast(sf, "LINESTRING")
   expect_error(reverse(sf), class = "check_geometry")
 })
+
+rm(list = ls(envir = ))

@@ -35,10 +35,10 @@ Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
 
-\item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
-
-\item{sort_distance}{If \code{TRUE}, sorts the reverse geocoding results
+\item{distance_sort}{If \code{TRUE}, sorts the reverse geocoding results
 based on the distance to the input point. Defaults to \code{TRUE}.}
+
+\item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
 }
 \value{
 An sf dataframe or tibble containing the following columns:

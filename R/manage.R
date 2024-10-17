@@ -31,7 +31,7 @@ get_instance <- function() {
     ph_stop(c(
       "x" = "No photon instance found.",
       "i" = "You can start a new instance using {.code new_photon()}."
-    ))
+    ), class = "instance_missing")
   }
 
   instance
@@ -42,6 +42,10 @@ get_instance <- function() {
 get_photon_url <- function() {
   instance <- get_instance()
   instance$get_url()
+}
+
+clear_cache <- function() {
+  rm(list = ls(envir = photon_env), envir = photon_env)
 }
 
 #' Initialize a photon instance
@@ -83,14 +87,20 @@ new_photon <- function(path = NULL, url = NULL, ...) {
   } else if (is.null(path)) {
     photon_remote$new(url = url)
   } else if (is.null(url)) {
-    photon$new(path = path, ...)
+    photon_local$new(path = path, ...)
   }
 }
 
 
+photon <- R6::R6Class(classname = "photon")
+
+
+# Remote ----
 photon_remote <- R6::R6Class(
-  classname = "photon",
+  classname = "photon_remote",
+  inherit = photon,
   public = list(
+    ## public ----
     initialize = function(url) {
       assert_url(url)
       private$url <- url
@@ -103,12 +113,14 @@ photon_remote <- R6::R6Class(
   ),
 
   private = list(
+    ## private ----
     url = NULL,
     mount = function() assign("instance", self, envir = photon_env)
   )
 )
 
 
+# Local ----
 #' Local photon instance
 #' @description
 #' This R6 class is used to initialize and manage local photon instances.
@@ -130,9 +142,13 @@ photon_remote <- R6::R6Class(
 #' # start a new instance with a specific java version
 #' photon <- new_photon(path = tempdir(), java_version = 17)
 #' }
-photon <- R6::R6Class(
-  classname = "photon",
+#' @import R6
+#' @import rJavaEnv
+photon_local <- R6::R6Class(
+  inherit = photon,
+  classname = "photon_local",
   public = list(
+    ## Public ----
     #' @field path Path to the directory where the photon instance is stored.
     path = NULL,
 
@@ -184,7 +200,7 @@ photon <- R6::R6Class(
 
       path <- normalizePath(path, "/", mustWork = FALSE)
       if (!dir.exists(path)) {
-        dir.create(path, recursive = TRUE)
+        dir.create(path, recursive = TRUE) # nocov
       }
 
       photon_version <- photon_version %||% get_photon_version()
@@ -196,6 +212,7 @@ photon <- R6::R6Class(
         exact = exact,
         quiet = quiet
       )
+      show_metadata(path)
 
       self$path <- path
       private$consent <- consent
@@ -206,14 +223,27 @@ photon <- R6::R6Class(
     },
 
     #' @description
+    #' Retrieve metadata about the java and photon version used as well
+    #' as the country and creation date of the Eleasticsearch search index.
+    info = function() {
+      info <- list(
+        java = rJavaEnv::java_check_version_cmd(quiet = TRUE),
+        photon = private$version
+      )
+      c(info, get_metadata(self$path))
+    },
+
+    #' @description
     #' Kill the photon process and remove the directory. Useful to get rid
     #' of an instance entirely.
     purge = function() {
-      cli::cli_inform(c("i" = paste(
-        "Purging an instance kills the photon process",
-        "and removes the photon directory."
-      )))
-      yes_no("Continue?", no = cancel())
+      if (interactive()) {
+        cli::cli_inform(c("i" = paste( # nocov start
+          "Purging an instance kills the photon process",
+          "and removes the photon directory."
+        )))
+        yes_no("Continue?", no = cancel()) # nocov end
+      }
 
       self$stop()
       rm <- unlink(self$path, recursive = TRUE, force = TRUE)
@@ -289,7 +319,7 @@ photon <- R6::R6Class(
         ph_stop(c(
           "x" = "Photon server has not been started yet.",
           "i" = "Start it by calling {.code $start()}"
-        ))
+        ), class = "no_url_yet")
       }
 
       if (identical(host, "0.0.0.0")) host <- "localhost"
@@ -298,6 +328,7 @@ photon <- R6::R6Class(
   ),
 
   private = list(
+    ## Private ----
     consent = FALSE,
     quiet = FALSE,
     version = NULL,
@@ -308,13 +339,14 @@ photon <- R6::R6Class(
     },
     finalize = function() {
       if (self$is_running()) {
-        self$stop()
+        self$stop() # nocov
       }
     }
   )
 )
 
 
+# External ----
 start_photon <- function(path,
                          version,
                          min_ram = 6,
@@ -327,7 +359,7 @@ start_photon <- function(path,
   exec <- sprintf("photon-%s.jar", version)
 
   if (!length(exec)) {
-    cli::cli_abort("Photon executable not found in the given {.var path}.")
+    cli::cli_abort("Photon executable not found in the given {.var path}.") # nocov
   }
 
   path <- normalizePath(path, winslash = "/")
@@ -358,10 +390,10 @@ start_photon <- function(path,
     out <- proc$read_output()
     err <- proc$read_error()
 
-    if (nzchar(out) && quiet) cli::cli_verbatim(out)
+    if (nzchar(out) && !quiet) cli::cli_verbatim(out)
 
     if (nzchar(err)) {
-      stop(err)
+      stop(err) # nocov
     }
   }
 
@@ -391,27 +423,31 @@ photon_ready <- function(self) {
 
 
 setup_photon_directory <- function(path, version, ..., quiet = FALSE) {
-  files <- list.files(path)
+  files <- list.files(path, full.names = TRUE)
   if (!any(grepl("\\.jar$", files))) {
     download_photon(path = path, version = version, quiet = quiet)
   }
 
-  if (!"photon_data" %in% files) {
+  if (!any(grepl("photon_data$", files))) {
     has_archive <- grepl("\\.bz2$", files)
     if (!any(has_archive)) {
       archive_path <- download_searchindex(path = path, ..., quiet = quiet)
     } else {
-      archive_path <- files[has_archive]
+      archive_path <- files[has_archive] # nocov
     }
-    untared <- untar(archive_path, files = "photon_data", exdir = path)
+    on.exit(unlink(archive_path))
+    untared <- utils::untar(archive_path, files = "photon_data", exdir = path)
 
-    if (!identical(untared, 0L)) {
+    if (!identical(untared, 0L)) { # nocov start
       ph_stop("Failed to untar the Elasticsearch index.")
-    }
+    } # nocov end
 
     store_searchindex_metadata(path, archive_path)
   } else {
-    skip_searchindex_download(path)
+    cli::cli_inform(paste(
+      "A search index already exists at the given path.",
+      "Download will be skipped"
+    ))
   }
 }
 
@@ -436,21 +472,54 @@ store_searchindex_metadata <- function(path, archive_path) {
 }
 
 
-skip_searchindex_download <- function(path) {
+get_metadata <- function(path) {
   meta_path <- file.path(path, "photon_data", "rmeta.rds")
 
   if (!file.exists(meta_path)) {
-    cli::cli_inform(paste(
-      "An unknown search index already exists at the given path.",
-      "Download will be skipped."
-    ))
+    # if photon_data has been created outside of {photon}, metadata cannot be retrieved
+    meta <- list(country = "Unknown", meta = "Unknown") # nocov
   } else {
     meta <- readRDS(meta_path)
-    msg <- c(
-      "A search index already exists at the given path. Download will be skipped.",
-      "*" = sprintf("Coverage: %s", meta$country),
-      "*" = sprintf("Time: %s", meta$date)
-    )
-    cli::cli_inform(msg)
   }
+
+  as.list(meta)
+}
+
+
+show_metadata <- function(path) {
+  meta <- get_metadata(path)
+
+  cli::cli_ul(c(
+    sprintf("Coverage: %s", meta$country),
+    sprintf("Time: %s", meta$date)
+  ))
+}
+
+
+#' @export
+print.photon <- function(x, ...) {
+  type <- ifelse(inherits(x, "photon_remote"), "remote", "local")
+
+  info <- switch(
+    type,
+    remote = c(
+      sprintf("Type   : %s", type),
+      sprintf("Server : %s", x$get_url())
+    ),
+    local = {
+      info <- x$info()
+      info <- c(
+        sprintf("Type     : %s", type),
+        sprintf("Version  : %s", info$photon),
+        sprintf("Coverage : %s", info$country),
+        sprintf("Time     : %s", info$date)
+      )
+    }
+  )
+
+  info <- gsub("\\s", "\u00a0", info)
+  names(info) <- rep(" ", length(info))
+  cli::cli_text(cli::col_blue("<photon>"))
+  cli::cli_bullets(info)
+  invisible(x)
 }

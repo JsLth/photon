@@ -33,6 +33,8 @@ selects the date with lowest difference to the \code{date} parameter.}
 
 \item{only_url}{If \code{TRUE}, downloads the search index. Otherwise,
 only returns a link to the file.}
+
+\item{quiet}{If \code{TRUE}, suppresses all informative messages.}
 }
 \value{
 If \code{only_url = FALSE}, returns the local path to the downloaded
@@ -49,17 +51,17 @@ when running this function.
 }
 \examples{
 \donttest{# download the latest extract of Monaco
-get_searchindex(path = tempdir(), country = "Monaco")
+download_searchindex(path = tempdir(), country = "Monaco")
 
 # download an extract from a month ago
-get_searchindex(path = tempdir(), country = "Monaco", date = Sys.time() - 2629800)
+download_searchindex(path = tempdir(), country = "Monaco", date = Sys.time() - 2629800)
 
 # if possible, download an extract from today
-try(get_searchindex(path = tempdir(), country = "Monaco", date = Sys.Date(), exact = TRUE))
+try(download_searchindex(path = tempdir(), country = "Monaco", date = Sys.Date(), exact = TRUE))
 
 # get the latest global coverage
 # NOTE: the file to be downloaded is several tens of gigabytes of size!
 if (FALSE) {
-  get_searchindex(path = tempdir())
+  download_searchindex(path = tempdir())
 }}
 }

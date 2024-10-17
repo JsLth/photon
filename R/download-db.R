@@ -18,6 +18,7 @@
 #' selects the date with lowest difference to the \code{date} parameter.
 #' @param only_url If \code{TRUE}, downloads the search index. Otherwise,
 #' only returns a link to the file.
+#' @param quiet If \code{TRUE}, suppresses all informative messages.
 #' @returns If \code{only_url = FALSE}, returns the local path to the downloaded
 #' file. Otherwise, returns the URL to the remote file.
 #'
@@ -30,18 +31,18 @@
 #'
 #' @examples
 #' \donttest{# download the latest extract of Monaco
-#' get_searchindex(path = tempdir(), country = "Monaco")
+#' download_searchindex(path = tempdir(), country = "Monaco")
 #'
 #' # download an extract from a month ago
-#' get_searchindex(path = tempdir(), country = "Monaco", date = Sys.time() - 2629800)
+#' download_searchindex(path = tempdir(), country = "Monaco", date = Sys.time() - 2629800)
 #'
 #' # if possible, download an extract from today
-#' try(get_searchindex(path = tempdir(), country = "Monaco", date = Sys.Date(), exact = TRUE))
+#' try(download_searchindex(path = tempdir(), country = "Monaco", date = Sys.Date(), exact = TRUE))
 #'
 #' # get the latest global coverage
 #' # NOTE: the file to be downloaded is several tens of gigabytes of size!
 #' if (FALSE) {
-#'   get_searchindex(path = tempdir())
+#'   download_searchindex(path = tempdir())
 #' }}
 download_searchindex <- function(path = ".",
                                  country = NULL,
@@ -67,26 +68,40 @@ download_searchindex <- function(path = ".",
       ph_stop(paste(
         "{.code country} is not a valid country name. See",
         "{.code ?countrycode::countryname()} for details."
-      ))
+      ), class = "country_invalid")
     }
 
     req <- httr2::req_url_path_append(req, "extracts", "by-country-code", country)
   }
 
   date_format <- "%y%m%d"
-  if (!identical(date, "latest") && !exact) {
+  if (!identical(date, "latest")) {
     date <- as.POSIXct(date)
     html <- httr2::resp_body_string(httr2::req_perform(req))
     html <- strsplit(html, "\n")[[1]]
     all_dates <- regex_match(
       html,
-      sprintf("photon-db-%s-([0-9]+)\\.tar\\.bz2</a>", country),
+      sprintf(
+        "photon-db%s-([0-9]+)\\.tar\\.bz2</a>",
+        if (!is.null(country)) paste0("-", country) else ""
+      ),
       i = 2
     )
-    all_dates <- as.POSIXct(drop_na(all_dates), format = date_format)
-    diff <- date - all_dates
-    date <- format(all_dates[diff == min(diff)], date_format)
-  } else if (exact) {
+    all_dates <- as.POSIXct(drop_na(all_dates), format = date_format, tz = "UTC")
+
+    if (exact) {
+      if (!date %in% all_dates) {
+        ph_stop(c(
+          "!" = "Specified {.code date} does not match any available dates.",
+          "i" = "Consider setting {.code exact = FALSE}."
+        ), class = "no_index_match")
+      }
+
+    } else {
+      diff <- date - all_dates
+      date <- all_dates[diff == min(diff)]
+    }
+
     date <- format(as.POSIXct(date), date_format)
   }
 
@@ -95,6 +110,12 @@ download_searchindex <- function(path = ".",
   } else {
     file <- sprintf("photon-db-%s-%s.tar.bz2", country, date)
   }
+
+  path <- file.path(path, file)
+  req <- httr2::req_url_path_append(req, file)
+  if (only_url) return(req$url)
+  req <- httr2::req_retry(req, max_tries = getOption("photon_max_tries", 3))
+  req <- httr2::req_progress(req)
 
   if (!quiet) {
     date_fmt <- ifelse(
@@ -109,11 +130,7 @@ download_searchindex <- function(path = ".",
     )
   }
 
-  path <- file.path(path, file)
-  req <- httr2::req_url_path_append(req, file)
-  if (only_url) return(req$url)
-  req <- httr2::req_retry(req, max_tries = getOption("photon_max_tries", 3))
-  req <- httr2::req_progress(req)
+
   httr2::req_perform(req, path = path)
   normalizePath(path, "/")
 }

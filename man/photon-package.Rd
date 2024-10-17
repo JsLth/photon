@@ -2,6 +2,7 @@
 % Please edit documentation in R/photon-package.R
 \docType{package}
 \name{photon-package}
+\alias{photon}
 \alias{photon-package}
 \title{photon: Interface to the 'Photon' geocoding API}
 \description{
@@ -40,7 +41,7 @@ functions. These include:
 }
 
 \author{
-\strong{Maintainer}: Jonas Lieth [copyright holder]
+\strong{Maintainer}: Jonas Lieth \email{jonas.lieth@gesis.org} [copyright holder]
 
 }
 \keyword{internal}

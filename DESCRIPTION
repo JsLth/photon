@@ -1,11 +1,11 @@
 Package: photon
 Type: Package
-Title: Interface to the 'Photon' geocoding API
+Title: Interface to the 'photon' geocoding API
 Version: 0.1.0.9000
 Authors@R: 
-    person("Jonas", "Lieth", role = c("aut", "cre", "cph"))
+    person("Jonas", "Lieth", email = "jonas.lieth@gesis.org", role = c("aut", "cre", "cph"))
 Description: Features unstructured, structured and reverse geocoding using the
-    'Photon' geocoding API. Facilitates the setup of local Photon instances to
+    'photon' geocoding API. Facilitates the setup of local Photon instances to
     enable offline geocoding.
 License: Apache License (>= 2)
 Encoding: UTF-8
@@ -21,5 +21,6 @@ Imports:
     processx
 Suggests: 
     testthat (>= 3.0.0),
-    tibble
+    tibble,
+    httpuv
 Config/testthat/edition: 3

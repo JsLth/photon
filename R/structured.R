@@ -25,11 +25,10 @@ structured <- function(.data,
                        locbias = NULL,
                        locbias_scale = NULL,
                        zoom = NULL,
-                       debug = FALSE,
-                       progress = TRUE
+                       progress = interactive()
 ) {
   if (!has_structured_support()) {
-    ph_stop("Structured geocoding is disabled the mounted photon instance.")
+    ph_stop("Structured geocoding is disabled for the mounted photon instance.")
   }
 
   cols <- c("street", "housenumber", "postcode", "city", "county", "state", "countrycode")
@@ -47,14 +46,15 @@ structured <- function(.data,
 
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
+  .data <- as.data.frame(.data)
 
   if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = NROW(.data))
+    cli::cli_progress_bar(name = "Geocoding", total = nrow(.data))
     env <- environment()
   }
 
   options <- list(env = environment())
-  .data$i <- seq_len(NROW(.data))
+  .data$i <- seq_len(nrow(.data))
   geocoded <- .mapply(.data, MoreArgs = options, FUN = structured_impl)
   as_sf(rbind_list(geocoded))
 }
@@ -75,7 +75,7 @@ structured_impl <- function(i, ..., env) {
     location_bias_scale = env$locbias_scale,
     zoom = env$zoom
   )
-  cbind(idx = i, res)
+  cbind(idx = rep(i, nrow(res)), res)
 }
 
 
