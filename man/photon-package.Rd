@@ -4,9 +4,9 @@
 \name{photon-package}
 \alias{photon}
 \alias{photon-package}
-\title{photon: Interface to the 'Photon' geocoding API}
+\title{photon: Interface to the 'photon' geocoding API}
 \description{
-Features unstructured, structured and reverse geocoding using the 'Photon' geocoding API. Facilitates the setup of local Photon instances to enable offline geocoding.
+Features unstructured, structured and reverse geocoding using the 'photon' geocoding API. Facilitates the setup of local Photon instances to enable offline geocoding.
 }
 \section{Terms of use}{
 

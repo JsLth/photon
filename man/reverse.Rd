@@ -8,11 +8,11 @@ reverse(
   .data,
   radius = NULL,
   limit = 3,
-  lang = NULL,
+  lang = "en",
   osm_tag = NULL,
   layer = NULL,
   distance_sort = TRUE,
-  progress = TRUE
+  progress = interactive()
 )
 }
 \arguments{

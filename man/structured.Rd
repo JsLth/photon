@@ -14,7 +14,7 @@ structured(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
-  progress = TRUE
+  progress = interactive()
 )
 }
 \arguments{
