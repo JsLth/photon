@@ -42,7 +42,7 @@ test_that("local setup works", {
   expect_error(photon$get_url(), class = "no_url_yet")
 
   skip_if_not_installed("httpuv")
-  photon$start(port = httpuv::randomPort())
+  photon$start(port = httpuv::randomPort(), host = "127.0.0.1")
   expect_true(photon$is_running())
   expect_gt(nrow(geocode("Apai")), 0)
   photon$stop()
