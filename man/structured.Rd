@@ -11,15 +11,16 @@ structured(
   bbox = NULL,
   osm_tag = NULL,
   layer = NULL,
-  location_bias = NULL,
-  location_bias_scale = NULL,
+  locbias = NULL,
+  locbias_scale = NULL,
   zoom = NULL,
-  debug = FALSE
+  debug = FALSE,
+  progress = TRUE
 )
 }
 \arguments{
-\item{.data}{Dataframe containing structured information on a place to
-geocode. Can contain the columns \code{street}, \code{housenumber},
+\item{.data}{Dataframe or list containing structured information on a place
+to geocode. Can contain the columns \code{street}, \code{housenumber},
 \code{postcode}, \code{city}, \code{district}, \code{county}, \code{state},
 and \code{countrycode}. At least one of these columns must be present in the
 dataframe.}
@@ -40,22 +41,18 @@ Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
 
-\item{location_bias}{Numeric vector of length 2 or an \code{sfg} point
-geometry that specifies a location bias for geocoding. Geocoding results
-are biased towards this point. The radius of the bias is controlled through
-\code{zoom} and its prominence through \code{location_bias_scale}.}
-
-\item{location_bias_scale}{Numeric vector specifying the prominence of
-point in \code{location_bias}. Defaults to 0.2.}
-
 \item{zoom}{Numeric vector specifying the radius of the \code{location_bias}.
 Corresponds to the zoom level in OpenStreetMap. Defaults to 16.}
+
+\item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
 }
 \description{
 Geocode a set of place information such as street, house number, or
 post code. Structured geocoding is generally more accurate but requires
 more information than \link[=geocode]{unstructured geocoding}. Note that
-structured geocoding is not available on Komoot's public API.
+structured geocoding must be specifically enabled when building a Nominatim
+database. It is generally not available on komoot's public API and on
+pre-built search indices through \code{\link{download_searchindex}}.
 }
 \details{
 Filtering by OpenStreetMap tags follows a distinct syntax explained on

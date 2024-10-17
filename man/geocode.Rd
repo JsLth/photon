@@ -11,8 +11,8 @@ geocode(
   bbox = NULL,
   osm_tag = NULL,
   layer = NULL,
-  location_bias = NULL,
-  location_bias_scale = NULL,
+  locbias = NULL,
+  locbias_scale = NULL,
   zoom = NULL,
   progress = TRUE
 )
@@ -34,6 +34,13 @@ Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
 
+\item{zoom}{Numeric vector specifying the radius of the \code{location_bias}.
+Corresponds to the zoom level in OpenStreetMap. Defaults to 16.}
+
+\item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
+
+\item{text}{Character vector of a texts to geocode.}
+
 \item{location_bias}{Numeric vector of length 2 or an \code{sfg} point
 geometry that specifies a location bias for geocoding. Geocoding results
 are biased towards this point. The radius of the bias is controlled through
@@ -41,13 +48,6 @@ are biased towards this point. The radius of the bias is controlled through
 
 \item{location_bias_scale}{Numeric vector specifying the prominence of
 point in \code{location_bias}. Defaults to 0.2.}
-
-\item{zoom}{Numeric vector specifying the radius of the \code{location_bias}.
-Corresponds to the zoom level in OpenStreetMap. Defaults to 16.}
-
-\item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
-
-\item{text}{Character vector of a texts to geocode.}
 }
 \value{
 An sf dataframe or tibble containing the following columns:

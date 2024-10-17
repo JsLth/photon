@@ -16,7 +16,7 @@ the \code{url} parameter.}
 requests are sent to. If \code{NULL} and \code{path} is also \code{NULL},
 connects to the public API under \url{photon.komoot.io}.}
 
-\item{...}{Arguments passed to \code{\link{photon}$new()}.}
+\item{...}{Arguments passed to \code{\link[=photon]{photon$new()}}.}
 }
 \value{
 An R6 object of class \code{photon}.
