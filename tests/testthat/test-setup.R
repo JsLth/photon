@@ -33,6 +33,8 @@ skip_if_offline("github.com")
 skip_if_offline("corretto.aws")
 
 test_that("local setup works", {
+  options(rJavaEnv.consent = TRUE)
+  on.exit(options(rJavaEnv.consent = NULL))
   on.exit(photon$purge())
   photon <- new_photon(path = tempdir(), country = "samoa")
   expect_no_error(print(photon))
