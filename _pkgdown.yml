@@ -1,0 +1,40 @@
+url: https://jslth.github.io/photon/
+pkwurl: ~
+template:
+  bootstrap: 5
+  bootswatch: litera
+  bslib:
+    base_font: {google: "Roboto"}
+    heading_font: {google: "Roboto Slab"}
+    code_font: {google: "JetBrains Mono"}
+    link-color: "#0054AD"
+
+navbar:
+  title: "photon"
+  left:
+    - text: Overview
+      icon: fa-home
+      href: index.html
+    - text: "Vignettes"
+      icon: fa-book
+      menu:
+        - text: "Introduction to {photon}"
+          href: articles/photon.html
+    - text: "Reference"
+      icon: fa-search
+      href: reference/index.html
+
+reference:
+  - title: Geocoding
+    contents:
+      - geocode
+      - structured
+      - reverse
+
+  - title: Photon setup
+    contents:
+      - new_photon
+      - photon_local
+      - download_searchindex
+      - download_photon
+      - get_instance
