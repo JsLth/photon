@@ -65,12 +65,26 @@ assert_class <- function(x, class, null = FALSE) {
 }
 
 
-assert_named <- function(x, names, null = FALSE) {
+assert_named <- function(x, names, all = FALSE, null = FALSE) {
   ignore_null()
-  cond <- names(x) %in% names
+  cond <- if (all) {
+    all(names(x) %in% names)
+  } else {
+    any(names(x) %in% names)
+  }
   if (!cond) {
     var <- deparse(substitute(x))
     names <- cli::cli_vec(names, style = list("vec-last" = ", "))
     ph_stop("{.code {var}} must contain at least one of the following names: {.val {names}}")
+  }
+}
+
+
+assert_range <- function(x, min, max) {
+  ignore_null()
+  cond <- all(x > min, x < max)
+  if (!cond) {
+    var <- deparse(substitute(x))
+    ph_stop("{.code {var}} be greater than {min} and lower than {max}, got {.field {x}} instead.")
   }
 }

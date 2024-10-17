@@ -33,7 +33,7 @@ structured <- function(.data,
   }
 
   cols <- c("street", "housenumber", "postcode", "city", "county", "state", "countrycode")
-  assert_class(.data, "data.frame")
+  assert_class(.data, c("data.frame", "list"))
   assert_named(.data, cols)
   assert_vector(limit, "double", null = TRUE)
   assert_vector(lang, "character", null = TRUE)
@@ -53,41 +53,29 @@ structured <- function(.data,
     env <- environment()
   }
 
+  options <- list(env = environment())
   .data$i <- seq_len(NROW(.data))
-  geocoded <- .mapply(dots = .data, MoreArgs = NULL, function(i, ...) {
-    if (progress) cli::cli_progress_update(.envir = env)
-    res <- structured_impl(
-      ...,
-      limit = limit,
-      lang = lang,
-      bbox = bbox,
-      osm_tag = osm_tag,
-      layer = layer,
-      lon = locbias$lon,
-      lat = locbias$lat,
-      location_bias_scale = locbias_scale,
-      zoom = zoom
-    )
-    cbind(idx = i, res)
-  })
-  as_data_frame(rbind_list(geocoded))
+  geocoded <- .mapply(.data, MoreArgs = options, FUN = structured_impl)
+  as_sf(rbind_list(geocoded))
 }
 
 
-structured_impl <- function(...) {
-  args <- list(...)
-  req <- httr2::request(get_photon_url())
-  req <- httr2::req_template(req, "GET structured")
-  req <- do.call(httr2::req_url_query, c(list(.req = req), args))
-  req <- throttle(req)
-
-  if (isTRUE(getOption("photon_debug", FALSE))) {
-    cli::cli_inform("GET {req$url}")
-  }
-
-  resp <- httr2::req_perform(req)
-  resp <- httr2::resp_body_string(resp, encoding = "UTF-8")
-  sf::st_read(resp, as_tibble = TRUE, quiet = TRUE, drivers = "geojson")
+structured_impl <- function(i, ..., env) {
+  if (env$progress) cli::cli_progress_update(.envir = env)
+  res <- structured_impl(
+    endpoint = "structured",
+    ...,
+    limit = env$limit,
+    lang = env$lang,
+    bbox = env$bbox,
+    osm_tag = env$osm_tag,
+    layer = env$layer,
+    lon = env$locbias$lon,
+    lat = env$locbias$lat,
+    location_bias_scale = env$locbias_scale,
+    zoom = env$zoom
+  )
+  cbind(idx = i, res)
 }
 
 

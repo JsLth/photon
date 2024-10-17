@@ -57,6 +57,11 @@ as_data_frame <- function(x) {
 }
 
 
+as_sf <- function(x) {
+  sf::st_as_sf(as_data_frame(x))
+}
+
+
 yes_no <- function(msg, yes = TRUE, no = FALSE, dflt = NULL, ask = TRUE) { # nocov start
   if (!interactive() || !ask) {
     return(dflt)

@@ -5,7 +5,7 @@
 #'
 #' @param text Character vector of a texts to geocode.
 #' @param limit Number of results to return. Defaults to 3.
-#' @param lang Language of the results
+#' @param lang Language of the results.
 #' @param bbox Any object that can be parsed by \code{\link[sf]{st_bbox}}.
 #' Results must lie within this bbox.
 #' @param osm_tag Character string giving an
@@ -64,7 +64,7 @@
 #' @export
 #'
 #' @examples
-#' if (FALSE) {
+#' \donttest{
 #' # an instance must be mounted first
 #' photon <- new_photon()
 #'
@@ -118,44 +118,31 @@ geocode <- function(texts,
 
   if (progress) {
     cli::cli_progress_bar(name = "Geocoding", total = length(texts))
-    env <- environment()
   }
 
+  options <- list(env = environment())
   iter <- list(q = texts, i = seq_len(length(texts)))
-  geocoded <- .mapply(iter, MoreArgs = NULL, FUN = function(q, i) {
-    if (progress) cli::cli_progress_update(.envir = env)
-    res <- geocode_impl(
-      q = q,
-      limit = limit,
-      lang = lang,
-      bbox = bbox,
-      osm_tag = osm_tag,
-      layer = layer,
-      lon = locbias$lon,
-      lat = locbias$lat,
-      location_bias_scale = locbias_scale,
-      zoom = zoom
-    )
-    cbind(idx = rep(i, nrow(res)), res)
-  })
+  geocoded <- .mapply(iter, MoreArgs = options, FUN = geocode_impl)
   as_data_frame(rbind_list(geocoded))
 }
 
 
-geocode_impl <- function(...) {
-  args <- list(...)
-  req <- httr2::request(get_photon_url())
-  req <- httr2::req_template(req, "GET api")
-  req <- do.call(httr2::req_url_query, c(list(.req = req), args))
-  req <- throttle(req)
-
-  if (isTRUE(getOption("photon_debug", FALSE))) {
-    cli::cli_inform("GET {req$url}")
-  }
-
-  resp <- httr2::req_perform(req)
-  resp <- httr2::resp_body_string(resp, encoding = "UTF-8")
-  sf::st_read(resp, as_tibble = TRUE, quiet = TRUE, drivers = "geojson")
+geocode_impl <- function(q, i, env, progress) {
+  if (env$progress) cli::cli_progress_update(.envir = env)
+  res <- query_photon(
+    endpoint = "api",
+    q = q,
+    limit = env$limit,
+    lang = env$lang,
+    bbox = env$bbox,
+    osm_tag = env$osm_tag,
+    layer = env$layer,
+    lon = env$locbias$lon,
+    lat = env$locbias$lat,
+    location_bias_scale = env$locbias_scale,
+    zoom = env$zoom
+  )
+  cbind(idx = rep(i, nrow(res)), res)
 }
 
 
@@ -185,4 +172,21 @@ throttle <- function(req) {
     req <- httr2::req_throttle(req, rate = rate %||% dflt)
   }
   req
+}
+
+
+query_photon <- function(endpoint, ...) {
+  args <- list(...)
+  req <- httr2::request(get_photon_url())
+  req <- httr2::req_template(req, "GET {endpoint}")
+  req <- do.call(httr2::req_url_query, c(list(.req = req), args))
+  req <- throttle(req)
+
+  if (isTRUE(getOption("photon_debug", FALSE))) {
+    cli::cli_inform("GET {req$url}")
+  }
+
+  resp <- httr2::req_perform(req)
+  resp <- httr2::resp_body_string(resp, encoding = "UTF-8")
+  sf::st_read(resp, as_tibble = TRUE, quiet = TRUE, drivers = "geojson")
 }
