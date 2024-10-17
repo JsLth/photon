@@ -1,0 +1,73 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# photon
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+`{photon}` is a simple interface and setup manager of the [photon](https://photon.komoot.io) OpenStreetMap geocoder. It features unstructured, structured, and reverse geocoding. The package allows requests to the public API but shines at setting up local instances to enable high-performance offline geocoding.
+
+## Installation
+
+You can install the development version of photon from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("jslth/photon")
+```
+
+## Usage
+
+Before geocoding, `{photon}` needs to know where to send requests. This can be done using the workhorse function `new_photon()`.
+
+```{r new_photon}
+library(photon)
+new_photon()
+```
+
+With a photon instance registered, you can start geocoding.
+
+```{r geocode}
+cities1 <- geocode(
+  c("Paris", "Beijing", "Sao Paolo", "Kinshasa"),
+  limit = 1,
+  layer = "city"
+)
+cities1
+```
+
+Reverse geocoding means taking point geometries and returning their addresses or place names.
+
+```{r reverse}
+cities2 <- reverse(cities1$geometry, limit = 1, layer = "city")
+cities2
+```
+
+```{r compare}
+all.equal(cities1, cities2)
+```
+
+
+## Offline geocoding
+
+`{photon}` is designed to facilitate offline geocoding. `new_photon()` can install photon locally. The following code would install and start photon covering the country of Germany in the current working directory.
+
+```{r offline, eval=FALSE}
+photon <- new_photon(path = "./photon", country = "Germany")
+photon$start()
+```
+
