@@ -92,6 +92,9 @@ check_geometry <- function(x, type = "POINT") {
   if (!cond) {
     var <- deparse(substitute(x))
     geom <- sf::st_geometry_type(x, by_geometry = FALSE)
-    cli::cli_abort("{.code {var}} must consist of {type}s only, got {geom} instead.")
+    ph_stop(
+      "{.code {var}} must consist of {type}s only, got {geom} instead.",
+      class = "check_geometry"
+    )
   }
 }

@@ -182,9 +182,9 @@ query_photon <- function(endpoint, ...) {
   req <- do.call(httr2::req_url_query, c(list(.req = req), args))
   req <- throttle(req)
 
-  if (isTRUE(getOption("photon_debug", FALSE))) {
+  if (isTRUE(getOption("photon_debug", FALSE))) { # nocov start
     cli::cli_inform("GET {req$url}")
-  }
+  } # nocov end
 
   resp <- httr2::req_perform(req)
   resp <- httr2::resp_body_string(resp, encoding = "UTF-8")
