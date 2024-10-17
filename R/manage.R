@@ -213,7 +213,12 @@ photon <- R6::R6Class(
       yes_no("Continue?", no = cancel())
 
       self$stop()
-      unlink(self$path, recursive = TRUE, force = TRUE)
+      rm <- unlink(self$path, recursive = TRUE, force = TRUE)
+
+      if (identical(rm, 1L)) { # nocov start
+        cli::cli_warn("Photon directory could not be removed.")
+      } # nocov end
+
       invisible(NULL)
     },
 
@@ -252,7 +257,7 @@ photon <- R6::R6Class(
         port = port,
         java_options = java_options,
         photon_options = photon_options,
-        debug = !private$quiet
+        quiet = private$quiet
       )
       private$mount()
       invisible(self)
@@ -284,7 +289,7 @@ photon <- R6::R6Class(
       }
 
       if (identical(host, "0.0.0.0")) host <- "localhost"
-      sprintf("https://%s:%s/", host, port)
+      sprintf("http://%s:%s/", host, port)
     }
   ),
 
@@ -298,7 +303,7 @@ photon <- R6::R6Class(
       assign("instance", self, envir = photon_env)
     },
     finalize = function() {
-      if (self$proc$is_alive()) {
+      if (photon_running()) {
         self$proc$kill()
       }
     }
@@ -314,7 +319,7 @@ start_photon <- function(path,
                          port = "2322",
                          java_options = NULL,
                          photon_options = NULL,
-                         debug = FALSE) {
+                         quiet = FALSE) {
   exec <- sprintf("photon-%s.jar", version)
 
   if (!length(exec)) {
@@ -334,7 +339,7 @@ start_photon <- function(path,
     args = cmd,
     stdout = "|",
     stderr = "|",
-    echo_cmd = debug,
+    echo_cmd = getOption("photon_debug", FALSE),
     wd = path
   )
 
@@ -349,7 +354,7 @@ start_photon <- function(path,
     out <- proc$read_output()
     err <- proc$read_error()
 
-    if (nzchar(out) && debug) cli::cli_verbatim(out)
+    if (nzchar(out) && quiet) cli::cli_verbatim(out)
 
     if (nzchar(err)) {
       stop(err)
@@ -361,7 +366,7 @@ start_photon <- function(path,
 
 
 stop_photon <- function(proc) {
-  if (proc$is_alive()) {
+  if (photon_running(proc)) {
     proc <- proc$interrupt()
   }
 
@@ -370,11 +375,7 @@ stop_photon <- function(proc) {
 
 
 photon_running <- function(proc) {
-  if (is.environment(proc)) {
-    proc$is_alive()
-  } else {
-    FALSE
-  }
+  inherits(proc, "process") && proc$is_alive()
 }
 
 
