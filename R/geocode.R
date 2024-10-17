@@ -98,8 +98,8 @@ geocode <- function(texts,
                     bbox = NULL,
                     osm_tag = NULL,
                     layer = NULL,
-                    location_bias = NULL,
-                    location_bias_scale = NULL,
+                    locbias = NULL,
+                    locbias_scale = NULL,
                     zoom = NULL,
                     progress = TRUE) {
   assert_vector(texts, "character")
@@ -107,67 +107,82 @@ geocode <- function(texts,
   assert_vector(lang, "character", null = TRUE)
   assert_vector(osm_tag, "character", null = TRUE)
   assert_vector(layer, "character", null = TRUE)
-  assert_vector(location_bias_scale, "double", null = TRUE)
+  assert_vector(locbias_scale, "double", null = TRUE)
   assert_vector(zoom, "double", null = TRUE)
   assert_length(limit, null = TRUE)
   assert_length(lang, null = TRUE)
   assert_length(layer, null = TRUE)
 
-  if (!is.null(bbox)) {
-    bbox <- sf::st_bbox(bbox)
-    bbox <- paste(bbox, collapse = ",")
+  locbias <- format_locbias(locbias)
+  bbox <- format_bbox(bbox)
+
+  if (progress) {
+    cli::cli_progress_bar(name = "Geocoding", total = length(texts))
+    env <- environment()
   }
 
-  if (!is.null(location_bias)) {
-    location_bias <- as.numeric(location_bias)
-    lon <- location_bias[1]
-    lat <- location_bias[2]
-  }
-
-  iter <- if (progress) cli::cli_progress_along(texts) else seq_along(texts)
-  geocoded <- lapply(iter, function(i) {
+  iter <- list(q = texts, i = seq_len(length(texts)))
+  geocoded <- .mapply(iter, MoreArgs = NULL, FUN = function(q, i) {
+    if (progress) cli::cli_progress_update(.envir = env)
     res <- geocode_impl(
-      texts[[i]],
+      q = q,
       limit = limit,
       lang = lang,
       bbox = bbox,
       osm_tag = osm_tag,
       layer = layer,
-      lon = lon,
-      lat = lat,
-      location_bias_scale = location_bias_scale,
+      lon = locbias$lon,
+      lat = locbias$lat,
+      location_bias_scale = locbias_scale,
       zoom = zoom
     )
-    cbind(id = i, res)
+    cbind(idx = rep(i, nrow(res)), res)
   })
-  as_data_frame(do.call(rbind.data.frame, geocoded))
+  as_data_frame(rbind_list(geocoded))
 }
 
 
-geocode_impl <- function(text,
-                         limit,
-                         lang,
-                         bbox,
-                         osm_tag,
-                         layer,
-                         lon,
-                         lat,
-                         location_bias_scale,
-                         zoom) {
+geocode_impl <- function(...) {
+  args <- list(...)
   req <- httr2::request(get_photon_url())
   req <- httr2::req_template(req, "GET api")
-  req <- httr2::req_error(req, is_error = function(r) FALSE)
-  req <- httr2::req_url_query(
-    req,
-    q = text,
-    limit = limit,
-    lang = lang,
-    bbox = bbox,
-    osm_tag = osm_tag,
-    layer = layer
-  )
+  req <- do.call(httr2::req_url_query, c(list(.req = req), args))
+  req <- throttle(req)
+
+  if (isTRUE(getOption("photon_debug", FALSE))) {
+    cli::cli_inform("GET {req$url}")
+  }
 
   resp <- httr2::req_perform(req)
   resp <- httr2::resp_body_string(resp, encoding = "UTF-8")
   sf::st_read(resp, as_tibble = TRUE, quiet = TRUE, drivers = "geojson")
+}
+
+
+format_bbox <- function(bbox) {
+  if (!is.null(bbox)) {
+    bbox <- sf::st_bbox(bbox)
+    bbox <- paste(bbox, collapse = ",")
+  }
+  bbox
+}
+
+
+format_locbias <- function(locbias) {
+  if (!is.null(locbias)) {
+    locbias <- as.numeric(locbias)
+    lon <- locbias[1]
+    lat <- locbias[2]
+  }
+  locbias
+}
+
+
+throttle <- function(req) {
+  rate <- getOption("photon_throttle")
+  if (is_komoot(req$url) || !is.null(rate)) {
+    dflt <- 60 / 60
+    req <- httr2::req_throttle(req, rate = rate %||% dflt)
+  }
+  req
 }
