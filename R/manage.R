@@ -250,6 +250,8 @@ photon_local <- R6::R6Class(
     #' @param host Character string of the host name that the geocoder should
     #' be opened on.
     #' @param port Port that the geocoder should listen to.
+    #' @param ssl If \code{TRUE}, uses \code{https}, otherwise \code{http}.
+    #' Defaults to \code{FALSE}.
     #' @param java_options List of further flags passed on to the \code{java}
     #' command.
     #' @param photon_options List of further flags passed on to the photon
@@ -258,6 +260,7 @@ photon_local <- R6::R6Class(
                      max_ram = 10,
                      host = "0.0.0.0",
                      port = "2322",
+                     ssl = FALSE,
                      java_options = NULL,
                      photon_options = NULL) {
       assert_vector(min_ram, "double")
@@ -265,6 +268,7 @@ photon_local <- R6::R6Class(
       assert_vector(host, "character")
       private$host <- host
       private$port <- port
+      private$ssl <- ssl
       self$proc <- start_photon(
         path = self$path,
         version = private$version,
@@ -288,9 +292,25 @@ photon_local <- R6::R6Class(
     },
 
     #' @description
-    #' Checks whether the photon instance is running.
+    #' Checks whether the photon instance is running and ready. The difference
+    #' to \code{$is_ready()} is that \code{$is_running()} checks specifically
+    #' if the running photon instance is managed by a process from its own
+    #' \code{photon} object. In other words, \code{$is_running()} returns
+    #' \code{TRUE} if both \code{$proc$is_alive()} and \code{$is_ready()}
+    #' return \code{TRUE}. This method is useful if you want to ensure that
+    #' the \code{photon} object can control its photon server (mostly internal
+    #' use).
     is_running = function() {
       photon_running(self)
+    },
+
+    #' @description
+    #' Checks whether the photon instance is ready to take requests. This
+    #' is the case if the photon server returns a HTTP 400 when sending a
+    #' queryless request. This method is useful if you want to check whether
+    #' you can send requests.
+    is_ready = function() {
+      photon_ready(self)
     },
 
     #' @description
@@ -307,7 +327,8 @@ photon_local <- R6::R6Class(
       }
 
       if (identical(host, "0.0.0.0")) host <- "localhost"
-      sprintf("%s:%s", host, port)
+      ssl <- ifelse(isTRUE(private$ssl), "s", "")
+      sprintf("http%s://%s:%s", ssl, host, port)
     }
   ),
 
@@ -317,15 +338,14 @@ photon_local <- R6::R6Class(
     version = NULL,
     host = NULL,
     port = NULL,
+    ssl = NULL,
     country = NULL,
     date = NULL,
     mount = function() {
       assign("instance", self, envir = photon_env)
     },
     finalize = function() {
-      if (self$is_running()) {
-        self$stop() # nocov
-      }
+      self$stop() # nocov
     }
   )
 )
@@ -387,23 +407,43 @@ start_photon <- function(path,
 
 
 stop_photon <- function(self) {
-  if (photon_running(self)) {
-    self$proc$kill()
+  if (self$is_running()) {
+    self$proc$kill_tree()
   }
+
+  if (self$is_running()) { # nocov start
+    self$proc$interrupt()
+  }
+
+  if (self$is_running()) {
+    cli::cli_warn(c(
+      "!" = "Failed to stop photon server.",
+      "i" = "If the problem persists, restart the R session."
+    ))
+  } # nocov end
 }
 
 
 photon_running <- function(self) {
-  inherits(self$proc, "process") && self$proc$is_alive() && photon_ready(self)
+  (inherits(self$proc, "process") && self$proc$is_alive()) || self$ready()
 }
 
 
-photon_ready <- function(self) {
+photon_ready <- function(self, private) {
+  if (is.null(private$host)) {
+    return("not ready")
+  }
+
   req <- httr2::request(self$get_url())
   req <- httr2::req_template(req, "GET api")
   req <- httr2::req_error(req, is_error = function(r) FALSE)
-  resp <- httr2::req_perform(req)
-  resp$status_code == 400
+
+  status <- tryCatch(
+    httr2::req_perform(req)$status_code,
+    error = function(e) 999
+  )
+
+  identical(status, 400L)
 }
 
 

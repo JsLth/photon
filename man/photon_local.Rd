@@ -44,6 +44,7 @@ external process running photon.}
 \item \href{#method-photon_local-start}{\code{photon_local$start()}}
 \item \href{#method-photon_local-stop}{\code{photon_local$stop()}}
 \item \href{#method-photon_local-is_running}{\code{photon_local$is_running()}}
+\item \href{#method-photon_local-is_ready}{\code{photon_local$is_ready()}}
 \item \href{#method-photon_local-get_url}{\code{photon_local$get_url()}}
 \item \href{#method-photon_local-clone}{\code{photon_local$clone()}}
 }
@@ -129,6 +130,7 @@ located in the instance directory.
   max_ram = 10,
   host = "0.0.0.0",
   port = "2322",
+  ssl = FALSE,
   java_options = NULL,
   photon_options = NULL
 )}\if{html}{\out{</div>}}
@@ -147,6 +149,9 @@ located in the instance directory.
 be opened on.}
 
 \item{\code{port}}{Port that the geocoder should listen to.}
+
+\item{\code{ssl}}{If \code{TRUE}, uses \code{https}, otherwise \code{http}.
+Defaults to \code{FALSE}.}
 
 \item{\code{java_options}}{List of further flags passed on to the \code{java}
 command.}
@@ -171,9 +176,29 @@ Kills the running photon process.
 \if{html}{\out{<a id="method-photon_local-is_running"></a>}}
 \if{latex}{\out{\hypertarget{method-photon_local-is_running}{}}}
 \subsection{Method \code{is_running()}}{
-Checks whether the photon instance is running.
+Checks whether the photon instance is running and ready. The difference
+to \code{$is_ready()} is that \code{$is_running()} checks specifically
+if the running photon instance is managed by a process from its own
+\code{photon} object. In other words, \code{$is_running()} returns
+\code{TRUE} if both \code{$proc$is_alive()} and \code{$is_ready()}
+return \code{TRUE}. This method is useful if you want to ensure that
+the \code{photon} object can control its photon server (mostly internal
+use).
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$is_running()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-is_ready"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-is_ready}{}}}
+\subsection{Method \code{is_ready()}}{
+Checks whether the photon instance is ready to take requests. This
+is the case if the photon server returns a HTTP 400 when sending a
+queryless request. This method is useful if you want to check whether
+you can send requests.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$is_ready()}\if{html}{\out{</div>}}
 }
 
 }
