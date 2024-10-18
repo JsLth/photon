@@ -92,12 +92,9 @@ executable, the search index, and Java.</p><div class="section">
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/photon_local.html">photon_local</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  path <span class="op">=</span> <span class="st">"./photon"</span>,</span>
 <span>  photon_version <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  java_version <span class="op">=</span> <span class="fl">22</span>,</span>
-<span>  <span class="va">...</span>,</span>
 <span>  country <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  date <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>  exact <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  consent <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -113,15 +110,6 @@ working directory.</p></dd>
 <dt><code>photon_version</code></dt>
 <dd><p>Version of photon to be used. A list of all
 releases can be found here: <a href="https://github.com/komoot/photon/releases/" class="external-link">https://github.com/komoot/photon/releases/</a>.</p></dd>
-
-
-<dt><code>java_version</code></dt>
-<dd><p>Java version to be used. See <code><a href="https://www.ekotov.pro/rJavaEnv/reference/use_java.html" class="external-link">use_java</a></code>
-for available versions.</p></dd>
-
-
-<dt><code>...</code></dt>
-<dd><p>Further arguments passed to <code><a href="https://www.ekotov.pro/rJavaEnv/reference/use_java.html" class="external-link">use_java</a></code>.</p></dd>
 
 
 <dt><code>country</code></dt>
@@ -143,11 +131,6 @@ Otherwise, a file will be selected that exactly matches the input to
 <dt><code>exact</code></dt>
 <dd><p>If <code>TRUE</code>, exactly matches the <code>date</code>. Otherwise,
 selects the date with lowest difference to the <code>date</code> parameter.</p></dd>
-
-
-<dt><code>consent</code></dt>
-<dd><p>Whether to provide consent to <code>rJavaEnv</code> to setup
-Java. See <code><a href="https://www.ekotov.pro/rJavaEnv/reference/rje_consent.html" class="external-link">rje_consent</a></code>.</p></dd>
 
 
 <dt><code>quiet</code></dt>
