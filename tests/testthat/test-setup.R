@@ -38,6 +38,7 @@ test_that("local setup works", {
   on.exit(photon$purge())
   expect_no_error(print(photon))
   photon <- new_photon(path = tempdir(), country = "samoa")
+  expect_no_message(new_photon(path = tempdir(), quiet = TRUE))
   expect_error(photon$get_url(), class = "no_url_yet")
 
   skip_if_not_installed("httpuv")

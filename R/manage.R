@@ -184,7 +184,7 @@ photon_local <- R6::R6Class(
                           exact = FALSE,
                           quiet = FALSE) {
       assert_true_or_false(quiet)
-      check_jdk_version(11)
+      check_jdk_version(11, quiet = quiet)
 
       path <- normalizePath(path, "/", mustWork = FALSE)
       if (!dir.exists(path)) {
@@ -199,7 +199,7 @@ photon_local <- R6::R6Class(
         exact = exact,
         quiet = quiet
       )
-      meta <- show_metadata(path)
+      meta <- show_metadata(path, quiet = quiet)
 
       self$path <- path
       private$quiet <- quiet
@@ -452,7 +452,7 @@ setup_photon_directory <- function(path, version, ..., quiet = FALSE) {
   files <- list.files(path, full.names = TRUE)
   if (!any(grepl("\\.jar$", files))) {
     download_photon(path = path, version = version, quiet = quiet)
-  } else {
+  } else if (!quiet) {
     cli::cli_inform(c("i" = paste(
       "A photon executable already exists in the given path.",
       "Download will be skipped."
@@ -474,7 +474,7 @@ setup_photon_directory <- function(path, version, ..., quiet = FALSE) {
     } # nocov end
 
     store_searchindex_metadata(path, archive_path)
-  } else {
+  } else if (!quiet) {
     cli::cli_inform(c("i" = paste(
       "A search index already exists at the given path.",
       "Download will be skipped"
@@ -517,14 +517,16 @@ get_metadata <- function(path) {
 }
 
 
-show_metadata <- function(path) {
+show_metadata <- function(path, quiet = FALSE) {
   meta <- get_metadata(path)
 
-  cli::cli_ul(c(
-    sprintf("Version: %s", meta$version),
-    sprintf("Coverage: %s", meta$country),
-    sprintf("Time: %s", meta$date)
-  ))
+  if (!quiet) {
+    cli::cli_ul(c(
+      sprintf("Version: %s", meta$version),
+      sprintf("Coverage: %s", meta$country),
+      sprintf("Time: %s", meta$date)
+    ))
+  }
 
   meta
 }
