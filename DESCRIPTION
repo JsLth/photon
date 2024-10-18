@@ -21,5 +21,8 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0),
     tibble,
-    httpuv
+    httpuv,
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
+VignetteBuilder: knitr

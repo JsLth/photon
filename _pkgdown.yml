@@ -15,11 +15,9 @@ navbar:
     - text: Overview
       icon: fa-home
       href: index.html
-    - text: "Vignettes"
+    - text: "Get started"
       icon: fa-book
-      menu:
-        - text: "Introduction to {photon}"
-          href: articles/photon.html
+      href: articles/photon.html
     - text: "Reference"
       icon: fa-search
       href: reference/index.html
