@@ -444,7 +444,7 @@ photon_running <- function(self) {
 
 photon_ready <- function(self, private) {
   if (is.null(private$host)) {
-    return("not ready")
+    return("FALSE")
   }
 
   req <- httr2::request(self$get_url())
