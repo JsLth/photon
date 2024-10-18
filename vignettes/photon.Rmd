@@ -63,8 +63,14 @@ photon <- new_photon(path, country = "Samoa")
 #> ℹ java version "22" 2024-03-19
 #> ℹ Java(TM) SE Runtime Environment (build 22+36-2370)
 #> ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)
-#> ℹ A photon executable already exists in the given path. Download will be skipped.
-#> ℹ A search index already exists at the given path. Download will be skipped
+#> ℹ Fetching photon 0.5.0.
+#> ✔ Successfully downloaded photon 0.5.0. [7.4s]
+#> 
+#> 
+#> ℹ Fetching search index for ws, created on latest
+#> ✔ Successfully downloaded search index. [510ms]  
+#> 
+#> 
 #> • Version: 0.5.0
 #> 
 #> • Coverage: Samoa
@@ -77,7 +83,10 @@ The resulting object is an R6 class with a few methods to control the instance. 
 
 ```r
 photon$start(min_ram = 1, max_ram = 1)
-#> Error in start_photon(path = self$path, version = private$version, min_ram = min_ram, : Exception in thread "main"
+#> 2024-10-18 21:50:43,331 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
+#> 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node
+#> 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.
+#> 2024-10-18 21:50:49,494 [main] INFO  de.komoot.photon.App - ES cluster is now ready.
 ```
 
 To check if the service is up and running, you can use `$is_ready()`.
@@ -104,7 +113,7 @@ bench::mark(geocode("Apai", limit = 1), iterations = 25)
 #> # A tibble: 1 × 6
 #>   expression                          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>                     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 "geocode(\"Apai\", limit = 1)"   17.4ms   19.9ms      50.0    96.5KB     2.08
+#> 1 "geocode(\"Apai\", limit = 1)"   17.8ms   20.7ms      47.9      97KB     1.99
 ```
 
 
@@ -118,7 +127,7 @@ bench::mark(geocode("Apai", limit = 1), iterations = 25)
 #> # A tibble: 1 × 6
 #>   expression                          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>                     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 "geocode(\"Apai\", limit = 1)"    253ms    1.04s      1.01     107KB   0.0420
+#> 1 "geocode(\"Apai\", limit = 1)"    273ms    1.04s     0.914     107KB   0.0381
 ```
 
 That is a speed increase by a factor of almost 50 (and possibly more on faster machines)!
