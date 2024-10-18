@@ -37,6 +37,10 @@ functions. These include:
  \code{\link[httr2]{req_retry}}.}
  \item{\code{photon_debug}}{Whether to echo the command of external
  processes and GET requests sent to photon. Defaults to \code{FALSE}.}
+ \item{\code{photon_movers}}{Whether moving verboseness is allowed. If
+ \code{FALSE}, disables progress bars and spinners globally. Overwritten
+ by local parameters. Defaults to \code{TRUE}. This option is useful for
+ non-interactive sessions like RMarkdown.}
 }
 }
 

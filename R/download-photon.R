@@ -32,6 +32,11 @@ download_photon <- function(path = ".", version = NULL, quiet = FALSE) {
   req <- httr2::request("https://github.com/komoot/photon/releases/download/")
   file <- sprintf("photon-%s.jar", version)
   req <- httr2::req_url_path_append(req, version, file)
+
+  if (globally_enabled("photon_movers")) {
+    req <- httr2::req_progress(req)
+  }
+
   path <- file.path(path, file)
   httr2::req_perform(req, path = path)
   normalizePath(path, "/")

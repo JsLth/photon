@@ -48,7 +48,7 @@ structured <- function(.data,
   bbox <- format_bbox(bbox)
   .data <- as.data.frame(.data)
 
-  if (progress) {
+  if (progress && globally_enabled("photon_movers")) {
     cli::cli_progress_bar(name = "Geocoding", total = nrow(.data))
     env <- environment()
   }

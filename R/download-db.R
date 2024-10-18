@@ -115,7 +115,10 @@ download_searchindex <- function(path = ".",
   req <- httr2::req_url_path_append(req, file)
   if (only_url) return(req$url)
   req <- httr2::req_retry(req, max_tries = getOption("photon_max_tries", 3))
-  req <- httr2::req_progress(req)
+
+  if (globally_enabled("photon_movers")) {
+    req <- httr2::req_progress(req)
+  }
 
   if (!quiet) {
     date_fmt <- ifelse(

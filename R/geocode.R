@@ -117,7 +117,7 @@ geocode <- function(texts,
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
 
-  if (progress) {
+  if (progress && globally_enabled("photon_movers")) {
     cli::cli_progress_bar(name = "Geocoding", total = length(texts))
   }
 
@@ -182,7 +182,7 @@ query_photon <- function(endpoint, ...) {
   req <- do.call(httr2::req_url_query, c(list(.req = req), args))
   req <- throttle(req)
 
-  if (isTRUE(getOption("photon_debug", FALSE))) { # nocov start
+  if (globally_enabled("photon_debug")) { # nocov start
     cli::cli_inform("GET {req$url}")
   } # nocov end
 

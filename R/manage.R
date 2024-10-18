@@ -380,14 +380,15 @@ start_photon <- function(path,
     args = cmd,
     stdout = "|",
     stderr = "|",
-    echo_cmd = getOption("photon_debug", FALSE),
+    echo_cmd = globally_enabled("photon_debug"),
     wd = path
   )
 
   cli::cli_progress_step(
     msg = "Starting photon...",
     msg_done = "Photon is now running.",
-    msg_failed = "Photon could not be started."
+    msg_failed = "Photon could not be started.",
+    spinner = globally_enabled("photon_movers")
   )
 
   out <- ""

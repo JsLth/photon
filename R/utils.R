@@ -105,3 +105,8 @@ rbind_list <- function(args) {
   rownames(out) <- NULL
   out
 }
+
+
+globally_enabled <- function(x) {
+  isTRUE(getOption(x, TRUE))
+}
