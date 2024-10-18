@@ -105,6 +105,7 @@ photon_remote <- R6::R6Class(
       assert_url(url)
       private$url <- url
       self$mount()
+      invisible(self)
     },
 
     get_url = function() {
@@ -210,6 +211,7 @@ photon_local <- R6::R6Class(
       private$country <- meta$country
       private$date <- meta$date
       self$mount()
+      invisible(self)
     },
 
     #' @description
