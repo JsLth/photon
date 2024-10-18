@@ -310,7 +310,7 @@ photon_local <- R6::R6Class(
     #' queryless request. This method is useful if you want to check whether
     #' you can send requests.
     is_ready = function() {
-      photon_ready(self)
+      photon_ready(self, private)
     },
 
     #' @description
