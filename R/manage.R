@@ -62,10 +62,10 @@ clear_cache <- function() {
 #' should be stored. Defaults to a directory "photon" in the current
 #' working directory. If \code{NULL}, a remote instance is set up based on
 #' the \code{url} parameter.
-#' @param url If \code{type = "public"}, specifies the URL that geocoding
-#' requests are sent to. If \code{NULL} and \code{path} is also \code{NULL},
-#' connects to the public API under \url{photon.komoot.io}.
-#' @param ... Arguments passed to \code{\link[=photon]{photon$new()}}.
+#' @param url URL of a photon server to connect to. If \code{NULL} and
+#' \code{path} is also \code{NULL}, connects to the public API under
+#' \url{photon.komoot.io}.
+#' @param ... Arguments passed to \code{\link[=photon_local]{photon_local$new()}}.
 #'
 #' @returns An R6 object of class \code{photon}.
 #'
@@ -75,10 +75,10 @@ clear_cache <- function() {
 #' # connect to public API
 #' photon <- new_photon()
 #'
-#' \dontrun{
 #' # connect to arbitrary server
 #' photon <- new_photon(url = "photonserver.org")
 #'
+#' \dontrun{
 #' # set up a local instance
 #' photon <- new_photon(path = tempdir())}
 new_photon <- function(path = NULL, url = NULL, ...) {
