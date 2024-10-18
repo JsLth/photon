@@ -7,7 +7,7 @@ test_that("java checks work", {
   )
   with_mocked_bindings(
     get_java_version = function(...) "8",
-    expect_error(check_jdk_version(), class = "java_version_error")
+    expect_error(check_jdk_version(11), class = "java_version_error")
   )
 })
 

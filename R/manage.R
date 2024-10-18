@@ -438,13 +438,13 @@ stop_photon <- function(self) {
 
 
 photon_running <- function(self) {
-  (inherits(self$proc, "process") && self$proc$is_alive()) || self$is_ready()
+  (inherits(self$proc, "process") && self$proc$is_alive()) && self$is_ready()
 }
 
 
 photon_ready <- function(self, private) {
   if (is.null(private$host)) {
-    return("FALSE")
+    return(FALSE)
   }
 
   req <- httr2::request(self$get_url())
@@ -544,9 +544,9 @@ show_metadata <- function(path, quiet = FALSE) {
 }
 
 
-check_jdk_version <- function(version, quiet = FALSE) {
+check_jdk_version <- function(min_version, quiet = FALSE) {
   version <- numeric_version(get_java_version(quiet))
-  min_version <- numeric_version(version)
+  min_version <- numeric_version(min_version)
 
   if (version < min_version) {
     msg <- c("!" = "JDK version {version} detected but version 17 required.", rje_link())
@@ -561,10 +561,9 @@ has_java <- function() {
 
 
 rje_link <- function() {
-  link <-
   c("i" = paste(
-    'Consider setting up a Java environment with {.code",
-    "{cli::style_hyperlink("{rJavaEnv}", "https://www.ekotov.pro/rJavaEnv/")}}'
+    'Consider setting up a Java environment with {.code',
+    '{cli::style_hyperlink("{rJavaEnv}", "https://www.ekotov.pro/rJavaEnv/")}}'
   ))
 }
 
