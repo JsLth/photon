@@ -561,8 +561,11 @@ has_java <- function() {
 
 
 rje_link <- function() {
-  link <- cli::style_hyperlink("{rJavaEnv}", "https://www.ekotov.pro/rJavaEnv/")
-  c("i" = "Consider setting up a Java environment with {.code {link}}")
+  link <-
+  c("i" = paste(
+    'Consider setting up a Java environment with {.code",
+    "{cli::style_hyperlink("{rJavaEnv}", "https://www.ekotov.pro/rJavaEnv/")}}'
+  ))
 }
 
 
