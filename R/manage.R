@@ -510,11 +510,15 @@ get_java_version <- function(quiet = FALSE) {
     ph_stop(msg, class = "java_missing_error", call = NULL)
   }
 
-  version <- callr::run("java", "-version", error_on_status = TRUE)$stderr
+  version <- processx::run("java", "-version", error_on_status = TRUE)$stderr
   version <- gsub("\n", "\f", gsub("\r", "", version))
-  version_fmt <- strsplit(version, "\f")[[1]]
-  names(version_fmt) <- rep("i", length(version_fmt))
-  cli::cli_inform(version_fmt)
+
+  if (!quiet) {
+    version_fmt <- strsplit(version, "\f")[[1]]
+    names(version_fmt) <- rep("i", length(version_fmt))
+    cli::cli_inform(version_fmt)
+  }
+
   version <- regex_match(
     version,
     "(openjdk|java) (version )?(\\\")?([0-9]{1,2})",
