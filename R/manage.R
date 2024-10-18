@@ -425,7 +425,7 @@ stop_photon <- function(self) {
 
 
 photon_running <- function(self) {
-  (inherits(self$proc, "process") && self$proc$is_alive()) || self$ready()
+  (inherits(self$proc, "process") && self$proc$is_alive()) || self$is_ready()
 }
 
 
