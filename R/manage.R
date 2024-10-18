@@ -392,12 +392,14 @@ start_photon <- function(path,
     wd = path
   )
 
-  cli::cli_progress_step(
-    msg = "Starting photon...",
-    msg_done = "Photon is now running.",
-    msg_failed = "Photon could not be started.",
-    spinner = globally_enabled("photon_movers")
-  )
+  if (globally_enabled("photon_movers")) {
+    cli::cli_progress_step(
+      msg = "Starting photon...",
+      msg_done = "Photon is now running.",
+      msg_failed = "Photon could not be started.",
+      spinner =
+    )
+  }
 
   out <- ""
   while (!grepl("ES cluster is now ready", out, fixed = TRUE)) {
