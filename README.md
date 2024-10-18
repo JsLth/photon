@@ -100,3 +100,16 @@ photon covering the country of Germany in the current working directory.
 photon <- new_photon(path = "./photon", country = "Germany")
 photon$start()
 ```
+
+## Related packages
+
+- The [`{photon}`](https://github.com/rCarto/photon) package by Timothée
+  Giraud interfaces photon but does not allow the setup of local setups
+  and was abandoned a while ago.
+- The
+  [`{revgeo}`](https://cran.r-project.org/web/packages/revgeo/index.html)
+  by Michael Hudecheck package implements reverse geocoding using (among
+  others) photon.
+- The
+  [`{MazamaLocationUtils}`](https://cran.r-project.org/web/packages/MazamaLocationUtils/)
+  by Mazama Science packages features reverse geocoding using photon.
