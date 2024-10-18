@@ -113,11 +113,13 @@ geocode <- function(texts,
   assert_length(lang, null = TRUE)
   assert_length(layer, null = TRUE)
   assert_range(locbias_scale, min = 0, max = 1, than = FALSE)
+  assert_true_or_false(progress)
+  progress <- progress && globally_enabled("photon_movers")
 
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
 
-  if (progress && globally_enabled("photon_movers")) {
+  if (progress) {
     cli::cli_progress_bar(name = "Geocoding", total = length(texts))
   }
 
