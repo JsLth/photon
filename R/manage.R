@@ -549,7 +549,7 @@ check_jdk_version <- function(version, quiet = FALSE) {
   min_version <- numeric_version(version)
 
   if (version < min_version) {
-    msg <- c("!" = "JDK version {version} detected but version 17 required.", rje_link)
+    msg <- c("!" = "JDK version {version} detected but version 17 required.", rje_link())
     ph_stop(msg, class = "java_version_error")
   }
 }
@@ -568,7 +568,7 @@ rje_link <- function() {
 
 get_java_version <- function(quiet = FALSE) {
   if (!has_java()) {
-    msg <- c("!" = "JDK required but not found.", rje_link)
+    msg <- c("!" = "JDK required but not found.", rje_link())
     ph_stop(msg, class = "java_missing_error", call = NULL)
   }
 
