@@ -104,18 +104,21 @@ photon_remote <- R6::R6Class(
     initialize = function(url) {
       assert_url(url)
       private$url <- url
-      private$mount()
+      self$mount()
     },
 
     get_url = function() {
       private$url
+    },
+
+    mount = function() {
+      assign("instance", self, envir = photon_env)
     }
   ),
 
   private = list(
     ## private ----
-    url = NULL,
-    mount = function() assign("instance", self, envir = photon_env)
+    url = NULL
   )
 )
 
@@ -206,7 +209,15 @@ photon_local <- R6::R6Class(
       private$version <- meta$version
       private$country <- meta$country
       private$date <- meta$date
-      private$mount()
+      self$mount()
+    },
+
+    #' @description
+    #' Attach the object to the session. If mounted, all geocoding functions
+    #' send their requests to the URL of this instance. Manually mounting
+    #' is useful if you want to switch between multiple photon instances.
+    mount = function() {
+      assign("instance", self, envir = photon_env)
     },
 
     #' @description
@@ -341,9 +352,6 @@ photon_local <- R6::R6Class(
     ssl = NULL,
     country = NULL,
     date = NULL,
-    mount = function() {
-      assign("instance", self, envir = photon_env)
-    },
     finalize = function() {
       self$stop() # nocov
     }
@@ -380,7 +388,7 @@ start_photon <- function(path,
     args = cmd,
     stdout = "|",
     stderr = "|",
-    echo_cmd = globally_enabled("photon_debug"),
+    echo_cmd = globally_enabled("photon_debug", FALSE),
     wd = path
   )
 

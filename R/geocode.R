@@ -182,7 +182,7 @@ query_photon <- function(endpoint, ...) {
   req <- do.call(httr2::req_url_query, c(list(.req = req), args))
   req <- throttle(req)
 
-  if (globally_enabled("photon_debug")) { # nocov start
+  if (globally_enabled("photon_debug", FALSE)) { # nocov start
     cli::cli_inform("GET {req$url}")
   } # nocov end
 

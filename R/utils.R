@@ -107,6 +107,6 @@ rbind_list <- function(args) {
 }
 
 
-globally_enabled <- function(x) {
-  isTRUE(getOption(x, TRUE))
+globally_enabled <- function(x, dflt = TRUE) {
+  isTRUE(getOption(x, dflt))
 }

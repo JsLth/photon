@@ -39,6 +39,7 @@ external process running photon.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-photon_local-new}{\code{photon_local$new()}}
+\item \href{#method-photon_local-mount}{\code{photon_local$mount()}}
 \item \href{#method-photon_local-info}{\code{photon_local$info()}}
 \item \href{#method-photon_local-purge}{\code{photon_local$purge()}}
 \item \href{#method-photon_local-start}{\code{photon_local$start()}}
@@ -95,6 +96,18 @@ selects the date with lowest difference to the \code{date} parameter.}
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-mount"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-mount}{}}}
+\subsection{Method \code{mount()}}{
+Attach the object to the session. If mounted, all geocoding functions
+send their requests to the URL of this instance. Manually mounting
+is useful if you want to switch between multiple photon instances.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$mount()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-info"></a>}}
