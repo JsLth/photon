@@ -291,7 +291,7 @@ photon_local <- R6::R6Class(
         photon_options = photon_options,
         quiet = private$quiet
       )
-      private$mount()
+      self$mount()
       invisible(self)
     },
 
