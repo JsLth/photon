@@ -19,6 +19,12 @@ enable high-performance offline geocoding.
 
 ## Installation
 
+To install the package from CRAN:
+
+``` r
+install.packages("photon")
+```
+
 You can install the development version of photon from
 [GitHub](https://github.com/) with:
 
@@ -108,8 +114,8 @@ photon$start()
   and was abandoned a while ago.
 - The
   [`{revgeo}`](https://cran.r-project.org/web/packages/revgeo/index.html)
-  by Michael Hudecheck package implements reverse geocoding using (among
+  package by Michael Hudecheck implements reverse geocoding using (among
   others) photon.
 - The
   [`{MazamaLocationUtils}`](https://cran.r-project.org/web/packages/MazamaLocationUtils/)
-  by Mazama Science packages features reverse geocoding using photon.
+  package by Mazama Science features reverse geocoding using photon.
