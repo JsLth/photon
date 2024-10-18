@@ -191,7 +191,6 @@ photon_local <- R6::R6Class(
         dir.create(path, recursive = TRUE) # nocov
       }
 
-      photon_version <- photon_version %||% get_photon_version()
       setup_photon_directory(
         path,
         photon_version,
@@ -200,12 +199,13 @@ photon_local <- R6::R6Class(
         exact = exact,
         quiet = quiet
       )
-      show_metadata(path)
+      meta <- show_metadata(path)
 
       self$path <- path
       private$quiet <- quiet
-      private$version <- photon_version
-      private$country
+      private$version <- meta$version
+      private$country <- meta$country
+      private$date <- meta$date
       private$mount()
     },
 
@@ -213,10 +213,7 @@ photon_local <- R6::R6Class(
     #' Retrieve metadata about the java and photon version used as well
     #' as the country and creation date of the Eleasticsearch search index.
     info = function() {
-      info <- list(
-        java = get_java_version(quiet = TRUE),
-        photon = private$version
-      )
+      info <- list(java = get_java_version(quiet = TRUE))
       c(info, get_metadata(self$path))
     },
 
@@ -310,7 +307,7 @@ photon_local <- R6::R6Class(
       }
 
       if (identical(host, "0.0.0.0")) host <- "localhost"
-      sprintf("http://%s:%s/", host, port)
+      sprintf("%s:%s", host, port)
     }
   ),
 
@@ -320,6 +317,8 @@ photon_local <- R6::R6Class(
     version = NULL,
     host = NULL,
     port = NULL,
+    country = NULL,
+    date = NULL,
     mount = function() {
       assign("instance", self, envir = photon_env)
     },
@@ -412,6 +411,11 @@ setup_photon_directory <- function(path, version, ..., quiet = FALSE) {
   files <- list.files(path, full.names = TRUE)
   if (!any(grepl("\\.jar$", files))) {
     download_photon(path = path, version = version, quiet = quiet)
+  } else {
+    cli::cli_inform(c("i" = paste(
+      "A photon executable already exists in the given path.",
+      "Download will be skipped."
+    )))
   }
 
   if (!any(grepl("photon_data$", files))) {
@@ -430,10 +434,10 @@ setup_photon_directory <- function(path, version, ..., quiet = FALSE) {
 
     store_searchindex_metadata(path, archive_path)
   } else {
-    cli::cli_inform(paste(
+    cli::cli_inform(c("i" = paste(
       "A search index already exists at the given path.",
       "Download will be skipped"
-    ))
+    )))
   }
 }
 
@@ -468,7 +472,7 @@ get_metadata <- function(path) {
     meta <- readRDS(meta_path)
   }
 
-  as.list(meta)
+  as.list(c(version = get_photon_version(path), meta))
 }
 
 
@@ -476,9 +480,12 @@ show_metadata <- function(path) {
   meta <- get_metadata(path)
 
   cli::cli_ul(c(
+    sprintf("Version: %s", meta$version),
     sprintf("Coverage: %s", meta$country),
     sprintf("Time: %s", meta$date)
   ))
+
+  meta
 }
 
 
@@ -526,6 +533,11 @@ get_java_version <- function(quiet = FALSE) {
     i = 5
   )
   version
+}
+
+get_photon_version <- function(path) {
+  file <- list.files(path, pattern = "photon-.+\\.jar$")[[1]]
+  regex_match(file, "photon-(.+)\\.jar", i = 2)
 }
 
 #' @export

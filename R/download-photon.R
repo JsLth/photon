@@ -19,7 +19,7 @@ download_photon <- function(path = ".", version = NULL, quiet = FALSE) {
   assert_length(path, 1)
   assert_vector(version, "character", null = TRUE)
   assert_length(version, 1, null = TRUE)
-  version <- version %||% get_photon_version()
+  version <- version %||% get_latest_photon()
 
   if (!quiet) {
     cli::cli_progress_step(

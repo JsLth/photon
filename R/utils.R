@@ -29,7 +29,9 @@ drop_na <- function(x) {
 }
 
 
-get_photon_version <- function() PHOTON_VERSION
+get_latest_photon <- function() {
+  PHOTON_VERSION
+}
 
 
 is_url <- function(url) {
