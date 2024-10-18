@@ -203,7 +203,6 @@ photon_local <- R6::R6Class(
       show_metadata(path)
 
       self$path <- path
-      private$consent <- consent
       private$quiet <- quiet
       private$version <- photon_version
       private$country
@@ -317,7 +316,6 @@ photon_local <- R6::R6Class(
 
   private = list(
     ## Private ----
-    consent = FALSE,
     quiet = FALSE,
     version = NULL,
     host = NULL,
