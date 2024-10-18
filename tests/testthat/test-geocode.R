@@ -4,7 +4,7 @@ skip_on_cran()
 new_photon()
 
 test_that("basic requests work", {
-  res1 <- geocode("Berlin")
+  res1 <- geocode("Berlin", progress = TRUE)
   expect_s3_class(res1, "sf")
   expect_equal(nrow(res1), 3)
 
@@ -21,7 +21,7 @@ test_that("basic requests work", {
 
 test_that("basic reversing works", {
   df <- data.frame(lon = 8, lat = 52)
-  res <- reverse(df)
+  res <- reverse(df, progress = TRUE)
   expect_s3_class(res, "sf")
   expect_equal(nrow(res), 3)
 

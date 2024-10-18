@@ -337,7 +337,7 @@ photon_local <- R6::R6Class(
         ), class = "no_url_yet")
       }
 
-      if (identical(host, "0.0.0.0")) host <- "localhost"
+      if (identical(host, "0.0.0.0")) host <- "localhost" # nocov
       ssl <- ifelse(isTRUE(private$ssl), "s", "")
       sprintf("http%s://%s:%s", ssl, host, port)
     }

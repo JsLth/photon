@@ -1,5 +1,16 @@
 clear_cache()
 
+test_that("java checks work", {
+  with_mocked_bindings(
+    has_java = function() FALSE,
+    expect_error(get_java_version(), class = "java_missing_error")
+  )
+  with_mocked_bindings(
+    get_java_version = function(...) "8",
+    expect_error(check_jdk_version(), class = "java_version_error")
+  )
+})
+
 test_that("remote photons work", {
   expect_error(get_instance(), class = "instance_missing")
   photon <- new_photon()
