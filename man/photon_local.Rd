@@ -58,12 +58,9 @@ executable, the search index, and Java.
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$new(
   path = "./photon",
   photon_version = NULL,
-  java_version = 22,
-  ...,
   country = NULL,
   date = "latest",
   exact = FALSE,
-  consent = FALSE,
   quiet = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -77,11 +74,6 @@ working directory.}
 
 \item{\code{photon_version}}{Version of photon to be used. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.}
-
-\item{\code{java_version}}{Java version to be used. See \code{\link[rJavaEnv]{use_java}}
-for available versions.}
-
-\item{\code{...}}{Further arguments passed to \code{\link[rJavaEnv]{use_java}}.}
 
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
@@ -97,9 +89,6 @@ Otherwise, a file will be selected that exactly matches the input to
 
 \item{\code{exact}}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 selects the date with lowest difference to the \code{date} parameter.}
-
-\item{\code{consent}}{Whether to provide consent to \code{rJavaEnv} to setup
-Java. See \code{\link[rJavaEnv]{rje_consent}}.}
 
 \item{\code{quiet}}{If \code{TRUE}, suppresses all informative messages.}
 }

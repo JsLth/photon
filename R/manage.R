@@ -143,7 +143,6 @@ photon_remote <- R6::R6Class(
 #' photon <- new_photon(path = tempdir(), java_version = 17)
 #' }
 #' @import R6
-#' @import rJavaEnv
 photon_local <- R6::R6Class(
   inherit = photon,
   classname = "photon_local",
@@ -165,9 +164,6 @@ photon_local <- R6::R6Class(
     #' working directory.
     #' @param photon_version Version of photon to be used. A list of all
     #' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
-    #' @param java_version Java version to be used. See \code{\link[rJavaEnv]{use_java}}
-    #' for available versions.
-    #' @param ... Further arguments passed to \code{\link[rJavaEnv]{use_java}}.
     #' @param country Character string that can be identified by
     #' \code{\link[countrycode]{countryname}} as a country. An extract for this
     #' country will be downloaded. If \code{NULL}, downloads a global search index.
@@ -180,23 +176,15 @@ photon_local <- R6::R6Class(
     #' \code{date}.
     #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
     #' selects the date with lowest difference to the \code{date} parameter.
-    #' @param consent Whether to provide consent to \code{rJavaEnv} to setup
-    #' Java. See \code{\link[rJavaEnv]{rje_consent}}.
     #' @param quiet If \code{TRUE}, suppresses all informative messages.
     initialize = function(path = "./photon",
                           photon_version = NULL,
-                          java_version = 22,
-                          ...,
                           country = NULL,
                           date = "latest",
                           exact = FALSE,
-                          consent = FALSE,
                           quiet = FALSE) {
-      assert_true_or_false(consent)
       assert_true_or_false(quiet)
-
-      rJavaEnv::rje_consent(provided = consent)
-      rJavaEnv::use_java(version = java_version, quiet = quiet, ...)
+      check_jdk_version(11)
 
       path <- normalizePath(path, "/", mustWork = FALSE)
       if (!dir.exists(path)) {
@@ -227,7 +215,7 @@ photon_local <- R6::R6Class(
     #' as the country and creation date of the Eleasticsearch search index.
     info = function() {
       info <- list(
-        java = rJavaEnv::java_check_version_cmd(quiet = TRUE),
+        java = get_java_version(quiet = TRUE),
         photon = private$version
       )
       c(info, get_metadata(self$path))
@@ -495,6 +483,48 @@ show_metadata <- function(path) {
   ))
 }
 
+
+check_jdk_version <- function(version, quiet = FALSE) {
+  version <- numeric_version(get_java_version(quiet))
+  min_version <- numeric_version(version)
+
+  if (version < min_version) {
+    msg <- c("!" = "JDK version {version} detected but version 17 required.", rje_link)
+    ph_stop(msg, class = "java_version_error")
+  }
+}
+
+
+has_java <- function() {
+  any(as.logical(nchar(Sys.which("java"))))
+}
+
+
+rje_link <- function() {
+  link <- cli::style_hyperlink("{rJavaEnv}", "https://www.ekotov.pro/rJavaEnv/")
+  c("i" = "Consider setting up a Java environment with {.code {link}}")
+}
+
+
+get_java_version <- function(quiet = FALSE) {
+  if (!has_java()) {
+    msg <- c("!" = "JDK required but not found.", rje_link)
+    ph_stop(msg, class = "java_missing_error", call = NULL)
+  }
+
+  version <- callr::run("java", "-version", error_on_status = TRUE)$stderr
+  version <- gsub("\n", "\f", gsub("\r", "", version))
+  version_fmt <- strsplit(version, "\f")[[1]]
+  names(version_fmt) <- rep("i", length(version_fmt))
+  cli::cli_inform(version_fmt)
+  version <- regex_match(
+    version,
+    "(openjdk|java) (version )?(\\\")?([0-9]{1,2})",
+    perl = TRUE,
+    i = 5
+  )
+  version
+}
 
 #' @export
 print.photon <- function(x, ...) {

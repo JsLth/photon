@@ -16,7 +16,6 @@ Imports:
     countrycode,
     httr2,
     R6,
-    rJavaEnv,
     sf,
     processx
 Suggests: 
