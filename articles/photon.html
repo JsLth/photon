@@ -126,19 +126,36 @@ possible, the global search index is extremely large (around 80 GB). By
 default, <code><a href="../reference/new_photon.html">new_photon()</a></code> downloads a search index tagged with
 <code>latest</code> but it is also possible to query a search index
 created at a specific date.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span>
-<span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">path</span>, country <span class="op">=</span> <span class="st">"Samoa"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ java version "22" 2024-03-19</span></span>
-<span><span class="co">#&gt; ℹ Java(TM) SE Runtime Environment (build 22+36-2370)</span></span>
-<span><span class="co">#&gt; ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)</span></span>
-<span><span class="co">#&gt; ℹ A photon executable already exists in the given path. Download will be skipped.</span></span>
-<span><span class="co">#&gt; ℹ A search index already exists at the given path. Download will be skipped</span></span>
-<span><span class="co">#&gt; • Version: 0.5.0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • Coverage: Samoa</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • Time: latest</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"photon"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>photon <span class="ot">&lt;-</span> <span class="fu">new_photon</span>(path, <span class="at">country =</span> <span class="st">"Samoa"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; ℹ java version "22" 2024-03-19</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; ℹ Java(TM) SE Runtime Environment (build 22+36-2370)</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>ℹ Fetching photon <span class="dv">0</span>.<span class="dv">5</span>.<span class="fl">0.</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>✔ Successfully downloaded photon <span class="dv">0</span>.<span class="dv">5</span>.<span class="fl">0.</span> [<span class="fl">7.4</span>s]</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>ℹ Fetching search index <span class="cf">for</span> ws, created on latest</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>✔ Successfully downloaded search index. [<span class="dv">510</span>ms]  </span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; • Version: 0.5.0</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; • Coverage: Samoa</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; • Time: latest</span></span></code></pre></div>
 <p>The resulting object is an R6 class with a few methods to control the
 instance. To start photon, run <code>$start()</code>. Here, you can also
 set photon options such as RAM to allocate or the port to listen to.
@@ -146,7 +163,16 @@ Here, I use a maximum of 1 GB RAM because the search index of Samoa is
 rather small.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span>min_ram <span class="op">=</span> <span class="fl">1</span>, max_ram <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in start_photon(path = self$path, version = private$version, min_ram = min_ram, : Exception in thread "main"</span></span></code></pre></div>
+<span><span class="co">#&gt; 2024-10-18 21:50:43,331 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
+<span></span>
+<span></span>
+<span><span class="co">#&gt; 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node</span></span>
+<span></span>
+<span></span>
+<span><span class="co">#&gt; 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.</span></span>
+<span></span>
+<span></span>
+<span><span class="co">#&gt; 2024-10-18 21:50:49,494 [main] INFO  de.komoot.photon.App - ES cluster is now ready.</span></span></code></pre></div>
 <p>To check if the service is up and running, you can use
 <code>$is_ready()</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -163,22 +189,22 @@ are killed.</p>
 geocoding the Samoan capital Apia:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># offline geocoding</span></span>
-<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
+<span><span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="http://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 6</span></span>
 <span><span class="co">#&gt;   expression                          min   median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   &lt;bch:expr&gt;                     &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 "geocode(\"Apai\", limit = 1)"   17.4ms   19.9ms      50.0    96.5KB     2.08</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 "geocode(\"Apai\", limit = 1)"   17.8ms   20.7ms      47.9      97KB     1.99</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># online geocoding</span></span>
 <span><span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;photon&gt;</span></span>
 <span><span class="co">#&gt;   Type   : remote</span></span>
 <span><span class="co">#&gt;   Server : https://photon.komoot.io/</span></span>
-<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
+<span><span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="http://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 6</span></span>
 <span><span class="co">#&gt;   expression                          min   median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   &lt;bch:expr&gt;                     &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 "geocode(\"Apai\", limit = 1)"    253ms    1.04s      1.01     107KB   0.0420</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 "geocode(\"Apai\", limit = 1)"    273ms    1.04s     0.914     107KB   0.0381</span></span></code></pre></div>
 <p>That is a speed increase by a factor of almost 50 (and possibly more
 on faster machines)!</p>
 </div>
