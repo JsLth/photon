@@ -1,8 +1,9 @@
 pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
-articles: {}
-last_built: 2024-10-18T16:49Z
+articles:
+  photon: photon.html
+last_built: 2024-10-18T19:25Z
 urls:
   reference: https://jslth.github.io/photon/reference
   article: https://jslth.github.io/photon/articles

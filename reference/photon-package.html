@@ -16,10 +16,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home"></span> Overview</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-book"></span> Vignettes</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/photon.html">Introduction to {photon}</a></li>
-  </ul></li>
+<li class="nav-item"><a class="nav-link" href="../articles/photon.html"><span class="fa fa-book"></span> Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html"><span class="fa fa-search"></span> Reference</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -74,6 +71,12 @@ functions. These include:</p>
  <dt><code>photon_debug</code></dt>
 <dd><p>Whether to echo the command of external
  processes and GET requests sent to photon. Defaults to <code>FALSE</code>.</p></dd>
+
+ <dt><code>photon_movers</code></dt>
+<dd><p>Whether moving verboseness is allowed. If
+ <code>FALSE</code>, disables progress bars and spinners globally. Overwritten
+ by local parameters. Defaults to <code>TRUE</code>. This option is useful for
+ non-interactive sessions like RMarkdown.</p></dd>
 
 
 </dl></div>

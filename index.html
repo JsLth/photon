@@ -35,12 +35,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="index.html"><span class="fa fa-home"></span> Overview</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-book"></span> Vignettes</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes">
-<li><a class="dropdown-item" href="articles/photon.html">Introduction to {photon}</a></li>
-  </ul>
-</li>
+<li class="nav-item"><a class="nav-link" href="articles/photon.html"><span class="fa fa-book"></span> Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html"><span class="fa fa-search"></span> Reference</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -127,6 +122,15 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"./photon"</span>, country <span class="op">=</span> <span class="st">"Germany"</span><span class="op">)</span></span>
 <span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="related-packages">Related packages<a class="anchor" aria-label="anchor" href="#related-packages"></a>
+</h2>
+<ul>
+<li>The <a href="https://github.com/rCarto/photon" class="external-link"><code>{photon}</code></a> package by Timothée Giraud interfaces photon but does not allow the setup of local setups and was abandoned a while ago.</li>
+<li>The <a href="https://cran.r-project.org/web/packages/revgeo/index.html" class="external-link"><code>{revgeo}</code></a> by Michael Hudecheck package implements reverse geocoding using (among others) photon.</li>
+<li>The <a href="https://cran.r-project.org/web/packages/MazamaLocationUtils/" class="external-link"><code>{MazamaLocationUtils}</code></a> by Mazama Science packages features reverse geocoding using photon.</li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">

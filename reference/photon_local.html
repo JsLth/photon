@@ -24,10 +24,7 @@ to retrieve the URL for geocoding."></head><body>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home"></span> Overview</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-book"></span> Vignettes</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/photon.html">Introduction to {photon}</a></li>
-  </ul></li>
+<li class="nav-item"><a class="nav-link" href="../articles/photon.html"><span class="fa fa-book"></span> Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html"><span class="fa fa-search"></span> Reference</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -77,6 +74,7 @@ external process running photon.</p></dd>
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
 <ul><li><p><a href="#method-photon_local-new"><code>photon_local$new()</code></a></p></li>
+<li><p><a href="#method-photon_local-mount"><code>photon_local$mount()</code></a></p></li>
 <li><p><a href="#method-photon_local-info"><code>photon_local$info()</code></a></p></li>
 <li><p><a href="#method-photon_local-purge"><code>photon_local$purge()</code></a></p></li>
 <li><p><a href="#method-photon_local-start"><code>photon_local$start()</code></a></p></li>
@@ -141,11 +139,21 @@ selects the date with lowest difference to the <code>date</code> parameter.</p><
 </dl><p></p></div>
 </div>
 
+</div><p></p><hr><a id="method-photon_local-mount"></a><div class="section">
+<h3 id="method-mount-">Method <code>mount()</code><a class="anchor" aria-label="anchor" href="#method-mount-"></a></h3>
+<p>Attach the object to the session. If mounted, all geocoding functions
+send their requests to the URL of this instance. Manually mounting
+is useful if you want to switch between multiple photon instances.</p><div class="section">
+<h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">mount</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-photon_local-info"></a><div class="section">
 <h3 id="method-info-">Method <code>info()</code><a class="anchor" aria-label="anchor" href="#method-info-"></a></h3>
 <p>Retrieve metadata about the java and photon version used as well
 as the country and creation date of the Eleasticsearch search index.</p><div class="section">
-<h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
+<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">info</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -154,7 +162,7 @@ as the country and creation date of the Eleasticsearch search index.</p><div cla
 <h3 id="method-purge-">Method <code>purge()</code><a class="anchor" aria-label="anchor" href="#method-purge-"></a></h3>
 <p>Kill the photon process and remove the directory. Useful to get rid
 of an instance entirely.</p><div class="section">
-<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
+<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">purge</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -163,7 +171,7 @@ of an instance entirely.</p><div class="section">
 <h3 id="method-start-">Method <code><a href="https://rdrr.io/r/stats/start.html" class="external-link">start()</a></code><a class="anchor" aria-label="anchor" href="#method-start-"></a></h3>
 <p>Start a local instance of the Photon geocoder. Runs the jar executable
 located in the instance directory.</p><div class="section">
-<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span></span>
 <span>  min_ram <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  max_ram <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -217,7 +225,7 @@ jar in the java command.</p></dd>
 </div><p></p><hr><a id="method-photon_local-stop"></a><div class="section">
 <h3 id="method-stop-">Method <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code><a class="anchor" aria-label="anchor" href="#method-stop-"></a></h3>
 <p>Kills the running photon process.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="kw">stop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -232,7 +240,7 @@ if the running photon instance is managed by a process from its own
 return <code>TRUE</code>. This method is useful if you want to ensure that
 the <code>photon</code> object can control its photon server (mostly internal
 use).</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_running</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -243,7 +251,7 @@ use).</p><div class="section">
 is the case if the photon server returns a HTTP 400 when sending a
 queryless request. This method is useful if you want to check whether
 you can send requests.</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_ready</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -251,7 +259,7 @@ you can send requests.</p><div class="section">
 </div><p></p><hr><a id="method-photon_local-get_url"></a><div class="section">
 <h3 id="method-get-url-">Method <code>get_url()</code><a class="anchor" aria-label="anchor" href="#method-get-url-"></a></h3>
 <p>Constructs the URL that geocoding requests should be sent to.</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">get_url</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -259,7 +267,7 @@ you can send requests.</p><div class="section">
 </div><p></p><hr><a id="method-photon_local-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
