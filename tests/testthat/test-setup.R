@@ -34,8 +34,8 @@ skip_if_offline("corretto.aws")
 skip_if_not(has_java())
 
 test_that("local setup works", {
-  on.exit(photon$purge())
   photon <- new_photon(path = tempdir(), country = "samoa")
+  on.exit(photon$purge())
   expect_no_error(print(photon))
   photon <- new_photon(path = tempdir(), country = "samoa")
   expect_error(photon$get_url(), class = "no_url_yet")
