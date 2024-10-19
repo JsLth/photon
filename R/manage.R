@@ -188,7 +188,7 @@ photon_local <- R6::R6Class(
                           exact = FALSE,
                           quiet = FALSE) {
       assert_true_or_false(quiet)
-      check_jdk_version(11, quiet = quiet)
+      check_jdk_version("11", quiet = quiet)
 
       path <- normalizePath(path, "/", mustWork = FALSE)
       if (!dir.exists(path)) {
