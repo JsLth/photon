@@ -7,16 +7,23 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
+```{r setup, include=FALSE}
+library(photon)
+options(photon_movers = FALSE)
+```
 
-
-
-This vignette is an introduction to the `{photon}` package, an interface to the [photon](https://photon.komoot.io/) geocoder developed by [komoot](https://www.komoot.com/). Photon is open-source, based on [OpenStreetMap](https://www.openstreetmap.org/) data, and powered by the [ElasticSearch](https://www.elastic.co/elasticsearch) search engine. It is -- according to komoot -- fast, scalable, multilingual, typo-tolerant, and up-to-date. Photon can do unstructured geocoding, reverse geocoding, and (under special circumstances) structured geocoding. Komoot offers a public photon API ([https://photon.komoot.io/]) but you can also set up a photon instance on a local machine.
+This vignette is an introduction to the `{photon}` package, an interface to the [photon](https://photon.komoot.io/) geocoder developed by [komoot](https://www.komoot.com/). Photon is open-source, based on [OpenStreetMap](https://www.openstreetmap.org/) data, and powered by the [ElasticSearch](https://www.elastic.co/elasticsearch) search engine. It is -- according to komoot -- fast, scalable, multilingual, typo-tolerant, and up-to-date. Photon can do unstructured geocoding, reverse geocoding, and (under special circumstances) structured geocoding. Komoot offers a public photon API (https://photon.komoot.io/) but you can also set up a photon instance on a local machine.
 
 `{photon}` supports both online and offline geocoding. Online geocoding through komoots public API is intriguing because it is convenient and offers up-to-date global coverage. It is appropriately easy to use online geocoding in `{photon}`. First, it is necessary to tell R that you want to use the public API. This can be done using the workhorse function `new_photon()`. To set up online geocoding, simply call it without parameters:
 
-
-```r
+```{r public_api, eval=FALSE}
 new_photon()
 #> <photon>
 #>   Type   : remote
@@ -25,16 +32,9 @@ new_photon()
 
 The created `photon` object is attached to the session and does not have to be stored manually. Now you can geocode.
 
-
-```r
-cities <- geocode(c("Sanaa", "Caracas"), osm_tag = ":city")
-```
-
-Simiarly, you can also reverse geocode. `{photon}` fully supports `sf` objects so that all geocoding functions return `sf` dataframes and `reverse()` accepts `sf` and `sfc` objects as input.
-
-
-```r
-reverse(cities, osm_tag = ":city")
+```{r geocode, eval=FALSE}
+cities1 <- geocode(c("Sanaa", "Caracas"), osm_tag = ":city")
+cities1
 #> Simple feature collection with 2 features and 12 fields
 #> Geometry type: POINT
 #> Dimension:     XY
@@ -47,6 +47,29 @@ reverse(cities, osm_tag = ":city")
 #> 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  <dbl>  (-66.9146 10.50609)
 ```
 
+Simiarly, you can also reverse geocode. `{photon}` fully supports `sf` objects so that all geocoding functions return `sf` dataframes and `reverse()` accepts `sf` and `sfc` objects as input.
+
+```{r reverse, eval=FALSE}
+cities2 <- reverse(cities1, osm_tag = ":city")
+cities2
+#> Simple feature collection with 2 features and 12 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -66.9146 ymin: 10.50609 xmax: 44.20588 ymax: 15.35386
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 2 × 13
+#>     idx osm_type   osm_id country osm_key countrycode osm_value name  county state type  extent            geometry
+#>   <int> <chr>       <int> <chr>   <chr>   <chr>       <chr>     <chr> <chr>  <chr> <chr> <list>         <POINT [°]>
+#> 1     1 N          2.58e8 Yemen   place   YE          city      Sana… At Ta… Aman… dist… <lgl>  (44.20588 15.35386)
+#> 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  <dbl>  (-66.9146 10.50609)
+```
+
+```{r compare, eval=FALSE}
+all.equal(cities1, cities2)
+#> [1] TRUE
+```
+
+
 Online geocoding is nice and it is most likely what you need for basic tasks. But what if online geocoding is not enough? What if you need to geocode a dataset of 200,000 places? What if you need to geocode sensitive information from survey respondents? And what about structured geocoding?
 
 
@@ -56,78 +79,56 @@ The photon backend is freely available on the [photon GitHub repository](https:/
 
 To run photon, you need Java 11 or higher. Setting up local photon also works through `new_photon()`. This time, we pass a path where the necessary files should be stored and a country for which a search index should be downloaded. While global coverage is also possible, the global search index is extremely large (around 80 GB). By default, `new_photon()` downloads a search index tagged with `latest` but it is also possible to query a search index created at a specific date.
 
-
-```r
+```{r local_photon, eval=FALSE}
 path <- file.path(tempdir(), "photon")
 photon <- new_photon(path, country = "Samoa")
 #> ℹ java version "22" 2024-03-19
 #> ℹ Java(TM) SE Runtime Environment (build 22+36-2370)
 #> ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)
-#> ℹ Fetching photon 0.5.0.
-#> ✔ Successfully downloaded photon 0.5.0. [7.4s]
-#> 
-#> 
-#> ℹ Fetching search index for ws, created on latest
-#> ✔ Successfully downloaded search index. [510ms]  
-#> 
-#> 
+#> ✔ Successfully downloaded photon 0.5.0. [7s]          
+#> ✔ Successfully downloaded search index. [590ms]  
 #> • Version: 0.5.0
-#> 
 #> • Coverage: Samoa
-#> 
 #> • Time: latest
 ```
 
 The resulting object is an R6 class with a few methods to control the instance. To start photon, run `$start()`. Here, you can also set photon options such as RAM to allocate or the port to listen to. Here, I use a maximum of 1 GB RAM because the search index of Samoa is rather small.
 
-
-```r
+```{r start, eval=FALSE}
 photon$start(min_ram = 1, max_ram = 1)
-#> 2024-10-18 21:50:43,331 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
-#> 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node
-#> 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.
-#> 2024-10-18 21:50:49,494 [main] INFO  de.komoot.photon.App - ES cluster is now ready.
+#> 2024-10-19 03:41:20,557 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
+#> 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node
+#> 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.
+#> 2024-10-19 03:41:26,369 [main] INFO  de.komoot.photon.App - ES cluster is now ready.
+#> ✔ Photon is now running. [7s]
 ```
 
 To check if the service is up and running, you can use `$is_ready()`.
 
-
-```r
+```{r is_ready, eval=FALSE}
 photon$is_ready()
 #> [1] TRUE
 ```
 
 Finally, to properly stop photon after you used it, you can run `$stop()`. You do not actually _need_ to run it manually, because it is (implicitly) executed on two occasions: 1. on garbage collection and 2. when the R session ends and external processes are killed.
 
-
-```r
+```{r stop, eval=FALSE}
 photon$stop()
 ```
 
 To compare offline and online geocoding, let's benchmark them by geocoding the Samoan capital Apia:
 
-
-```r
+```{r benchmark1, eval=FALSE}
 # offline geocoding
-bench::mark(geocode("Apai", limit = 1), iterations = 25)
-#> # A tibble: 1 × 6
-#>   expression                          min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr>                     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 "geocode(\"Apai\", limit = 1)"   17.8ms   20.7ms      47.9      97KB     1.99
+bench::mark(geocode("Apai", limit = 1), iterations = 25)$median
+#> [1] 17.1ms
 ```
 
-
-```r
+```{r benchmark2, eval=FALSE}
 # online geocoding
 new_photon()
-#> <photon>
-#>   Type   : remote
-#>   Server : https://photon.komoot.io/
 bench::mark(geocode("Apai", limit = 1), iterations = 25)
-#> # A tibble: 1 × 6
-#>   expression                          min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr>                     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 "geocode(\"Apai\", limit = 1)"    273ms    1.04s     0.914     107KB   0.0381
+#> [1] 1.05s
 ```
 
-That is a speed increase by a factor of almost 50 (and possibly more on faster machines)!
+That is a speed increase by a factor of almost 60 (and possibly more on faster machines)!
