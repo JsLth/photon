@@ -69,7 +69,7 @@ powered by the <a href="https://www.elastic.co/elasticsearch" class="external-li
 engine. It is – according to komoot – fast, scalable, multilingual,
 typo-tolerant, and up-to-date. Photon can do unstructured geocoding,
 reverse geocoding, and (under special circumstances) structured
-geocoding. Komoot offers a public photon API ([<a href="https://photon.komoot.io/" class="external-link uri">https://photon.komoot.io/</a>]) but you can also set up a
+geocoding. Komoot offers a public photon API (<a href="https://photon.komoot.io/" class="external-link uri">https://photon.komoot.io/</a>) but you can also set up a
 photon instance on a local machine.</p>
 <p><code>{photon}</code> supports both online and offline geocoding.
 Online geocoding through komoots public API is intriguing because it is
@@ -86,13 +86,8 @@ online geocoding, simply call it without parameters:</p>
 <p>The created <code>photon</code> object is attached to the session and
 does not have to be stored manually. Now you can geocode.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sanaa"</span>, <span class="st">"Caracas"</span><span class="op">)</span>, osm_tag <span class="op">=</span> <span class="st">":city"</span><span class="op">)</span></span></code></pre></div>
-<p>Simiarly, you can also reverse geocode. <code>{photon}</code> fully
-supports <code>sf</code> objects so that all geocoding functions return
-<code>sf</code> dataframes and <code><a href="../reference/reverse.html">reverse()</a></code> accepts
-<code>sf</code> and <code>sfc</code> objects as input.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/reverse.html">reverse</a></span><span class="op">(</span><span class="va">cities</span>, osm_tag <span class="op">=</span> <span class="st">":city"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cities1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sanaa"</span>, <span class="st">"Caracas"</span><span class="op">)</span>, osm_tag <span class="op">=</span> <span class="st">":city"</span><span class="op">)</span></span>
+<span><span class="va">cities1</span></span>
 <span><span class="co">#&gt; Simple feature collection with 2 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
@@ -103,6 +98,26 @@ supports <code>sf</code> objects so that all geocoding functions return
 <span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;list&gt;         &lt;POINT [°]&gt;</span></span>
 <span><span class="co">#&gt; 1     1 N          2.58e8 Yemen   place   YE          city      Sana… At Ta… Aman… dist… &lt;lgl&gt;  (44.20588 15.35386)</span></span>
 <span><span class="co">#&gt; 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  &lt;dbl&gt;  (-66.9146 10.50609)</span></span></code></pre></div>
+<p>Simiarly, you can also reverse geocode. <code>{photon}</code> fully
+supports <code>sf</code> objects so that all geocoding functions return
+<code>sf</code> dataframes and <code><a href="../reference/reverse.html">reverse()</a></code> accepts
+<code>sf</code> and <code>sfc</code> objects as input.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cities2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reverse.html">reverse</a></span><span class="op">(</span><span class="va">cities1</span>, osm_tag <span class="op">=</span> <span class="st">":city"</span><span class="op">)</span></span>
+<span><span class="va">cities2</span></span>
+<span><span class="co">#&gt; Simple feature collection with 2 features and 12 fields</span></span>
+<span><span class="co">#&gt; Geometry type: POINT</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: -66.9146 ymin: 10.50609 xmax: 44.20588 ymax: 15.35386</span></span>
+<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 13</span></span>
+<span><span class="co">#&gt;     idx osm_type   osm_id country osm_key countrycode osm_value name  county state type  extent            geometry</span></span>
+<span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;list&gt;         &lt;POINT [°]&gt;</span></span>
+<span><span class="co">#&gt; 1     1 N          2.58e8 Yemen   place   YE          city      Sana… At Ta… Aman… dist… &lt;lgl&gt;  (44.20588 15.35386)</span></span>
+<span><span class="co">#&gt; 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  &lt;dbl&gt;  (-66.9146 10.50609)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">cities1</span>, <span class="va">cities2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Online geocoding is nice and it is most likely what you need for
 basic tasks. But what if online geocoding is not enough? What if you
 need to geocode a dataset of 200,000 places? What if you need to geocode
@@ -126,56 +141,32 @@ possible, the global search index is extremely large (around 80 GB). By
 default, <code><a href="../reference/new_photon.html">new_photon()</a></code> downloads a search index tagged with
 <code>latest</code> but it is also possible to query a search index
 created at a specific date.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"photon"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>photon <span class="ot">&lt;-</span> <span class="fu">new_photon</span>(path, <span class="at">country =</span> <span class="st">"Samoa"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; ℹ java version "22" 2024-03-19</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; ℹ Java(TM) SE Runtime Environment (build 22+36-2370)</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>ℹ Fetching photon <span class="dv">0</span>.<span class="dv">5</span>.<span class="fl">0.</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>✔ Successfully downloaded photon <span class="dv">0</span>.<span class="dv">5</span>.<span class="fl">0.</span> [<span class="fl">7.4</span>s]</span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>ℹ Fetching search index <span class="cf">for</span> ws, created on latest</span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>✔ Successfully downloaded search index. [<span class="dv">510</span>ms]  </span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; • Version: 0.5.0</span></span>
-<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; • Coverage: Samoa</span></span>
-<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; • Time: latest</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span>
+<span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">path</span>, country <span class="op">=</span> <span class="st">"Samoa"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ java version "22" 2024-03-19</span></span>
+<span><span class="co">#&gt; ℹ Java(TM) SE Runtime Environment (build 22+36-2370)</span></span>
+<span><span class="co">#&gt; ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)</span></span>
+<span><span class="co">#&gt; ✔ Successfully downloaded photon 0.5.0. [7s]          </span></span>
+<span><span class="co">#&gt; ✔ Successfully downloaded search index. [590ms]  </span></span>
+<span><span class="co">#&gt; • Version: 0.5.0</span></span>
+<span><span class="co">#&gt; • Coverage: Samoa</span></span>
+<span><span class="co">#&gt; • Time: latest</span></span></code></pre></div>
 <p>The resulting object is an R6 class with a few methods to control the
 instance. To start photon, run <code>$start()</code>. Here, you can also
 set photon options such as RAM to allocate or the port to listen to.
 Here, I use a maximum of 1 GB RAM because the search index of Samoa is
 rather small.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span>min_ram <span class="op">=</span> <span class="fl">1</span>, max_ram <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2024-10-18 21:50:43,331 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
-<span></span>
-<span></span>
-<span><span class="co">#&gt; 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node</span></span>
-<span></span>
-<span></span>
-<span><span class="co">#&gt; 2024-10-18 21:50:49,126 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.</span></span>
-<span></span>
-<span></span>
-<span><span class="co">#&gt; 2024-10-18 21:50:49,494 [main] INFO  de.komoot.photon.App - ES cluster is now ready.</span></span></code></pre></div>
+<span><span class="co">#&gt; 2024-10-19 03:41:20,557 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
+<span><span class="co">#&gt; 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node</span></span>
+<span><span class="co">#&gt; 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.</span></span>
+<span><span class="co">#&gt; 2024-10-19 03:41:26,369 [main] INFO  de.komoot.photon.App - ES cluster is now ready.</span></span>
+<span><span class="co">#&gt; ✔ Photon is now running. [7s]</span></span></code></pre></div>
 <p>To check if the service is up and running, you can use
 <code>$is_ready()</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">is_ready</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Finally, to properly stop photon after you used it, you can run
@@ -183,29 +174,20 @@ rather small.</p>
 manually, because it is (implicitly) executed on two occasions: 1. on
 garbage collection and 2. when the R session ends and external processes
 are killed.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="kw">stop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>To compare offline and online geocoding, let’s benchmark them by
 geocoding the Samoan capital Apia:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># offline geocoding</span></span>
-<span><span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="http://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 6</span></span>
-<span><span class="co">#&gt;   expression                          min   median `itr/sec` mem_alloc `gc/sec`</span></span>
-<span><span class="co">#&gt;   &lt;bch:expr&gt;                     &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 "geocode(\"Apai\", limit = 1)"   17.8ms   20.7ms      47.9      97KB     1.99</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># offline geocoding</span></span>
+<span><span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="http://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">$</span><span class="va">median</span></span>
+<span><span class="co">#&gt; [1] 17.1ms</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># online geocoding</span></span>
 <span><span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;photon&gt;</span></span>
-<span><span class="co">#&gt;   Type   : remote</span></span>
-<span><span class="co">#&gt;   Server : https://photon.komoot.io/</span></span>
 <span><span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="http://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 6</span></span>
-<span><span class="co">#&gt;   expression                          min   median `itr/sec` mem_alloc `gc/sec`</span></span>
-<span><span class="co">#&gt;   &lt;bch:expr&gt;                     &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 "geocode(\"Apai\", limit = 1)"    273ms    1.04s     0.914     107KB   0.0381</span></span></code></pre></div>
-<p>That is a speed increase by a factor of almost 50 (and possibly more
+<span><span class="co">#&gt; [1] 1.05s</span></span></code></pre></div>
+<p>That is a speed increase by a factor of almost 60 (and possibly more
 on faster machines)!</p>
 </div>
   </main>
