@@ -126,6 +126,7 @@ download_searchindex <- function(path = ".",
       date,
       format(as.POSIXct(date, format = date_format), "%Y-%m-%d")
     )
+    country <- countrycode::countrycode("ws", "iso2c", "country.name")
     cli::cli_progress_step(
       msg = "Fetching search index for {.field {country}}, created on {.field {date_fmt}}",
       msg_done = "Successfully downloaded search index.",

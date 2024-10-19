@@ -127,7 +127,7 @@ bench::mark(geocode("Apai", limit = 1), iterations = 25)$median
 ```{r benchmark2, eval=FALSE}
 # online geocoding
 new_photon()
-bench::mark(geocode("Apai", limit = 1), iterations = 25)
+bench::mark(geocode("Apai", limit = 1), iterations = 25)$median
 #> [1] 1.05s
 ```
 
