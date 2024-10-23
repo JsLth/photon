@@ -1,6 +1,6 @@
 Package: photon
 Type: Package
-Title: Interface to the 'photon' geocoding API
+Title: High-performance geocoding using 'photon'
 Version: 0.1.0.9000
 Authors@R: 
     person("Jonas", "Lieth", email = "jonas.lieth@gesis.org", role = c("aut", "cre", "cph"))

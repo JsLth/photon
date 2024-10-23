@@ -28,7 +28,7 @@ is stored in the R session and can be used to perform geocoding requests.
 Instances can either local or remote. Remote instances require nothing more
 than a URL that geocoding requests are sent to. Local instances require the
 setup of the photon executable, an Elasticsearch index, and Java. See
-\code{\link{photon}} for details.
+\code{\link{photon_local}} for details.
 }
 \examples{
 # connect to public API

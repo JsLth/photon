@@ -10,16 +10,49 @@ Elasticsearch search index. It can start, stop, and query the status of the
 photon instance. It is also the basis for geocoding requests at it is used
 to retrieve the URL for geocoding.
 }
+\section{ElasticSearch}{
+
+The standard version of photon uses ElasticSearch indices to geocode.
+These search indices can be self-provided by importing an existing
+Nominatim database or they can be downloaded from the
+\href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
+Use \code{nominatim = TRUE} to indicate that no ElasticSearch indices
+should be downloaded.
+}
+
+\section{OpenSearch}{
+
+To enable structured geocoding, the photon geocoder needs to be built to
+support OpenSearch. Currently, this feature is only experimental and needs
+to be manually built using gradle.
+When using the OpenSearch version of photon, no pre-built ElasticSearch
+indices can be used and the data must be directly imported from a
+Nominatim database. Refer to the photon
+\href{https://github.com/komoot/photon}{README} for details. These steps
+cannot be done by \code{\{photon\}} and must be done before initializing
+\code{photon_local}. If an OpenSearch jar is detected, the \code{nominatim}
+parameter is forced to \code{TRUE}.
+}
+
 \examples{
 if (FALSE) {
+dir <- file.path(tempdir(), "photon")
+
 # start a new instance using a Monaco extract
-photon <- new_photon(path = tempdir(), country = "Monaco")
+photon <- new_photon(path = dir, country = "Monaco")
 
 # start a new instance with an older photon version
-photon <- new_photon(path = tempdir(), photon_version = "0.4.1")
+photon <- new_photon(path = dir, photon_version = "0.4.1")
 
-# start a new instance with a specific java version
-photon <- new_photon(path = tempdir(), java_version = 17)
+# import a nominatim database using OpenSearch photon
+# this example requires the OpenSearch version of photon and a running
+# Nominatim server.
+file.copy(
+  "path/to/photon-opensearch-0.5.0.jar",
+  file.path(dir, "photon-opensearch-0.5.0.jar")
+)
+photon <- new_photon(path = dir, nominatim = TRUE)
+photon$start(photon_options = import_options(port = 29146, password = "pgpass"))
 }
 }
 \section{Super class}{
@@ -63,6 +96,7 @@ executable, the search index, and Java.
   country = NULL,
   date = "latest",
   exact = FALSE,
+  nominatim = FALSE,
   quiet = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -91,6 +125,11 @@ Otherwise, a file will be selected that exactly matches the input to
 
 \item{\code{exact}}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 selects the date with lowest difference to the \code{date} parameter.}
+
+\item{\code{nominatim}}{If \code{TRUE}, starts a Nominatim instance which does
+not use ElasticSearch indices. Use with care as Nominatim databases have
+to be manually set up and managed. If \code{TRUE} (default), downloads
+pre-built ElasticSearch indices from the photon download server.}
 
 \item{\code{quiet}}{If \code{TRUE}, suppresses all informative messages.}
 }
@@ -170,10 +209,19 @@ Defaults to \code{FALSE}.}
 command.}
 
 \item{\code{photon_options}}{List of further flags passed on to the photon
-jar in the java command.}
+jar in the java command. See \code{\link{import_options}} for a helper
+function to import external Nominatim databases.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+While there is a certain way to determine if a photon instance is
+ready, there is no clear way as of yet to determine if a photon setup
+has failed. Due to this, a failing setup is mostly indicated by the
+setup hanging after emitting a warning. In this case, the setup has to
+be interrupted manually.
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-stop"></a>}}
