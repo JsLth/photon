@@ -94,8 +94,6 @@ get_java_processes <- function() {
     names(procs) <- c("pid", "tty", "time", "cmd")
   } else if (is_windows()) {
     procs <- callr::run("tasklist", args = c("/FO", "CSV"))$stdout
-    #procs <- strsplit(procs, "\r\n")[[1]]
-    #procs <- procs[grepl("java", procs, fixed = TRUE)]
     procs <- utils::read.csv(text = procs, header = TRUE)
     names(procs) <- c("cmd", "pid", "session_name", "session", "mem_usage")
   }
