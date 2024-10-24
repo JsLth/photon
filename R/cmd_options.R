@@ -8,7 +8,7 @@
 #' \itemize{
 #'  \item{If a value is \code{TRUE}, add a flag.}
 #'  \item{If a value is \code{FALSE}, do not add a flag.}
-#'  \item{If a value has length(x) > 1, collapse it as a CSV.}
+#'  \item{If a value has \code{length(x) > 1}, collapse it as a CSV.}
 #'  \item{If a parameter name is missing, take the value as the flag name.}
 #'  \item{If a parameter name is given, replace underscores with hyphens.}
 #' }
