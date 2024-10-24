@@ -235,7 +235,7 @@ photon_local <- R6::R6Class(
         cli::cli_warn("OpenSearch version detected. Setting {.code nominatim = TRUE}.")
         nominatim <- TRUE
       }
-
+      # TODO: make sure the right jar is selected, not just the most convenient
       setup_photon_directory(
         path,
         photon_version,
@@ -302,6 +302,82 @@ photon_local <- R6::R6Class(
     },
 
     #' @description
+    #' Import a Postgres Nominatim database to photon. Runs the photon jar
+    #' file using the additional parameter \code{-nominatim-import}. Requires
+    #' a running Nominatim database that can be connected to.
+    #'
+    #' @param host Postgres host of the database. Defaults to \code{"127.0.0.1"}.
+    #' @param port Postgres port of the database. Defaults to \code{5432}.
+    #' @param database Postgres database name. Defaults to \code{"nominatim"}.
+    #' @param user Postgres database user. Defaults to \code{"nominatim"}.
+    #' @param password Postgres database password. Defaults to \code{""}.
+    #' @param structured If \code{TRUE}, enables structured query support when
+    #' importing the database. This allows the usage of
+    #' \code{\link{structured}}. Structured queries are only supported in the
+    #' OpenSearch version of photon. See section "OpenSearch" above. Defaults
+    #' to \code{FALSE}.
+    #' @param update If \code{TRUE}, fetches updates from the Nominatim database,
+    #' updating the search index without offering an API. If \code{FALSE},
+    #' imports the database an deletes the previous index. Defaults to
+    #' \code{FALSE}.
+    #' @param enable_update_api If \code{TRUE}, enables an additional
+    #' endpoint \code{/nominatim-update}, which allows updates from
+    #' Nominatim databases.
+    #' @param languages Character vector specifying the languages to import
+    #' from the Nominatim databases. Defaults to English, French, German,
+    #' and Italian.
+    #' @param countries Character vector specifying the country codes to
+    #' import from the Nominatim database. Defaults to all country codes.
+    #' @param extra_tags Character vector specifying extra OSM tags to import
+    #' from the Nominatim database. These tags are used to augment geocoding
+    #' results. Defaults to \code{NULL}.
+    #' @param json If \code{TRUE}, dumps the imported Nominatim database to
+    #' a JSON file and returns the path to the output file. Defaults to
+    #' \code{FALSE}.
+    #' @param java_opts List of further flags passed on to the \code{java}
+    #' command.
+    #' @param photon_opts List of further flags passed on to the photon
+    #' jar in the java command. See \code{\link{import_options}} for a helper
+    #' function to import external Nominatim databases.
+    import = function(host = "127.0.0.1",
+                      port = 5432,
+                      database = "nominatim",
+                      user = "nominatim",
+                      password = "",
+                      structured = FALSE,
+                      update = FALSE,
+                      enable_update_api = FALSE,
+                      languages = c("en", "fr", "de", "it"),
+                      countries = NULL,
+                      extra_tags = NULL,
+                      json = FALSE,
+                      java_opts = NULL,
+                      photon_opts = NULL) {
+      opts <- cmd_options(
+        host = host,
+        port = port,
+        database = database,
+        user = user,
+        password = password,
+        nominatim_update = update,
+        enable_update_api = enable_update_api,
+        languages = languages,
+        country_codes = countries,
+        extra_tags = extra_tags,
+        json = json
+      )
+
+      run_photon(
+        self, private,
+        java_opts = java_opts,
+        photon_opts = c(opts, photon_opts)
+      )
+
+      self$mount()
+      invisible(self)
+    },
+
+    #' @description
     #' Start a local instance of the Photon geocoder. Runs the jar executable
     #' located in the instance directory.
     #'
@@ -314,9 +390,9 @@ photon_local <- R6::R6Class(
     #' @param port Port that the geocoder should listen to.
     #' @param ssl If \code{TRUE}, uses \code{https}, otherwise \code{http}.
     #' Defaults to \code{FALSE}.
-    #' @param java_options List of further flags passed on to the \code{java}
+    #' @param java_opts List of further flags passed on to the \code{java}
     #' command.
-    #' @param photon_options List of further flags passed on to the photon
+    #' @param photon_opts List of further flags passed on to the photon
     #' jar in the java command. See \code{\link{import_options}} for a helper
     #' function to import external Nominatim databases.
     #'
@@ -331,23 +407,34 @@ photon_local <- R6::R6Class(
                      host = "0.0.0.0",
                      port = "2322",
                      ssl = FALSE,
-                     java_options = NULL,
-                     photon_options = NULL) {
+                     java_opts = NULL,
+                     photon_opts = NULL) {
       assert_vector(min_ram, "double")
       assert_vector(max_ram, "double")
       assert_vector(host, "character")
+      assert_vector(java_opts, "character", null = TRUE)
+      assert_vector(photon_opts, "character", null = TRUE)
+      assert_true_or_false(ssl)
+
+      jopts <- cmd_options(
+        sprintf("-Xms%sg", min_ram),
+        sprintf("-Xmx%sg", max_ram)
+      )
+      popts <- cmd_options(
+        listen_ip = host,
+        listen_port = port
+      )
+
+      self$proc <- run_photon(
+        self, private,
+        java_opts = java_opts,
+        photon_opts = photon_opts
+      )
+
       private$host <- host
       private$port <- port
       private$ssl <- ssl
-      self$proc <- start_photon(
-        self, private,
-        min_ram = min_ram,
-        max_ram = max_ram,
-        host = host,
-        port = port,
-        java_options = java_options,
-        photon_options = photon_options
-      )
+
       self$mount()
       invisible(self)
     },
@@ -418,130 +505,6 @@ photon_local <- R6::R6Class(
 
 
 # External ----
-start_photon <- function(self,
-                         private,
-                         min_ram = 6,
-                         max_ram = 12,
-                         host = "0.0.0.0",
-                         port = "2322",
-                         java_options = NULL,
-                         photon_options = NULL) {
-  quiet <- private$quiet
-  version <- private$version
-  path <- self$path
-
-  if (has_opensearch_jar(path)) {
-    exec <- sprintf("photon-opensearch-%s.jar", version)
-  } else {
-    exec <- sprintf("photon-%s.jar", version)
-  }
-
-  # if nominatim instance, ensure that an import is attempted
-  do_import <- isTRUE(grepl("-nominatim-import", photon_options, fixed = TRUE))
-  if (private$nominatim && !do_import) {
-    photon_options <- paste(photon_options, import_options(import = TRUE))
-  }
-
-  if (!length(exec)) {
-    cli::cli_abort("Photon executable not found in the given {.var path}.") # nocov
-  }
-
-  path <- normalizePath(path, winslash = "/")
-
-  cmd <- c(
-    sprintf("-Xms%sg", min_ram), sprintf("-Xmx%sg", max_ram), java_options,
-    "-jar", exec, photon_options, "-listen-ip", host, "-listen-port", port
-  )
-
-  java <- Sys.which("java")
-  proc <- processx::run(
-    command = java,
-    args = cmd,
-    stdout = "|",
-    stderr = "|",
-    echo_cmd = globally_enabled("photon_debug", FALSE),
-    wd = path,
-    stdout_callback = function(newout, proc) {
-      if (nzchar(newout) && globally_enabled("photon_setup_warn")) {
-        warnings <- newout[grepl("WARN", newout, fixed = TRUE)]
-        msg <- regex_match(warnings, "(?<=WARN).+", perl = TRUE)
-        cli::cli_warn(trimws(msg))
-      }
-    }
-  )
-
-  if (globally_enabled("photon_movers")) {
-    cli::cli_progress_step(
-      msg = "Starting photon...",
-      msg_done = "Photon is now running.",
-      msg_failed = "Photon could not be started.",
-      spinner = globally_enabled("photon_movers")
-    )
-  }
-
-  out <- ""
-  while (!photon_ready(self, private)) {
-    out <- proc$read_output()
-    if (nzchar(out) && !quiet) {
-      cli::cli_verbatim(out)
-    }
-
-    err <- proc$read_error()
-    if (nzchar(err)) {
-      stop(err) # nocov
-    }
-  }
-
-  invisible(proc)
-}
-
-
-stop_photon <- function(self) {
-  if (self$is_running()) {
-    self$proc$kill_tree()
-  }
-
-  if (self$is_running()) { # nocov start
-    self$proc$interrupt()
-  }
-
-  if (self$is_running()) {
-    cli::cli_warn(c(
-      "!" = "Failed to stop photon server.",
-      "i" = "If the problem persists, restart the R session."
-    ))
-  } # nocov end
-}
-
-
-photon_running <- function(self) {
-  (inherits(self$proc, "process") && self$proc$is_alive()) && self$is_ready()
-}
-
-
-photon_ready <- function(self, private) {
-  if (is.null(private$host)) {
-    return(FALSE)
-  }
-
-  req <- httr2::request(self$get_url())
-  req <- httr2::req_template(req, "GET api")
-  req <- httr2::req_error(req, is_error = function(r) FALSE)
-
-  status <- tryCatch(
-    httr2::req_perform(req)$status_code,
-    error = function(e) 999
-  )
-
-  identical(status, 400L)
-}
-
-
-photon_ready_impl <- function(url) {
-
-}
-
-
 setup_photon_directory <- function(path,
                                   version,
                                   ...,
@@ -634,54 +597,6 @@ show_metadata <- function(path, quiet = FALSE) {
 }
 
 
-check_jdk_version <- function(min_version, quiet = FALSE) {
-  version <- numeric_version(get_java_version(quiet))
-  min_version <- numeric_version(min_version)
-
-  if (version < min_version) {
-    msg <- c("!" = "JDK version {version} detected but version 17 required.", rje_link())
-    ph_stop(msg, class = "java_version_error")
-  }
-}
-
-
-has_java <- function() {
-  any(as.logical(nchar(Sys.which("java"))))
-}
-
-
-rje_link <- function() {
-  c("i" = paste(
-    'Consider setting up a Java environment with {.code',
-    '{cli::style_hyperlink("{rJavaEnv}", "https://www.ekotov.pro/rJavaEnv/")}}'
-  ))
-}
-
-
-get_java_version <- function(quiet = FALSE) {
-  if (!has_java()) {
-    msg <- c("!" = "JDK required but not found.", rje_link())
-    ph_stop(msg, class = "java_missing_error", call = NULL)
-  }
-
-  version <- processx::run("java", "-version", error_on_status = TRUE)$stderr
-  version <- gsub("\n", "\f", gsub("\r", "", version))
-
-  if (!quiet) {
-    version_fmt <- strsplit(version, "\f")[[1]]
-    names(version_fmt) <- rep("i", length(version_fmt))
-    cli::cli_inform(version_fmt)
-  }
-
-  version <- regex_match(
-    version,
-    "(openjdk|java) (version )?(\\\")?([0-9]{1,2})",
-    perl = TRUE,
-    i = 5
-  )
-  version
-}
-
 get_photon_version <- function(path) {
   file <- list.files(path, pattern = "photon-.+\\.jar$")[[1]]
   regex_match(file, "photon-([a-z]+-)?(.+)\\.jar", i = 3)
@@ -719,65 +634,4 @@ print.photon <- function(x, ...) {
 has_opensearch_jar <- function(path) {
   files <- list.files(path)
   any(grepl("photon-opensearch-.+\\.jar", files))
-}
-
-
-#' Nominatim import options
-#' @description
-#' Photon options to set when importing a Nominatim database. Can be used
-#' together with the \code{$start()} method of \code{\link{photon_local}}.
-#'
-#' @param host Postgres host of the Nominatim database. Defaults to
-#' \code{127.0.01}.
-#' @param port Postgres port of the Nominatim database. Defaults to
-#' \code{5432}.
-#' @param database Postgres database name. Defaults to \code{nominatim}.
-#' @param user Postgres user. Defaults to \code{nominatim}.
-#' @param password Postgres database password. Defaults to \code{""}.
-#' @param import If \code{TRUE}, uses the \code{-nominatim-import} option in
-#' any case, even if no other option is specified. If \code{FALSE}, returns
-#' \code{NULL}, indicating that photon should not import a Nominatim database.
-#'
-#' @returns A character string of formatted command line options. Should only
-#' be used in accordance with \code{$start()} from the \code{\link{photon_local}}
-#' class. If all parameters are \code{NULL} and \code{import = FALSE}, returns
-#' \code{NULL}.
-#'
-#' @export
-#' @examples
-#' if (FALSE) {
-#' dir <- file.path(tempdir(), "photon")
-#' photon <- new_photon(dir, nominatim = TRUE)
-#'
-#' # do not import
-#' photon$start(import = import_options())
-#'
-#' # import with defaults
-#' photon$start(import = import_options(import = TRUE))
-#'
-#' # import nominatim on non-default port
-#' photon$start(import = import_options(port = 14149))
-#'
-#' # import nominatim with non-default postgres user/password
-#' photon$start(import = import_options(user = "harry", password = "securepw"))
-#' }
-import_options <- function(host = NULL,
-                           port = NULL,
-                           database = NULL,
-                           user = NULL,
-                           password = NULL,
-                           import = FALSE) {
-  args <- as.list(environment())
-  args$import <- NULL
-
-  if (all(!lengths(args)) && !import) {
-    return(NULL)
-  }
-
-  cmd <- "-nominatim-import"
-  for (param in names(args)) {
-    cmd <- paste0(cmd, sprintf(" -%s %s", param, args[[param]]))
-  }
-
-  cmd
 }

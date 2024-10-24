@@ -75,6 +75,7 @@ external process running photon.}
 \item \href{#method-photon_local-mount}{\code{photon_local$mount()}}
 \item \href{#method-photon_local-info}{\code{photon_local$info()}}
 \item \href{#method-photon_local-purge}{\code{photon_local$purge()}}
+\item \href{#method-photon_local-import}{\code{photon_local$import()}}
 \item \href{#method-photon_local-start}{\code{photon_local$start()}}
 \item \href{#method-photon_local-stop}{\code{photon_local$stop()}}
 \item \href{#method-photon_local-is_running}{\code{photon_local$is_running()}}
@@ -171,6 +172,85 @@ of an instance entirely.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-import"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-import}{}}}
+\subsection{Method \code{import()}}{
+Import a Postgres Nominatim database to photon. Runs the photon jar
+file using the additional parameter \code{-nominatim-import}. Requires
+a running Nominatim database that can be connected to.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$import(
+  host = "127.0.0.1",
+  port = 5432,
+  database = "nominatim",
+  user = "nominatim",
+  password = "",
+  structured = FALSE,
+  update = FALSE,
+  enable_update_api = FALSE,
+  languages = c("en", "fr", "de", "it"),
+  countries = NULL,
+  extra_tags = NULL,
+  json = FALSE,
+  java_opts = NULL,
+  photon_opts = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{host}}{Postgres host of the database. Defaults to \code{"127.0.0.1"}.}
+
+\item{\code{port}}{Postgres port of the database. Defaults to \code{5432}.}
+
+\item{\code{database}}{Postgres database name. Defaults to \code{"nominatim"}.}
+
+\item{\code{user}}{Postgres database user. Defaults to \code{"nominatim"}.}
+
+\item{\code{password}}{Postgres database password. Defaults to \code{""}.}
+
+\item{\code{structured}}{If \code{TRUE}, enables structured query support when
+importing the database. This allows the usage of
+\code{\link{structured}}. Structured queries are only supported in the
+OpenSearch version of photon. See section "OpenSearch" above. Defaults
+to \code{FALSE}.}
+
+\item{\code{update}}{If \code{TRUE}, fetches updates from the Nominatim database,
+updating the search index without offering an API. If \code{FALSE},
+imports the database an deletes the previous index. Defaults to
+\code{FALSE}.}
+
+\item{\code{enable_update_api}}{If \code{TRUE}, enables an additional
+endpoint \code{/nominatim-update}, which allows updates from
+Nominatim databases.}
+
+\item{\code{languages}}{Character vector specifying the languages to import
+from the Nominatim databases. Defaults to English, French, German,
+and Italian.}
+
+\item{\code{countries}}{Character vector specifying the country codes to
+import from the Nominatim database. Defaults to all country codes.}
+
+\item{\code{extra_tags}}{Character vector specifying extra OSM tags to import
+from the Nominatim database. These tags are used to augment geocoding
+results. Defaults to \code{NULL}.}
+
+\item{\code{json}}{If \code{TRUE}, dumps the imported Nominatim database to
+a JSON file and returns the path to the output file. Defaults to
+\code{FALSE}.}
+
+\item{\code{java_opts}}{List of further flags passed on to the \code{java}
+command.}
+
+\item{\code{photon_opts}}{List of further flags passed on to the photon
+jar in the java command. See \code{\link{import_options}} for a helper
+function to import external Nominatim databases.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-start"></a>}}
 \if{latex}{\out{\hypertarget{method-photon_local-start}{}}}
 \subsection{Method \code{start()}}{
@@ -183,8 +263,8 @@ located in the instance directory.
   host = "0.0.0.0",
   port = "2322",
   ssl = FALSE,
-  java_options = NULL,
-  photon_options = NULL
+  java_opts = NULL,
+  photon_opts = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -205,10 +285,10 @@ be opened on.}
 \item{\code{ssl}}{If \code{TRUE}, uses \code{https}, otherwise \code{http}.
 Defaults to \code{FALSE}.}
 
-\item{\code{java_options}}{List of further flags passed on to the \code{java}
+\item{\code{java_opts}}{List of further flags passed on to the \code{java}
 command.}
 
-\item{\code{photon_options}}{List of further flags passed on to the photon
+\item{\code{photon_opts}}{List of further flags passed on to the photon
 jar in the java command. See \code{\link{import_options}} for a helper
 function to import external Nominatim databases.}
 }

@@ -29,6 +29,12 @@ drop_na <- function(x) {
 }
 
 
+drop_null <- function(x) {
+  if (length(x) == 0 || !is.list(x)) return(x)
+  x[!unlist(lapply(x, is.null))]
+}
+
+
 get_latest_photon <- function() {
   PHOTON_VERSION
 }
