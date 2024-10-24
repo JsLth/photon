@@ -37,13 +37,26 @@ assert_vector <- function(x, type, null = FALSE) {
 }
 
 
-assert_true_or_false <- function(x, null = FALSE) {
+assert_flag <- function(x, null = FALSE) {
   ignore_null()
   cond <- is.logical(x) && !is.na(x)
   if (!cond) {
     var <- deparse(substitute(x))
     ph_stop(
       "{.code {var}} must be a vector consisting only of TRUE or FALSE.",
+      class = get_caller_name()
+    )
+  }
+}
+
+
+assert_file <- function(x, null = FALSE) {
+  ignore_null()
+  cond <- is.character(x) && file.exists(x) && !file.info(x)$isdir
+  if (!cond) {
+    var <- deparse(substitute(x))
+    ph_stop(
+      "{.code {var}} must be a valid path to an existing file.",
       class = get_caller_name()
     )
   }

@@ -43,7 +43,7 @@ structured <- function(.data,
   assert_length(limit, null = TRUE)
   assert_length(lang, null = TRUE)
   assert_length(layer, null = TRUE)
-  assert_true_or_false(progress)
+  assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
 
   locbias <- format_locbias(locbias)

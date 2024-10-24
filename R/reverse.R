@@ -44,7 +44,7 @@ reverse <- function(.data,
   assert_vector(osm_tag, "character", null = TRUE)
   assert_length(limit, null = TRUE)
   assert_range(radius, 0, 5000)
-  assert_true_or_false(progress)
+  assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
 
   .data <- format_points(.data)

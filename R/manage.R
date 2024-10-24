@@ -232,8 +232,8 @@ photon_local <- R6::R6Class(
                           opensearch = FALSE,
                           overwrite = FALSE,
                           quiet = FALSE) {
-      assert_true_or_false(quiet)
-      assert_true_or_false(opensearch)
+      assert_flag(quiet)
+      assert_flag(opensearch)
       check_jdk_version("11", quiet = quiet)
       photon_version <- photon_version %||% get_latest_photon()
 
@@ -368,10 +368,10 @@ photon_local <- R6::R6Class(
       assert_vector(json, "double")
       assert_vector(java_opts, "character")
       assert_vector(photon_opts, "character")
-      assert_true_or_false(structured)
-      assert_true_or_false(update)
-      assert_true_or_false(enable_update_api)
-      assert_true_or_false(json)
+      assert_flag(structured)
+      assert_flag(update)
+      assert_flag(enable_update_api)
+      assert_flag(json)
 
       if (structured && !private$opensearch) {
         cli::cli_warn(paste(
@@ -438,7 +438,7 @@ photon_local <- R6::R6Class(
       assert_vector(host, "character")
       assert_vector(java_opts, "character", null = TRUE)
       assert_vector(photon_opts, "character", null = TRUE)
-      assert_true_or_false(ssl)
+      assert_flag(ssl)
 
       private$host <- host
       private$port <- port
