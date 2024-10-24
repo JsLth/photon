@@ -6,7 +6,8 @@
 #' @param path Path to a directory where the identified file should be stored.
 #' @param country Character string that can be identified by
 #' \code{\link[countrycode]{countryname}} as a country. An extract for this
-#' country will be downloaded. If \code{NULL}, downloads a global search index.
+#' country will be downloaded. If \code{"planet"}, downloads a global search
+#' index.
 #' @param date Character string or date-time object used to specify the creation
 #' date of the search index. If \code{"latest"}, will download the file tagged
 #' with "latest". If a character string, the value should be parseable by
@@ -45,7 +46,7 @@
 #'   download_searchindex(path = tempdir())
 #' }}
 download_searchindex <- function(path = ".",
-                                 country = NULL,
+                                 country = "Monaco",
                                  date = "latest",
                                  exact = FALSE,
                                  only_url = FALSE,
@@ -53,11 +54,12 @@ download_searchindex <- function(path = ".",
   assert_length(country, 1, null = TRUE)
   assert_length(date, 1, null = TRUE)
   assert_length(exact, 1)
-  assert_vector(country, "character", null = TRUE)
+  assert_vector(country, "character")
   assert_true_or_false(exact)
+  is_planet <- identical(country, "planet")
   req <- httr2::request("https://download1.graphhopper.com/public/")
 
-  if (!is.null(country)) {
+  if (!is_planet) {
     country <- tolower(countrycode::countryname(
       country,
       destination = "iso2c",
@@ -83,7 +85,7 @@ download_searchindex <- function(path = ".",
       html,
       sprintf(
         "photon-db%s-([0-9]+)\\.tar\\.bz2</a>",
-        if (!is.null(country)) paste0("-", country) else ""
+        if (!is_planet) paste0("-", country) else ""
       ),
       i = 2
     )
@@ -105,7 +107,7 @@ download_searchindex <- function(path = ".",
     date <- format(as.POSIXct(date), date_format)
   }
 
-  if (is.null(country)) {
+  if (is_planet) {
     file <- sprintf("photon-db-%s.tar.bz2", date)
   } else {
     file <- sprintf("photon-db-%s-%s.tar.bz2", country, date)
@@ -126,7 +128,11 @@ download_searchindex <- function(path = ".",
       date,
       format(as.POSIXct(date, format = date_format), "%Y-%m-%d")
     )
-    country <- countrycode::countrycode(country, "iso2c", "country.name")
+    if (is_planet) {
+      country <- "Planet" # nocov
+    } else {
+      country <- countrycode::countrycode(country, "iso2c", "country.name")
+    }
     cli::cli_progress_step(
       msg = "Fetching search index for {.field {country}}, created on {.field {date_fmt}}",
       msg_done = "Successfully downloaded search index.",
