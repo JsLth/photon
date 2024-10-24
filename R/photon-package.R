@@ -25,10 +25,13 @@
 #'  \code{\link[httr2]{req_retry}}.}
 #'  \item{\code{photon_debug}}{Whether to echo the command of external
 #'  processes and GET requests sent to photon. Defaults to \code{FALSE}.}
-#'  \item{\code{photon_movers}}{Whether moving verboseness is allowed. If
+#'  \item{\code{photon_movers}}{Whether moving verbosity is allowed. If
 #'  \code{FALSE}, disables progress bars and spinners globally. Overwritten
 #'  by local parameters. Defaults to \code{TRUE}. This option is useful for
 #'  non-interactive sessions like RMarkdown.}
+#'  \item{\code{photon_setup_warn}}{Whether to convert warnings in the photon
+#'  logs to R warnings. Many warnings in the log are somewhat useless, but
+#'  some can be important. Defaults to \code{FALSE}.}
 #' }
 #'
 #' @keywords internal
