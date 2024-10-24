@@ -97,7 +97,8 @@ executable, the search index, and Java.
   country = NULL,
   date = "latest",
   exact = FALSE,
-  nominatim = FALSE,
+  opensearch = FALSE,
+  overwrite = FALSE,
   quiet = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -110,7 +111,9 @@ should be stored. Defaults to a directory "photon" in the current
 working directory.}
 
 \item{\code{photon_version}}{Version of photon to be used. A list of all
-releases can be found here: \url{https://github.com/komoot/photon/releases/}.}
+releases can be found here: \url{https://github.com/komoot/photon/releases/}.
+Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
+version.}
 
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
@@ -127,12 +130,21 @@ Otherwise, a file will be selected that exactly matches the input to
 \item{\code{exact}}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 selects the date with lowest difference to the \code{date} parameter.}
 
-\item{\code{nominatim}}{If \code{TRUE}, starts a Nominatim instance which does
-not use ElasticSearch indices. Use with care as Nominatim databases have
-to be manually set up and managed. If \code{TRUE} (default), downloads
-pre-built ElasticSearch indices from the photon download server.}
+\item{\code{opensearch}}{If \code{TRUE}, looks for an OpenSearch version of
+photon in the specified path. Opensearch-based photon supports structured
+geocoding queries but has to be built manually using gradle. Hence,
+it cannot be downloaded directly. If no OpenSearch executable is found
+in the search path, then this parameter is set to \code{FALSE}. Defaults
+to \code{FALSE}.}
+
+\item{\code{overwrite}}{If \code{TRUE}, overwrites existing jar files and
+search indices when initializing a new instance. Defaults to
+\code{FALSE}.}
 
 \item{\code{quiet}}{If \code{TRUE}, suppresses all informative messages.}
+
+\item{\code{jar}}{File name of a photon jar to use. If specified, skips the
+download of a versioned photon jar.}
 }
 \if{html}{\out{</div>}}
 }
@@ -192,6 +204,7 @@ a running Nominatim database that can be connected to.
   countries = NULL,
   extra_tags = NULL,
   json = FALSE,
+  timeout = 60,
   java_opts = NULL,
   photon_opts = NULL
 )}\if{html}{\out{</div>}}
@@ -240,6 +253,9 @@ results. Defaults to \code{NULL}.}
 a JSON file and returns the path to the output file. Defaults to
 \code{FALSE}.}
 
+\item{\code{timeout}}{Time in seconds before the java process aborts. Defaults
+to 60 seconds.}
+
 \item{\code{java_opts}}{List of further flags passed on to the \code{java}
 command.}
 
@@ -258,11 +274,10 @@ Start a local instance of the Photon geocoder. Runs the jar executable
 located in the instance directory.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$start(
-  min_ram = 5,
-  max_ram = 10,
   host = "0.0.0.0",
   port = "2322",
   ssl = FALSE,
+  timeout = 60,
   java_opts = NULL,
   photon_opts = NULL
 )}\if{html}{\out{</div>}}
@@ -271,12 +286,6 @@ located in the instance directory.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{min_ram}}{Initial RAM to be allocated to the Java process
-(\code{-Xms} flag).}
-
-\item{\code{max_ram}}{Maximum RAM to be allocated to the Java process
-(\code{-Xmx} flag)}
-
 \item{\code{host}}{Character string of the host name that the geocoder should
 be opened on.}
 
@@ -284,6 +293,9 @@ be opened on.}
 
 \item{\code{ssl}}{If \code{TRUE}, uses \code{https}, otherwise \code{http}.
 Defaults to \code{FALSE}.}
+
+\item{\code{timeout}}{Time in seconds before the java process aborts. Defaults
+to 60 seconds.}
 
 \item{\code{java_opts}}{List of further flags passed on to the \code{java}
 command.}

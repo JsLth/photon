@@ -62,7 +62,7 @@ purge_java <- function(pids = NULL, consent = FALSE) {
 check_pid_is_java <- function(procs, pid) {
   is_java_pid <- pid %in% procs$pid
   if (!is.null(pid) && !all(is_java_pid)) {
-    cli::cli_abort(c(
+    ph_stop(c(
       "The following PIDs are not PIDs related to Java: {pid[is_java_pid]}",
       "i" = "Be cautious when passing PIDs to kill!"
     ))

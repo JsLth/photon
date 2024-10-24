@@ -198,6 +198,8 @@ photon_local <- R6::R6Class(
     #' working directory.
     #' @param photon_version Version of photon to be used. A list of all
     #' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
+    #' Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
+    #' version.
     #' @param country Character string that can be identified by
     #' \code{\link[countrycode]{countryname}} as a country. An extract for this
     #' country will be downloaded. If \code{NULL}, downloads a global search index.
@@ -208,57 +210,57 @@ photon_local <- R6::R6Class(
     #' compared to all available dates and the closest date will be selected.
     #' Otherwise, a file will be selected that exactly matches the input to
     #' \code{date}.
-    #' @param nominatim If \code{TRUE}, starts a Nominatim instance which does
-    #' not use ElasticSearch indices. Use with care as Nominatim databases have
-    #' to be manually set up and managed. If \code{TRUE} (default), downloads
-    #' pre-built ElasticSearch indices from the photon download server.
+    #' @param jar File name of a photon jar to use. If specified, skips the
+    #' download of a versioned photon jar.
+    #' @param opensearch If \code{TRUE}, looks for an OpenSearch version of
+    #' photon in the specified path. Opensearch-based photon supports structured
+    #' geocoding queries but has to be built manually using gradle. Hence,
+    #' it cannot be downloaded directly. If no OpenSearch executable is found
+    #' in the search path, then this parameter is set to \code{FALSE}. Defaults
+    #' to \code{FALSE}.
     #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
     #' selects the date with lowest difference to the \code{date} parameter.
+    #' @param overwrite If \code{TRUE}, overwrites existing jar files and
+    #' search indices when initializing a new instance. Defaults to
+    #' \code{FALSE}.
     #' @param quiet If \code{TRUE}, suppresses all informative messages.
     initialize = function(path = "./photon",
                           photon_version = NULL,
                           country = NULL,
                           date = "latest",
                           exact = FALSE,
-                          nominatim = FALSE,
+                          opensearch = FALSE,
+                          overwrite = FALSE,
                           quiet = FALSE) {
       assert_true_or_false(quiet)
+      assert_true_or_false(opensearch)
       check_jdk_version("11", quiet = quiet)
+      photon_version <- photon_version %||% get_latest_photon()
 
       path <- normalizePath(path, "/", mustWork = FALSE)
       if (!dir.exists(path)) {
         dir.create(path, recursive = TRUE) # nocov
       }
 
-      # opensearch does not support elasticsearch
-      if (has_opensearch_jar(path)) {
-        cli::cli_warn("OpenSearch version detected. Setting {.code nominatim = TRUE}.")
-        nominatim <- TRUE
-      }
-      # TODO: make sure the right jar is selected, not just the most convenient
       setup_photon_directory(
         path,
         photon_version,
         country = country,
         date = date,
         exact = exact,
-        nominatim = nominatim,
+        opensearch = opensearch,
+        overwrite = overwrite,
         quiet = quiet
       )
 
-      if (!nominatim) {
-        meta <- show_metadata(path, quiet = quiet)
-      } else {
-        meta <- get_metadata(path)
-        cli::cli_ul("Version: {meta$version}")
-      }
-
       self$path <- path
       private$quiet <- quiet
-      private$version <- meta$version
+      private$version <- photon_version
+      private$opensearch <- opensearch
+
+      meta <- private$get_metadata(quiet = quiet)
       private$country <- meta$country
       private$date <- meta$date
-      private$nominatim <- nominatim
       self$mount()
       invisible(self)
     },
@@ -276,7 +278,7 @@ photon_local <- R6::R6Class(
     #' as the country and creation date of the Eleasticsearch search index.
     info = function() {
       info <- list(java = get_java_version(quiet = TRUE))
-      c(info, get_metadata(self$path))
+      c(info, private$get_metadata(quiet = TRUE))
     },
 
     #' @description
@@ -334,6 +336,8 @@ photon_local <- R6::R6Class(
     #' @param json If \code{TRUE}, dumps the imported Nominatim database to
     #' a JSON file and returns the path to the output file. Defaults to
     #' \code{FALSE}.
+    #' @param timeout Time in seconds before the java process aborts. Defaults
+    #' to 60 seconds.
     #' @param java_opts List of further flags passed on to the \code{java}
     #' command.
     #' @param photon_opts List of further flags passed on to the photon
@@ -351,9 +355,33 @@ photon_local <- R6::R6Class(
                       countries = NULL,
                       extra_tags = NULL,
                       json = FALSE,
+                      timeout = 60,
                       java_opts = NULL,
                       photon_opts = NULL) {
-      opts <- cmd_options(
+      assert_vector(host, "character")
+      assert_vector(database, "character")
+      assert_vector(user, "character")
+      assert_vector(password, "character")
+      assert_vector(languages, "character", null = TRUE)
+      assert_vector(countries, "character", null = TRUE)
+      assert_vector(extra_tags, "character")
+      assert_vector(json, "double")
+      assert_vector(java_opts, "character")
+      assert_vector(photon_opts, "character")
+      assert_true_or_false(structured)
+      assert_true_or_false(update)
+      assert_true_or_false(enable_update_api)
+      assert_true_or_false(json)
+
+      if (structured && !private$opensearch) {
+        cli::cli_warn(paste(
+          "Structured queries are only supported for OpenSearch photon.",
+          "Setting {.code structured = FALSE}."
+        ))
+      }
+
+      popts <- cmd_options(
+        nominatim_import = TRUE,
         host = host,
         port = port,
         database = database,
@@ -369,8 +397,9 @@ photon_local <- R6::R6Class(
 
       run_photon(
         self, private,
+        mode = "import",
         java_opts = java_opts,
-        photon_opts = c(opts, photon_opts)
+        photon_opts = c(popts, photon_opts)
       )
 
       self$mount()
@@ -381,15 +410,13 @@ photon_local <- R6::R6Class(
     #' Start a local instance of the Photon geocoder. Runs the jar executable
     #' located in the instance directory.
     #'
-    #' @param min_ram Initial RAM to be allocated to the Java process
-    #' (\code{-Xms} flag).
-    #' @param max_ram Maximum RAM to be allocated to the Java process
-    #' (\code{-Xmx} flag)
     #' @param host Character string of the host name that the geocoder should
     #' be opened on.
     #' @param port Port that the geocoder should listen to.
     #' @param ssl If \code{TRUE}, uses \code{https}, otherwise \code{http}.
     #' Defaults to \code{FALSE}.
+    #' @param timeout Time in seconds before the java process aborts. Defaults
+    #' to 60 seconds.
     #' @param java_opts List of further flags passed on to the \code{java}
     #' command.
     #' @param photon_opts List of further flags passed on to the photon
@@ -402,38 +429,28 @@ photon_local <- R6::R6Class(
     #' has failed. Due to this, a failing setup is mostly indicated by the
     #' setup hanging after emitting a warning. In this case, the setup has to
     #' be interrupted manually.
-    start = function(min_ram = 5,
-                     max_ram = 10,
-                     host = "0.0.0.0",
+    start = function(host = "0.0.0.0",
                      port = "2322",
                      ssl = FALSE,
+                     timeout = 60,
                      java_opts = NULL,
                      photon_opts = NULL) {
-      assert_vector(min_ram, "double")
-      assert_vector(max_ram, "double")
       assert_vector(host, "character")
       assert_vector(java_opts, "character", null = TRUE)
       assert_vector(photon_opts, "character", null = TRUE)
       assert_true_or_false(ssl)
 
-      jopts <- cmd_options(
-        sprintf("-Xms%sg", min_ram),
-        sprintf("-Xmx%sg", max_ram)
-      )
-      popts <- cmd_options(
-        listen_ip = host,
-        listen_port = port
-      )
-
-      self$proc <- run_photon(
-        self, private,
-        java_opts = java_opts,
-        photon_opts = photon_opts
-      )
-
       private$host <- host
       private$port <- port
       private$ssl <- ssl
+
+      popts <- cmd_options(listen_ip = host, listen_port = port)
+      self$proc <- run_photon(
+        self, private,
+        mode = "start",
+        java_opts = java_opts,
+        photon_opts = c(popts, photon_opts)
+      )
 
       self$mount()
       invisible(self)
@@ -496,9 +513,35 @@ photon_local <- R6::R6Class(
     ssl = NULL,
     country = NULL,
     date = NULL,
-    nominatim = NULL,
+    opensearch = NULL,
     finalize = function() {
       self$stop() # nocov
+    },
+    get_metadata = function(quiet = TRUE) {
+      meta_path <- file.path(self$path, "photon_data", "rmeta.rds")
+
+      if (!file.exists(meta_path)) {
+        # if photon_data has been created outside of {photon}, metadata cannot be retrieved
+        meta <- list(country = NULL, date = NULL) # nocov
+      } else {
+        meta <- readRDS(meta_path)
+      }
+
+      meta <- as.list(c(
+        version = private$version,
+        opensearch = private$opensearch,
+        meta
+      ))
+
+      if (!quiet) {
+        cli::cli_ul(c(
+          sprintf("Version: %s", meta$version),
+          sprintf("Coverage: %s", meta$country),
+          sprintf("Time: %s", meta$date)
+        ))
+      }
+
+      meta
     }
   )
 )
@@ -506,12 +549,26 @@ photon_local <- R6::R6Class(
 
 # External ----
 setup_photon_directory <- function(path,
-                                  version,
-                                  ...,
-                                  nominatim = FALSE,
-                                  quiet = FALSE) {
+                                   version,
+                                   country = NULL,
+                                   date = NULL,
+                                   exact = FALSE,
+                                   opensearch = FALSE,
+                                   overwrite,
+                                   quiet = FALSE) {
+  jar <- construct_jar(version, opensearch)
+
   files <- list.files(path, full.names = TRUE)
-  if (!any(grepl("\\.jar$", files))) {
+  if (!jar %in% basename(files) || overwrite) {
+    if (opensearch) {
+      link <- cli::style_hyperlink("README", "https://github.com/komoot/photon")
+      msg <- c(
+        "The OpenSearch version of photon has to be built manually.",
+        "i" = "Refer to the photon {link} for details."
+      )
+      ph_stop(msg)
+    }
+
     download_photon(path = path, version = version, quiet = quiet)
   } else if (!quiet) {
     cli::cli_inform(c("i" = paste(
@@ -520,14 +577,25 @@ setup_photon_directory <- function(path,
     )))
   }
 
-  if (nominatim) {
+  if (opensearch) {
+    if (!is.null(country)) {
+      cli::cli_inform(c(
+        "i" = "OpenSearch does not support ElasticSearch indices. Skipping."
+      ))
+    }
     return()
   }
 
-  if (!any(grepl("photon_data$", files))) {
+  if ((!any(grepl("photon_data$", files)) || overwrite) && !is.null(country)) {
     has_archive <- grepl("\\.bz2$", files)
     if (!any(has_archive)) {
-      archive_path <- download_searchindex(path = path, ..., quiet = quiet)
+      archive_path <- download_searchindex(
+        path = path,
+        country = country,
+        date = date,
+        exact = exact,
+        quiet = quiet
+      )
     } else {
       archive_path <- files[has_archive] # nocov
     }
@@ -539,6 +607,11 @@ setup_photon_directory <- function(path,
     } # nocov end
 
     store_searchindex_metadata(path, archive_path)
+  } else if (!quiet && is.null(country)) {
+    cli::cli_inform(c("i" = paste(
+      "No search index downloaded!",
+      "Download one or import from a Nominatim database."
+    )))
   } else if (!quiet) {
     cli::cli_inform(c("i" = paste(
       "A search index already exists at the given path.",
@@ -568,40 +641,6 @@ store_searchindex_metadata <- function(path, archive_path) {
 }
 
 
-get_metadata <- function(path) {
-  meta_path <- file.path(path, "photon_data", "rmeta.rds")
-
-  if (!file.exists(meta_path)) {
-    # if photon_data has been created outside of {photon}, metadata cannot be retrieved
-    meta <- list(country = "Unknown", meta = "Unknown") # nocov
-  } else {
-    meta <- readRDS(meta_path)
-  }
-
-  as.list(c(version = get_photon_version(path), meta))
-}
-
-
-show_metadata <- function(path, quiet = FALSE) {
-  meta <- get_metadata(path)
-
-  if (!quiet) {
-    cli::cli_ul(c(
-      sprintf("Version: %s", meta$version),
-      sprintf("Coverage: %s", meta$country),
-      sprintf("Time: %s", meta$date)
-    ))
-  }
-
-  meta
-}
-
-
-get_photon_version <- function(path) {
-  file <- list.files(path, pattern = "photon-.+\\.jar$")[[1]]
-  regex_match(file, "photon-([a-z]+-)?(.+)\\.jar", i = 3)
-}
-
 #' @export
 print.photon <- function(x, ...) {
   type <- ifelse(inherits(x, "photon_remote"), "remote", "local")
@@ -614,9 +653,11 @@ print.photon <- function(x, ...) {
     ),
     local = {
       info <- x$info()
+      os <- ifelse(info$opensearch, "OpenSearch", "ElasticSearch")
       info <- c(
+        if (x$is_running()) cli::col_yellow("Live now!"),
         sprintf("Type     : %s", type),
-        sprintf("Version  : %s", info$photon),
+        sprintf("Version  : %s (%s)", info$version, os),
         sprintf("Coverage : %s", info$country),
         sprintf("Time     : %s", info$date)
       )
@@ -631,7 +672,8 @@ print.photon <- function(x, ...) {
 }
 
 
-has_opensearch_jar <- function(path) {
-  files <- list.files(path)
-  any(grepl("photon-opensearch-.+\\.jar", files))
+construct_jar <- function(version = NULL, opensearch = FALSE) {
+  version <- version %||% get_latest_photon()
+  opensearch <- ifelse(opensearch, "-opensearch", "")
+  sprintf("photon%s-%s.jar", opensearch, version)
 }
