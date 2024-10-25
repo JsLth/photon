@@ -59,13 +59,14 @@ Corresponds to the zoom level in OpenStreetMap. Defaults to 16.}
 \description{
 Geocode a set of place information such as street, house number, or
 post code. Structured geocoding is generally more accurate but requires
-more information than \link[=geocode]{unstructured geocoding}. Note that
-structured geocoding must be specifically enabled when building a Nominatim
-database. It is generally not available on komoot's public API and on
-pre-built search indices through \code{\link{download_searchindex}}. See
-\code{\link{photon_local}} for details. You can use the helper function
-\code{has_structured_support()} to check if the current API supports
-structured geocoding.
+more information than \link[=geocode]{unstructured geocoding}.
+
+Note that structured geocoding must be specifically enabled when building a
+Nominatim database. It is generally not available on komoot's public API and
+on pre-built search indices through \code{\link{download_searchindex}}. See
+\code{vignette("nominatim-import", package = "photon")} for details. You can
+use the helper function \code{has_structured_support()} to check if the
+current API supports structured geocoding.
 }
 \details{
 Filtering by OpenStreetMap tags follows a distinct syntax explained on
@@ -106,5 +107,12 @@ structured(data.frame(countrycode = "ws"))
 
 # traditional parameters from geocode() can also be used but are much more niche
 structured(data.frame(city = "Apia"), layer = "house") # matches nothing
+
+# structured geocoding can discern small differences in places
+safune <- data.frame(
+  city = c("Safune", "Safune"),
+  state = c("Gagaʻifomauga", "Tuamasaga")
+)
+structured(safune, limit = 1)
 }
 }

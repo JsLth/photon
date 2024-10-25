@@ -22,9 +22,7 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0),
     tibble,
-    httpuv,
     knitr,
-    rmarkdown,
-    withr
+    rmarkdown
 Config/testthat/edition: 3
 VignetteBuilder: knitr

@@ -42,7 +42,7 @@ purge_java <- function(pids = NULL, consent = FALSE) {
 
   check_pid_is_java(procs, pids)
   cli::cli_inform("The following Java instances have been found:\f")
-  cli::cli_verbatim(capture.output(procs))
+  cli::cli_verbatim(utils::capture.output(procs))
 
   if (interactive() && !consent) {
     if (is.null(pids)) {
@@ -55,7 +55,7 @@ purge_java <- function(pids = NULL, consent = FALSE) {
   }
 
   pids <- pids %||% procs$pid
-  kill_java(pids)
+  kill_process(pids)
 }
 
 
@@ -65,23 +65,22 @@ check_pid_is_java <- function(procs, pid) {
     ph_stop(c(
       "The following PIDs are not PIDs related to Java: {pid[is_java_pid]}",
       "i" = "Be cautious when passing PIDs to kill!"
-    ))
+    ), class = "pid_not_java")
   }
 }
 
 
-kill_java <- function(pids) {
-  codes <- NULL
+kill_process <- function(pids) {
   if (is_linux() || is_macos()) {
-    for (pid in pids) {
-      status <- callr::run("pkill", args = c("-9", pid))$status
-      codes <- c(codes, status)
-    }
+    codes <- vapply(pids, FUN.VALUE = integer(1), function(pid) { # nocov start
+      args <- c("-9", pid)
+      run("pkill", args = args, error_on_status = FALSE)$status
+    }) # nocov end
   } else {
-    for (pid in pids) {
-      status <- callr::run("Taskkill", args = c("/PID", pid, "/F"))$status
-      codes <- c(codes, status)
-    }
+    codes <- vapply(pids, FUN.VALUE = integer(1), function(pid) {
+      args <- c("/PID", pid, "/F")
+      run("Taskkill", args = args, error_on_status = FALSE)$status
+    })
   }
   codes
 }
@@ -89,11 +88,11 @@ kill_java <- function(pids) {
 
 get_java_processes <- function() {
   if (is_linux() || is_macos()) {
-    procs <- callr::run("ps", "-A", stdout = NULL, stderr = NULL)
+    procs <- run("ps", "-A", stdout = NULL, stderr = NULL) # nocov start
     procs <- utils::read.table(procs, header = TRUE)
-    names(procs) <- c("pid", "tty", "time", "cmd")
+    names(procs) <- c("pid", "tty", "time", "cmd") # nocov end
   } else if (is_windows()) {
-    procs <- callr::run("tasklist", args = c("/FO", "CSV"))$stdout
+    procs <- run("tasklist", args = c("/FO", "CSV"))$stdout
     procs <- utils::read.csv(text = procs, header = TRUE)
     names(procs) <- c("cmd", "pid", "session_name", "session", "mem_usage")
   }

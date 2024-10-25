@@ -17,7 +17,9 @@ These search indices can be self-provided by importing an existing
 Nominatim database or they can be downloaded from the
 \href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
 Use \code{nominatim = TRUE} to indicate that no ElasticSearch indices
-should be downloaded.
+should be downloaded. See
+\code{vignette("nominatim-import", package = "photon")} for details on how
+to import from Nominatim.
 }
 
 \section{OpenSearch}{
@@ -52,7 +54,7 @@ file.copy(
   file.path(dir, "photon-opensearch-0.5.0.jar")
 )
 photon <- new_photon(path = dir, nominatim = TRUE)
-photon$start(photon_options = import_options(port = 29146, password = "pgpass"))
+photon$start(photon_options = cmd_options(port = 29146, password = "pgpass"))
 }
 }
 \section{Super class}{
@@ -142,9 +144,6 @@ search indices when initializing a new instance. Defaults to
 \code{FALSE}.}
 
 \item{\code{quiet}}{If \code{TRUE}, suppresses all informative messages.}
-
-\item{\code{jar}}{File name of a photon jar to use. If specified, skips the
-download of a versioned photon jar.}
 }
 \if{html}{\out{</div>}}
 }
@@ -179,9 +178,17 @@ as the country and creation date of the Eleasticsearch search index.
 Kill the photon process and remove the directory. Useful to get rid
 of an instance entirely.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{photon_local$purge()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$purge(ask = TRUE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ask}}{If \code{TRUE}, asks for confirmation before purging the
+instance.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-import"></a>}}
@@ -260,7 +267,7 @@ to 60 seconds.}
 command.}
 
 \item{\code{photon_opts}}{List of further flags passed on to the photon
-jar in the java command. See \code{\link{import_options}} for a helper
+jar in the java command. See \code{\link{cmd_options}} for a helper
 function to import external Nominatim databases.}
 }
 \if{html}{\out{</div>}}
@@ -301,7 +308,7 @@ to 60 seconds.}
 command.}
 
 \item{\code{photon_opts}}{List of further flags passed on to the photon
-jar in the java command. See \code{\link{import_options}} for a helper
+jar in the java command. See \code{\link{cmd_options}} for a helper
 function to import external Nominatim databases.}
 }
 \if{html}{\out{</div>}}

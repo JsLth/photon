@@ -1,7 +1,7 @@
 photon_env <- new.env(parent = emptyenv())
 
 photon_cache <- function() {
-  get("photon_env", envir = asNamespace("rors"))
+  get("photon_env", envir = asNamespace("photon"))
 }
 
 #' Photon utilities
@@ -59,7 +59,7 @@ clear_cache <- function() {
 #'
 #' Instances can either local or remote. Remote instances require nothing more
 #' than a URL that geocoding requests are sent to. Local instances require the
-#' setup of the photon executable, an Elasticsearch index, and Java. See
+#' setup of the photon executable, a search index, and Java. See
 #' \code{\link{photon_local}} for details.
 #'
 #' @param path Path to a directory where the photon executable and data
@@ -69,7 +69,33 @@ clear_cache <- function() {
 #' @param url URL of a photon server to connect to. If \code{NULL} and
 #' \code{path} is also \code{NULL}, connects to the public API under
 #' \url{photon.komoot.io}.
-#' @param ... Arguments passed to \code{\link[=photon_local]{photon_local$new()}}.
+#' @param photon_version Version of photon to be used. A list of all
+#' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
+#' Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
+#' version.
+#' @param country Character string that can be identified by
+#' \code{\link[countrycode]{countryname}} as a country. An extract for this
+#' country will be downloaded. If \code{NULL}, downloads a global search index.
+#' @param date Character string or date-time object used to specify the creation
+#' date of the search index. If \code{"latest"}, will download the file tagged
+#' with "latest". If a character string, the value should be parseable by
+#' \code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
+#' compared to all available dates and the closest date will be selected.
+#' Otherwise, a file will be selected that exactly matches the input to
+#' \code{date}.
+#' @param opensearch If \code{TRUE}, looks for an OpenSearch version of
+#' photon in the specified path. Opensearch-based photon supports structured
+#' geocoding queries but has to be built manually using gradle. Hence,
+#' it cannot be downloaded directly. If no OpenSearch executable is found
+#' in the search path, then this parameter is set to \code{FALSE}. Defaults
+#' to \code{FALSE}. See \code{vignette("nominatim-import", package = "photon")}
+#' for details.
+#' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
+#' selects the date with lowest difference to the \code{date} parameter.
+#' @param overwrite If \code{TRUE}, overwrites existing jar files and
+#' search indices when initializing a new instance. Defaults to
+#' \code{FALSE}.
+#' @param quiet If \code{TRUE}, suppresses all informative messages.
 #'
 #' @returns An R6 object of class \code{photon}.
 #'
@@ -83,15 +109,32 @@ clear_cache <- function() {
 #' photon <- new_photon(url = "photonserver.org")
 #'
 #' \dontrun{
-#' # set up a local instance
-#' photon <- new_photon(path = tempdir())}
-new_photon <- function(path = NULL, url = NULL, ...) {
+#' # set up a local instance in the current working directory
+#' photon <- new_photon("photon", country = "Ireland")}
+new_photon <- function(path = NULL,
+                       url = NULL,
+                       photon_version = NULL,
+                       country = NULL,
+                       date = "latest",
+                       exact = FALSE,
+                       opensearch = FALSE,
+                       overwrite = FALSE,
+                       quiet = FALSE) {
   if (is.null(path) && is.null(url)) {
     photon_remote$new(url = "https://photon.komoot.io/")
   } else if (is.null(path)) {
     photon_remote$new(url = url)
   } else if (is.null(url)) {
-    photon_local$new(path = path, ...)
+    photon_local$new(
+      path = path,
+      photon_version = photon_version,
+      country = country,
+      date = date,
+      exact = exact,
+      opensearch = opensearch,
+      overwrite = overwrite,
+      quiet = quiet
+    )
   }
 }
 
@@ -143,7 +186,9 @@ photon_remote <- R6::R6Class(
 #' Nominatim database or they can be downloaded from the
 #' \href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
 #' Use \code{nominatim = TRUE} to indicate that no ElasticSearch indices
-#' should be downloaded.
+#' should be downloaded. See
+#' \code{vignette("nominatim-import", package = "photon")} for details on how
+#' to import from Nominatim.
 #'
 #'
 #' @section OpenSearch:
@@ -179,7 +224,7 @@ photon_remote <- R6::R6Class(
 #'   file.path(dir, "photon-opensearch-0.5.0.jar")
 #' )
 #' photon <- new_photon(path = dir, nominatim = TRUE)
-#' photon$start(photon_options = import_options(port = 29146, password = "pgpass"))
+#' photon$start(photon_options = cmd_options(port = 29146, password = "pgpass"))
 #' }
 photon_local <- R6::R6Class(
   inherit = photon,
@@ -214,8 +259,6 @@ photon_local <- R6::R6Class(
     #' compared to all available dates and the closest date will be selected.
     #' Otherwise, a file will be selected that exactly matches the input to
     #' \code{date}.
-    #' @param jar File name of a photon jar to use. If specified, skips the
-    #' download of a versioned photon jar.
     #' @param opensearch If \code{TRUE}, looks for an OpenSearch version of
     #' photon in the specified path. Opensearch-based photon supports structured
     #' geocoding queries but has to be built manually using gradle. Hence,
@@ -288,8 +331,10 @@ photon_local <- R6::R6Class(
     #' @description
     #' Kill the photon process and remove the directory. Useful to get rid
     #' of an instance entirely.
-    purge = function() {
-      if (interactive()) {
+    #' @param ask If \code{TRUE}, asks for confirmation before purging the
+    #' instance.
+    purge = function(ask = TRUE) {
+      if (interactive() || !ask) {
         cli::cli_inform(c("i" = paste( # nocov start
           "Purging an instance kills the photon process",
           "and removes the photon directory."
@@ -345,7 +390,7 @@ photon_local <- R6::R6Class(
     #' @param java_opts List of further flags passed on to the \code{java}
     #' command.
     #' @param photon_opts List of further flags passed on to the photon
-    #' jar in the java command. See \code{\link{import_options}} for a helper
+    #' jar in the java command. See \code{\link{cmd_options}} for a helper
     #' function to import external Nominatim databases.
     import = function(host = "127.0.0.1",
                       port = 5432,
@@ -426,7 +471,7 @@ photon_local <- R6::R6Class(
     #' @param java_opts List of further flags passed on to the \code{java}
     #' command.
     #' @param photon_opts List of further flags passed on to the photon
-    #' jar in the java command. See \code{\link{import_options}} for a helper
+    #' jar in the java command. See \code{\link{cmd_options}} for a helper
     #' function to import external Nominatim databases.
     #'
     #' @details

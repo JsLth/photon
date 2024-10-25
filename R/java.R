@@ -28,7 +28,7 @@ get_java_version <- function(quiet = FALSE) {
     ph_stop(msg, class = "java_missing_error", call = NULL)
   }
 
-  version <- processx::run("java", "-version", error_on_status = TRUE)$stderr
+  version <- run("java", "-version", error_on_status = TRUE)$stderr
   version <- gsub("\n", "\f", gsub("\r", "", version))
 
   if (!quiet) {

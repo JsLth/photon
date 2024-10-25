@@ -4,7 +4,17 @@
 \alias{new_photon}
 \title{Initialize a photon instance}
 \usage{
-new_photon(path = NULL, url = NULL, ...)
+new_photon(
+  path = NULL,
+  url = NULL,
+  photon_version = NULL,
+  country = NULL,
+  date = "latest",
+  exact = FALSE,
+  opensearch = FALSE,
+  overwrite = FALSE,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{path}{Path to a directory where the photon executable and data
@@ -16,7 +26,39 @@ the \code{url} parameter.}
 \code{path} is also \code{NULL}, connects to the public API under
 \url{photon.komoot.io}.}
 
-\item{...}{Arguments passed to \code{\link[=photon_local]{photon_local$new()}}.}
+\item{photon_version}{Version of photon to be used. A list of all
+releases can be found here: \url{https://github.com/komoot/photon/releases/}.
+Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
+version.}
+
+\item{country}{Character string that can be identified by
+\code{\link[countrycode]{countryname}} as a country. An extract for this
+country will be downloaded. If \code{NULL}, downloads a global search index.}
+
+\item{date}{Character string or date-time object used to specify the creation
+date of the search index. If \code{"latest"}, will download the file tagged
+with "latest". If a character string, the value should be parseable by
+\code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
+compared to all available dates and the closest date will be selected.
+Otherwise, a file will be selected that exactly matches the input to
+\code{date}.}
+
+\item{exact}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
+selects the date with lowest difference to the \code{date} parameter.}
+
+\item{opensearch}{If \code{TRUE}, looks for an OpenSearch version of
+photon in the specified path. Opensearch-based photon supports structured
+geocoding queries but has to be built manually using gradle. Hence,
+it cannot be downloaded directly. If no OpenSearch executable is found
+in the search path, then this parameter is set to \code{FALSE}. Defaults
+to \code{FALSE}. See \code{vignette("nominatim-import", package = "photon")}
+for details.}
+
+\item{overwrite}{If \code{TRUE}, overwrites existing jar files and
+search indices when initializing a new instance. Defaults to
+\code{FALSE}.}
+
+\item{quiet}{If \code{TRUE}, suppresses all informative messages.}
 }
 \value{
 An R6 object of class \code{photon}.
@@ -27,7 +69,7 @@ is stored in the R session and can be used to perform geocoding requests.
 
 Instances can either local or remote. Remote instances require nothing more
 than a URL that geocoding requests are sent to. Local instances require the
-setup of the photon executable, an Elasticsearch index, and Java. See
+setup of the photon executable, a search index, and Java. See
 \code{\link{photon_local}} for details.
 }
 \examples{
@@ -38,6 +80,6 @@ photon <- new_photon()
 photon <- new_photon(url = "photonserver.org")
 
 \dontrun{
-# set up a local instance
-photon <- new_photon(path = tempdir())}
+# set up a local instance in the current working directory
+photon <- new_photon("photon", country = "Ireland")}
 }

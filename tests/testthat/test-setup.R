@@ -11,6 +11,14 @@ test_that("java checks work", {
   )
 })
 
+test_that("java can be purged", {
+  expect_error(purge_java(-1, consent = TRUE), class = "pid_not_java")
+  expect_vector(kill_process(rep(-1, 2)), integer(), size = 2)
+
+  skip_if(nrow(get_java_processes()) > 0)
+  expect_message(purge_java(consent = TRUE), regexp = "No java processes running.")
+})
+
 test_that("remote photons work", {
   expect_error(get_instance(), class = "instance_missing")
   photon <- new_photon()
@@ -26,10 +34,10 @@ skip_on_cran()
 test_that("search indices are matched", {
   de_latest <- download_searchindex(only_url = TRUE, country = "Germany")
   expect_equal(basename(de_latest), "photon-db-de-latest.tar.bz2")
-  global_latest <- download_searchindex(only_url = TRUE)
+  global_latest <- download_searchindex(only_url = TRUE, country = "planet")
   expect_equal(basename(global_latest), "photon-db-latest.tar.bz2")
   global_time <- download_searchindex(only_url = TRUE, date = Sys.Date())
-  expect_match(basename(global_time), "photon-db-[0-9]+\\.tar\\.bz2")
+  expect_match(basename(global_time), "photon-db-mc-[0-9]+\\.tar\\.bz2")
   expect_error(
     download_searchindex(only_url = TRUE, date = Sys.Date(), exact = TRUE),
     class = "no_index_match"
@@ -45,14 +53,14 @@ skip_if_offline("corretto.aws")
 skip_if_not(has_java())
 
 test_that("local setup works", {
-  photon <- new_photon(path = tempdir(), country = "samoa")
-  on.exit(photon$purge())
+  dir <- file.path(tempdir(), "photon")
+  photon <- new_photon(path = dir, country = "samoa")
+  on.exit(photon$purge(ask = FALSE))
   expect_no_error(print(photon))
-  photon <- new_photon(path = tempdir(), country = "samoa")
-  expect_no_message(new_photon(path = tempdir(), quiet = TRUE))
+  photon <- new_photon(path = dir, country = "samoa")
+  expect_no_message(new_photon(path = dir, quiet = TRUE))
   expect_error(photon$get_url(), class = "no_url_yet")
 
-  skip_if_not_installed("httpuv")
   photon$start(host = "127.0.0.1")
   expect_true(photon$is_running())
   expect_gt(nrow(geocode("Apai")), 0)
