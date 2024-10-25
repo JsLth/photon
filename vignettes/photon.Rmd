@@ -47,7 +47,7 @@ cities1
 #> 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  <dbl>  (-66.9146 10.50609)
 ```
 
-Simiarly, you can also reverse geocode. `{photon}` fully supports `sf` objects so that all geocoding functions return `sf` dataframes and `reverse()` accepts `sf` and `sfc` objects as input.
+Similarly, you can also reverse geocode. `{photon}` fully supports `sf` objects so that all geocoding functions return `sf` dataframes and `reverse()` accepts `sf` and `sfc` objects as input.
 
 ```{r reverse, eval=FALSE}
 cities2 <- reverse(cities1, osm_tag = ":city")

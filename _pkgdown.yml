@@ -18,7 +18,7 @@ navbar:
     - text: "Get started"
       icon: fa-book
       href: articles/photon.html
-    - text: "Import Nominatim"
+    - text: "Import from Nominatim"
       icon: fa-database
       href: articles/nominatim-import.html
     - text: "Reference"
