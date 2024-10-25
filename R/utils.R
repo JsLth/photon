@@ -113,6 +113,12 @@ rbind_list <- function(args) {
 }
 
 
-globally_enabled <- function(x, dflt = TRUE) {
+globally_enabled <- function(x) {
+  dflt <- switch(
+    x,
+    photon_debug = FALSE,
+    photon_movers = TRUE,
+    photon_setup_warn = FALSE
+  )
   isTRUE(getOption(x, dflt))
 }

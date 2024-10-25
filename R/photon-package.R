@@ -31,7 +31,7 @@
 #'  non-interactive sessions like RMarkdown.}
 #'  \item{\code{photon_setup_warn}}{Whether to convert warnings in the photon
 #'  logs to R warnings. Many warnings in the log are somewhat useless, but
-#'  some can be important. Defaults to \code{FALSE}.}
+#'  some can be important. Defaults to \code{TRUE}.}
 #' }
 #'
 #' @keywords internal

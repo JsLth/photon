@@ -26,7 +26,7 @@ run_import <- function(self, private, args, timeout = 60, quiet = FALSE) {
     args = args,
     stdout = "|",
     stderr = "|",
-    echo_cmd = globally_enabled("photon_debug", FALSE),
+    echo_cmd = globally_enabled("photon_debug"),
     wd = self$path,
     timeout = timeout,
     error_on_status = TRUE,
@@ -46,7 +46,7 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
     args = args,
     stdout = "|",
     stderr = "|",
-    echo_cmd = globally_enabled("photon_debug", FALSE),
+    echo_cmd = globally_enabled("photon_debug"),
     wd = self$path
   )
 
