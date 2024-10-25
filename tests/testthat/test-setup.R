@@ -12,6 +12,9 @@ test_that("java checks work", {
 })
 
 test_that("java can be purged", {
+  proc <- get_java_processes()
+  message(capture.output(proc))
+  expect_s3_class(proc, "data.frame")
   expect_error(purge_java(-1, consent = TRUE), class = "pid_not_java")
   expect_vector(kill_process(rep(-1, 2)), integer(), size = 2)
 
@@ -53,9 +56,13 @@ skip_if_offline("corretto.aws")
 skip_if_not(has_java())
 
 test_that("local setup works", {
+  options(photon_setup_warn = FALSE)
   dir <- file.path(tempdir(), "photon")
   photon <- new_photon(path = dir, country = "samoa")
-  on.exit(photon$purge(ask = FALSE))
+  on.exit(
+    photon$purge(ask = FALSE),
+    options(photon_setup_warn = NULL)
+  )
   expect_no_error(print(photon))
   photon <- new_photon(path = dir, country = "samoa")
   expect_no_message(new_photon(path = dir, quiet = TRUE))
