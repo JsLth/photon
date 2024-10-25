@@ -63,8 +63,6 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">photon</span><span class="op">)</span></span></code></pre></div>
 <p>As specified in the <a href="photon.html">introduction vignette</a>,
 you can download pre-built search indices for selected country extracts.
 If you require more freedom in providing the geocoding data, you can
@@ -80,7 +78,7 @@ the helper functions <code><a href="../reference/cmd_options.html">cmd_options()
 to run a Nominatim docker. It is important to expose the port 5432 on
 the host machine, otherwise photon is not able to connect to the
 database.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmd_options.html">cmd_options</a></span><span class="op">(</span></span>
 <span>  e <span class="op">=</span> <span class="st">"PBF_URL=https://download.geofabrik.de/australia-oceania/samoa-latest.osm.pbf"</span>,</span>
 <span>  e <span class="op">=</span> <span class="st">"NOMINATIM_PASSWORD=MNdtC2*pP#aMbe"</span>,</span>
@@ -95,7 +93,7 @@ database.</p>
 <span><span class="va">nominatim</span> <span class="op">&lt;-</span> <span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"docker"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"run"</span>, <span class="va">opts</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>To verify that the database can be connected to, you can connect to
 it from R.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rpostgres.r-dbi.org" class="external-link">RPostgres</a></span><span class="op">)</span></span>
 <span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">dbConnect</span><span class="op">(</span><span class="fu">Postgres</span><span class="op">(</span><span class="op">)</span>, password <span class="op">=</span> <span class="st">"MNdtC2*pP#aMbe"</span>, user <span class="op">=</span> <span class="st">"nominatim"</span><span class="op">)</span></span>
 <span><span class="fu">dbGetInfo</span><span class="op">(</span><span class="va">db</span><span class="op">)</span></span>
@@ -128,7 +126,7 @@ it from R.</p>
 instance and import the database using <code>$import()</code>. The
 database import creates the folder <code>photon_data</code> inside the
 given photon directory.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span>
 <span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">dir</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ java version "22" 2024-03-19</span></span>
@@ -148,11 +146,11 @@ given photon directory.</p>
 <span><span class="co">#&gt; 2024-10-24 23:07:59,080 [main] INFO  de.komoot.photon.nominatim.ImportThread - Finished import of 2085 photon documents.</span></span>
 <span><span class="co">#&gt; 2024-10-24 23:07:59,080 [main] INFO  de.komoot.photon.App - Imported data from nominatim to photon with languages: en,fr,de,it</span></span></code></pre></div>
 <p>After the import has finished, you can start the photon instance.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 2024-10-24 23:26:46,360 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
 <span><span class="co">#&gt; ✔ Photon is now running. [11.1s]</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apia"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Simple feature collection with 3 features and 13 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
@@ -175,7 +173,7 @@ necessary to enable structured geocoding queries. Currently, OpenSearch
 photon still needs to be build manually using <a href="https://gradle.org/" class="external-link">gradle</a>. For this step, we assume a
 working <code>photon-opensearch-0.5.0.jar</code> in the photon
 directory.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set opensearch = TRUE to use OpenSearch photon</span></span>
 <span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">dir</span>, opensearch <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -185,7 +183,7 @@ directory.</p>
 <code>photon_data</code>, which is 10-20% larger than the ElasticSearch
 version. After starting photon, you can verify that structured geocoding
 is enabled by running <code><a href="../reference/structured.html">has_structured_support()</a></code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/structured.html">has_structured_support</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -196,7 +194,7 @@ text queries. In the following example, we search for three different
 spatial features by querying their state, street, and housenumber.
 Photon is able to geocode them with very high precision due to the
 detailed data structure we provide.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">place_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  housenumber <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"77C"</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  street <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falealilli Cross Island Road"</span>, <span class="st">"Main Beach Road"</span>, <span class="st">"Le Mafa Pass Road"</span><span class="op">)</span>,</span>
