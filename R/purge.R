@@ -93,7 +93,7 @@ get_java_processes <- function() {
       "%y,", "-o", "%U,", "-o", "%mem"
     )
     procs <- run("ps", args = args)$stdout
-    # todo: is there a safer alternative? fill = TRUE is an interim hack
+    # to-do: is there a safer alternative? fill = TRUE is an interim hack
     procs <- utils::read.csv(text = procs, header = TRUE, fill = TRUE)
     for (col in names(t)) t[, col] <- trimws(t[, col])
     names(procs) <- c("cmd", "pid", "tty", "user", "memory")
@@ -103,8 +103,8 @@ get_java_processes <- function() {
       "-o", "tty,", "-o", "user,", "-o", "%mem"
     )
     procs <- run("ps", args = args)$stdout
-    # todo: is there a safer alternative? fill = TRUE is an interim hack
-    procs <- utils::read.csv(text = procs, header = TRUE, fill = TRUE)
+    # to-do: is there a safer alternative? fill = TRUE is an interim hack
+    procs <- utils::read.table(text = procs, header = TRUE, fill = TRUE)
     names(procs) <- c("cmd", "pid", "tty", "user", "memory") # nocov end
   } else if (is_windows()) {
     args <- c("/FO", "CSV")
