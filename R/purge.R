@@ -97,7 +97,7 @@ get_java_processes <- function() {
     names(procs) <- c("cmd", "pid", "session_name", "session", "mem_usage")
   }
 
-  procs <- procs[grepl("java.exe", procs$cmd, fixed = TRUE), ]
+  procs <- procs[grepl("java", procs$cmd, fixed = TRUE), ]
   row.names(procs) <- NULL
   procs
 }
