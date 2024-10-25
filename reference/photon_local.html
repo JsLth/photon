@@ -15,7 +15,7 @@ to retrieve the URL for geocoding."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,34 @@ to retrieve the URL for geocoding.</p>
 
 
     <div class="section level2">
+    <h2 id="elasticsearch">ElasticSearch<a class="anchor" aria-label="anchor" href="#elasticsearch"></a></h2>
+
+
+<p>The standard version of photon uses ElasticSearch indices to geocode.
+These search indices can be self-provided by importing an existing
+Nominatim database or they can be downloaded from the
+<a href="https://nominatim.org/2020/10/21/photon-country-extracts.html" class="external-link">Photon download server</a>.
+Use <code>nominatim = TRUE</code> to indicate that no ElasticSearch indices
+should be downloaded. See
+<code><a href="../articles/nominatim-import.html">vignette("nominatim-import", package = "photon")</a></code> for details on how
+to import from Nominatim.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="opensearch">OpenSearch<a class="anchor" aria-label="anchor" href="#opensearch"></a></h2>
+
+
+<p>To enable structured geocoding, the photon geocoder needs to be built to
+support OpenSearch. Currently, this feature is only experimental and needs
+to be manually built using gradle.
+When using the OpenSearch version of photon, no pre-built ElasticSearch
+indices can be used and the data must be directly imported from a
+Nominatim database. Refer to the photon
+<a href="https://github.com/komoot/photon" class="external-link">README</a> for details. These steps
+cannot be done by <code>{photon}</code> and must be done before initializing
+<code>photon_local</code>. If an OpenSearch jar is detected, the <code>nominatim</code>
+parameter is forced to <code>TRUE</code>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="super-class">Super class<a class="anchor" aria-label="anchor" href="#super-class"></a></h2>
     <p><code><a href="photon-package.html">photon::photon</a></code> -&gt; <code>photon_local</code></p>
     </div>
@@ -77,6 +105,7 @@ external process running photon.</p></dd>
 <li><p><a href="#method-photon_local-mount"><code>photon_local$mount()</code></a></p></li>
 <li><p><a href="#method-photon_local-info"><code>photon_local$info()</code></a></p></li>
 <li><p><a href="#method-photon_local-purge"><code>photon_local$purge()</code></a></p></li>
+<li><p><a href="#method-photon_local-import"><code>photon_local$import()</code></a></p></li>
 <li><p><a href="#method-photon_local-start"><code>photon_local$start()</code></a></p></li>
 <li><p><a href="#method-photon_local-stop"><code>photon_local$stop()</code></a></p></li>
 <li><p><a href="#method-photon_local-is_running"><code>photon_local$is_running()</code></a></p></li>
@@ -94,6 +123,8 @@ executable, the search index, and Java.</p><div class="section">
 <span>  country <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  date <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>  exact <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  opensearch <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -108,7 +139,9 @@ working directory.</p></dd>
 
 <dt><code>photon_version</code></dt>
 <dd><p>Version of photon to be used. A list of all
-releases can be found here: <a href="https://github.com/komoot/photon/releases/" class="external-link">https://github.com/komoot/photon/releases/</a>.</p></dd>
+releases can be found here: <a href="https://github.com/komoot/photon/releases/" class="external-link">https://github.com/komoot/photon/releases/</a>.
+Ignored if <code>jar</code> is given. If <code>NULL</code>, uses the latest known
+version.</p></dd>
 
 
 <dt><code>country</code></dt>
@@ -130,6 +163,21 @@ Otherwise, a file will be selected that exactly matches the input to
 <dt><code>exact</code></dt>
 <dd><p>If <code>TRUE</code>, exactly matches the <code>date</code>. Otherwise,
 selects the date with lowest difference to the <code>date</code> parameter.</p></dd>
+
+
+<dt><code>opensearch</code></dt>
+<dd><p>If <code>TRUE</code>, looks for an OpenSearch version of
+photon in the specified path. Opensearch-based photon supports structured
+geocoding queries but has to be built manually using gradle. Hence,
+it cannot be downloaded directly. If no OpenSearch executable is found
+in the search path, then this parameter is set to <code>FALSE</code>. Defaults
+to <code>FALSE</code>.</p></dd>
+
+
+<dt><code>overwrite</code></dt>
+<dd><p>If <code>TRUE</code>, overwrites existing jar files and
+search indices when initializing a new instance. Defaults to
+<code>FALSE</code>.</p></dd>
 
 
 <dt><code>quiet</code></dt>
@@ -163,39 +211,147 @@ as the country and creation date of the Eleasticsearch search index.</p><div cla
 <p>Kill the photon process and remove the directory. Useful to get rid
 of an instance entirely.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">purge</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">purge</span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+<div class="section">
+<h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>ask</code></dt>
+<dd><p>If <code>TRUE</code>, asks for confirmation before purging the
+instance.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-photon_local-import"></a><div class="section">
+<h3 id="method-import-">Method <code>import()</code><a class="anchor" aria-label="anchor" href="#method-import-"></a></h3>
+<p>Import a Postgres Nominatim database to photon. Runs the photon jar
+file using the additional parameter <code>-nominatim-import</code>. Requires
+a running Nominatim database that can be connected to.</p><div class="section">
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">import</span><span class="op">(</span></span>
+<span>  host <span class="op">=</span> <span class="st">"127.0.0.1"</span>,</span>
+<span>  port <span class="op">=</span> <span class="fl">5432</span>,</span>
+<span>  database <span class="op">=</span> <span class="st">"nominatim"</span>,</span>
+<span>  user <span class="op">=</span> <span class="st">"nominatim"</span>,</span>
+<span>  password <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  structured <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  update <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  enable_update_api <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  languages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"en"</span>, <span class="st">"fr"</span>, <span class="st">"de"</span>, <span class="st">"it"</span><span class="op">)</span>,</span>
+<span>  countries <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extra_tags <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  json <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="fl">60</span>,</span>
+<span>  java_opts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  photon_opts <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>host</code></dt>
+<dd><p>Postgres host of the database. Defaults to <code>"127.0.0.1"</code>.</p></dd>
+
+
+<dt><code>port</code></dt>
+<dd><p>Postgres port of the database. Defaults to <code>5432</code>.</p></dd>
+
+
+<dt><code>database</code></dt>
+<dd><p>Postgres database name. Defaults to <code>"nominatim"</code>.</p></dd>
+
+
+<dt><code>user</code></dt>
+<dd><p>Postgres database user. Defaults to <code>"nominatim"</code>.</p></dd>
+
+
+<dt><code>password</code></dt>
+<dd><p>Postgres database password. Defaults to <code>""</code>.</p></dd>
+
+
+<dt><code>structured</code></dt>
+<dd><p>If <code>TRUE</code>, enables structured query support when
+importing the database. This allows the usage of
+<code><a href="structured.html">structured</a></code>. Structured queries are only supported in the
+OpenSearch version of photon. See section "OpenSearch" above. Defaults
+to <code>FALSE</code>.</p></dd>
+
+
+<dt><code>update</code></dt>
+<dd><p>If <code>TRUE</code>, fetches updates from the Nominatim database,
+updating the search index without offering an API. If <code>FALSE</code>,
+imports the database an deletes the previous index. Defaults to
+<code>FALSE</code>.</p></dd>
+
+
+<dt><code>enable_update_api</code></dt>
+<dd><p>If <code>TRUE</code>, enables an additional
+endpoint <code>/nominatim-update</code>, which allows updates from
+Nominatim databases.</p></dd>
+
+
+<dt><code>languages</code></dt>
+<dd><p>Character vector specifying the languages to import
+from the Nominatim databases. Defaults to English, French, German,
+and Italian.</p></dd>
+
+
+<dt><code>countries</code></dt>
+<dd><p>Character vector specifying the country codes to
+import from the Nominatim database. Defaults to all country codes.</p></dd>
+
+
+<dt><code>extra_tags</code></dt>
+<dd><p>Character vector specifying extra OSM tags to import
+from the Nominatim database. These tags are used to augment geocoding
+results. Defaults to <code>NULL</code>.</p></dd>
+
+
+<dt><code>json</code></dt>
+<dd><p>If <code>TRUE</code>, dumps the imported Nominatim database to
+a JSON file and returns the path to the output file. Defaults to
+<code>FALSE</code>.</p></dd>
+
+
+<dt><code>timeout</code></dt>
+<dd><p>Time in seconds before the java process aborts. Defaults
+to 60 seconds.</p></dd>
+
+
+<dt><code>java_opts</code></dt>
+<dd><p>List of further flags passed on to the <code>java</code>
+command.</p></dd>
+
+
+<dt><code>photon_opts</code></dt>
+<dd><p>List of further flags passed on to the photon
+jar in the java command. See <code><a href="cmd_options.html">cmd_options</a></code> for a helper
+function to import external Nominatim databases.</p></dd>
+
+
+</dl><p></p></div>
+</div>
 
 </div><p></p><hr><a id="method-photon_local-start"></a><div class="section">
 <h3 id="method-start-">Method <code><a href="https://rdrr.io/r/stats/start.html" class="external-link">start()</a></code><a class="anchor" aria-label="anchor" href="#method-start-"></a></h3>
 <p>Start a local instance of the Photon geocoder. Runs the jar executable
 located in the instance directory.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span></span>
-<span>  min_ram <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  max_ram <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  host <span class="op">=</span> <span class="st">"0.0.0.0"</span>,</span>
 <span>  port <span class="op">=</span> <span class="st">"2322"</span>,</span>
 <span>  ssl <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  java_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  photon_options <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  timeout <span class="op">=</span> <span class="fl">60</span>,</span>
+<span>  java_opts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  photon_opts <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>min_ram</code></dt>
-<dd><p>Initial RAM to be allocated to the Java process
-(<code>-Xms</code> flag).</p></dd>
-
-
-<dt><code>max_ram</code></dt>
-<dd><p>Maximum RAM to be allocated to the Java process
-(<code>-Xmx</code> flag)</p></dd>
-
-
-<dt><code>host</code></dt>
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>host</code></dt>
 <dd><p>Character string of the host name that the geocoder should
 be opened on.</p></dd>
 
@@ -209,23 +365,38 @@ be opened on.</p></dd>
 Defaults to <code>FALSE</code>.</p></dd>
 
 
-<dt><code>java_options</code></dt>
+<dt><code>timeout</code></dt>
+<dd><p>Time in seconds before the java process aborts. Defaults
+to 60 seconds.</p></dd>
+
+
+<dt><code>java_opts</code></dt>
 <dd><p>List of further flags passed on to the <code>java</code>
 command.</p></dd>
 
 
-<dt><code>photon_options</code></dt>
+<dt><code>photon_opts</code></dt>
 <dd><p>List of further flags passed on to the photon
-jar in the java command.</p></dd>
+jar in the java command. See <code><a href="cmd_options.html">cmd_options</a></code> for a helper
+function to import external Nominatim databases.</p></dd>
 
 
 </dl><p></p></div>
 </div>
+<div class="section">
+<h4 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h4>
+<p>While there is a certain way to determine if a photon instance is
+ready, there is no clear way as of yet to determine if a photon setup
+has failed. Due to this, a failing setup is mostly indicated by the
+setup hanging after emitting a warning. In this case, the setup has to
+be interrupted manually.</p>
+</div>
+
 
 </div><p></p><hr><a id="method-photon_local-stop"></a><div class="section">
 <h3 id="method-stop-">Method <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code><a class="anchor" aria-label="anchor" href="#method-stop-"></a></h3>
 <p>Kills the running photon process.</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="kw">stop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -240,7 +411,7 @@ if the running photon instance is managed by a process from its own
 return <code>TRUE</code>. This method is useful if you want to ensure that
 the <code>photon</code> object can control its photon server (mostly internal
 use).</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_running</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -251,7 +422,7 @@ use).</p><div class="section">
 is the case if the photon server returns a HTTP 400 when sending a
 queryless request. This method is useful if you want to check whether
 you can send requests.</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_ready</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -259,7 +430,7 @@ you can send requests.</p><div class="section">
 </div><p></p><hr><a id="method-photon_local-get_url"></a><div class="section">
 <h3 id="method-get-url-">Method <code>get_url()</code><a class="anchor" aria-label="anchor" href="#method-get-url-"></a></h3>
 <p>Constructs the URL that geocoding requests should be sent to.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">get_url</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -267,12 +438,12 @@ you can send requests.</p><div class="section">
 </div><p></p><hr><a id="method-photon_local-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -287,14 +458,23 @@ you can send requests.</p><div class="section">
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># start a new instance using a Monaco extract</span></span></span>
-<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, country <span class="op">=</span> <span class="st">"Monaco"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">dir</span>, country <span class="op">=</span> <span class="st">"Monaco"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># start a new instance with an older photon version</span></span></span>
-<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, photon_version <span class="op">=</span> <span class="st">"0.4.1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">dir</span>, photon_version <span class="op">=</span> <span class="st">"0.4.1"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># start a new instance with a specific java version</span></span></span>
-<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, java_version <span class="op">=</span> <span class="fl">17</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># import a nominatim database using OpenSearch photon</span></span></span>
+<span class="r-in"><span><span class="co"># this example requires the OpenSearch version of photon and a running</span></span></span>
+<span class="r-in"><span><span class="co"># Nominatim server.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"path/to/photon-opensearch-0.5.0.jar"</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"photon-opensearch-0.5.0.jar"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">dir</span>, nominatim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span>photon_options <span class="op">=</span> <span class="fu"><a href="cmd_options.html">cmd_options</a></span><span class="op">(</span>port <span class="op">=</span> <span class="fl">29146</span>, password <span class="op">=</span> <span class="st">"pgpass"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

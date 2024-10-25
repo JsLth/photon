@@ -11,7 +11,7 @@ or structured geocoding."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,9 @@ or <a href="structured.html">structured</a> geocoding.</p>
 <span>  lang <span class="op">=</span> <span class="st">"en"</span>,</span>
 <span>  osm_tag <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  layer <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  locbias <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  locbias_scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  zoom <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  distance_sort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  progress <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -90,6 +93,26 @@ results by. See details.</p></dd>
 Can be one of <code>"house"</code>, <code>"street"</code>, <code>"locality"</code>,
 <code>"district"</code>, <code>"city"</code>, <code>"county"</code>, <code>"state"</code>,
 <code>"country"</code>, or <code>"other"</code>.</p></dd>
+
+
+<dt id="arg-locbias">locbias<a class="anchor" aria-label="anchor" href="#arg-locbias"></a></dt>
+<dd><p>Numeric vector of length 2 or an <code>sfg</code> point
+geometry that specifies a location bias for geocoding. Geocoding results
+are biased towards this point. The radius of the bias is controlled through
+<code>zoom</code> and its prominence through <code>location_bias_scale</code>.</p></dd>
+
+
+<dt id="arg-locbias-scale">locbias_scale<a class="anchor" aria-label="anchor" href="#arg-locbias-scale"></a></dt>
+<dd><p>Numeric vector specifying the importance of prominence
+in <code>locbias</code>. A higher prominence scale gives more weight to important
+places. Defaults to 0.2.</p></dd>
+
+
+<dt id="arg-zoom">zoom<a class="anchor" aria-label="anchor" href="#arg-zoom"></a></dt>
+<dd><p>Numeric specifying the radius for which the <code>locbias</code> is
+effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
+to <code>locbias</code> is \(0.25\text{ km} \cdot 2^{(18 - \text{zoom})}\).
+Defaults to 16.</p></dd>
 
 
 <dt id="arg-distance-sort">distance_sort<a class="anchor" aria-label="anchor" href="#arg-distance-sort"></a></dt>
@@ -143,64 +166,16 @@ based on the distance to the input point. Defaults to <code>TRUE</code>.</p></dd
 <span class="r-in"><span><span class="co"># works with sf objects</span></span></span>
 <span class="r-in"><span><span class="va">sf_data</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">52</span><span class="op">)</span><span class="op">)</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">52</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">reverse</span><span class="op">(</span><span class="va">sf_data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 17 fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 6.995134 ymin: 51.99511 xmax: 7.99941 ymax: 52.00153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 18</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     idx  osm_id country city  countrycode postcode county type  osm_type osm_key</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  2.80<span style="color: #949494;">e</span>7 Germany Sass… DE          48336    Kreis… stre… W        highway</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1  9.64<span style="color: #949494;">e</span>9 Germany Sass… DE          48336    Kreis… house N        histor…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1  3.35<span style="color: #949494;">e</span>8 Germany Sass… DE          48336    Kreis… house W        buildi…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     2  4.21<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… house N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     2  4.21<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… house N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     2  9.83<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… loca… N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: housenumber &lt;chr&gt;, street &lt;chr&gt;, district &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   osm_value &lt;chr&gt;, name &lt;chr&gt;, state &lt;chr&gt;, extent &lt;list&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   geometry &lt;POINT [°]&gt;</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in globally_enabled("photon_debug", FALSE):</span> unused argument (FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ... but also with simple dataframes</span></span></span>
 <span class="r-in"><span><span class="va">df_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">7</span><span class="op">)</span>, lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">52</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">reverse</span><span class="op">(</span><span class="va">df_data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 17 fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 6.995134 ymin: 51.99511 xmax: 7.99941 ymax: 52.00153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 18</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     idx  osm_id country city  countrycode postcode county type  osm_type osm_key</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  2.80<span style="color: #949494;">e</span>7 Germany Sass… DE          48336    Kreis… stre… W        highway</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1  9.64<span style="color: #949494;">e</span>9 Germany Sass… DE          48336    Kreis… house N        histor…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1  3.35<span style="color: #949494;">e</span>8 Germany Sass… DE          48336    Kreis… house W        buildi…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     2  4.21<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… house N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     2  4.21<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… house N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     2  9.83<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… loca… N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: housenumber &lt;chr&gt;, street &lt;chr&gt;, district &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   osm_value &lt;chr&gt;, name &lt;chr&gt;, state &lt;chr&gt;, extent &lt;list&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   geometry &lt;POINT [°]&gt;</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in globally_enabled("photon_debug", FALSE):</span> unused argument (FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># limit search radius to 10m</span></span></span>
 <span class="r-in"><span><span class="fu">reverse</span><span class="op">(</span><span class="va">df_data</span>, radius <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 17 fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 6.995134 ymin: 51.99511 xmax: 7.99941 ymax: 52.00153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 18</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     idx  osm_id country city  countrycode postcode county type  osm_type osm_key</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  2.80<span style="color: #949494;">e</span>7 Germany Sass… DE          48336    Kreis… stre… W        highway</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1  9.64<span style="color: #949494;">e</span>9 Germany Sass… DE          48336    Kreis… house N        histor…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1  3.35<span style="color: #949494;">e</span>8 Germany Sass… DE          48336    Kreis… house W        buildi…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     2  4.21<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… house N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     2  4.21<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… house N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     2  9.83<span style="color: #949494;">e</span>9 Germany Stad… DE          48703    Kreis… loca… N        place  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: housenumber &lt;chr&gt;, street &lt;chr&gt;, district &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   osm_value &lt;chr&gt;, name &lt;chr&gt;, state &lt;chr&gt;, extent &lt;list&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   geometry &lt;POINT [°]&gt;</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in globally_enabled("photon_debug", FALSE):</span> unused argument (FALSE)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
