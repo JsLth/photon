@@ -89,7 +89,7 @@ kill_process <- function(pids) {
 get_java_processes <- function() {
   if (is_linux() || is_macos()) {
     procs <- run("ps", "-A", stdout = NULL, stderr = NULL) # nocov start
-    procs <- utils::read.table(procs, header = TRUE)
+    procs <- utils::read.table(procs, header = TRUE)$stdout
     names(procs) <- c("pid", "tty", "time", "cmd") # nocov end
   } else if (is_windows()) {
     procs <- run("tasklist", args = c("/FO", "CSV"))$stdout
