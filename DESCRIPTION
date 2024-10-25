@@ -1,7 +1,7 @@
 Package: photon
 Type: Package
 Title: High-performance geocoding using 'photon'
-Version: 0.1.0.9000
+Version: 0.2.1.9000
 Authors@R: 
     person("Jonas", "Lieth", email = "jonas.lieth@gesis.org", role = c("aut", "cre", "cph"))
 Description: Features unstructured, structured and reverse geocoding using the
@@ -23,8 +23,8 @@ Suggests:
     testthat (>= 3.0.0),
     tibble,
     httpuv,
-    bench,
     knitr,
-    rmarkdown
+    rmarkdown,
+    withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
