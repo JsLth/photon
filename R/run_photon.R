@@ -60,7 +60,7 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
   }
 
   start <- Sys.time()
-  while (!photon_ready(self, private) && proc$is_alive()) {
+  while (!self$is_ready() && proc$is_alive()) {
     diff <- Sys.time() - start
     if (diff > timeout) {
       ph_stop("Photon setup timeout reached.")
