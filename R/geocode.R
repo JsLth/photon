@@ -191,7 +191,7 @@ query_photon <- function(endpoint, ...) {
   req <- throttle(req)
   req <- httr2::req_retry(req, max_tries = getOption("photon_max_tries", 3))
 
-  if (globally_enabled("photon_debug", FALSE)) { # nocov start
+  if (globally_enabled("photon_debug")) { # nocov start
     cli::cli_inform("GET {req$url}")
   } # nocov end
 
