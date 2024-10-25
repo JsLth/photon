@@ -1,5 +1,9 @@
 photon_env <- new.env(parent = emptyenv())
 
+photon_cache <- function() {
+  get("photon_env", envir = asNamespace("rors"))
+}
+
 #' Photon utilities
 #' @description
 #' Utilities to manage photon instances. These functions operate on mounted
@@ -25,7 +29,7 @@ photon_env <- new.env(parent = emptyenv())
 #' # get the server url
 #' get_photon_url()
 get_instance <- function() {
-  instance <- get0("instance", envir = photon_env)
+  instance <- get0("instance", envir = photon_cache())
 
   if (is.null(instance)) {
     ph_stop(c(
@@ -45,7 +49,7 @@ get_photon_url <- function() {
 }
 
 clear_cache <- function() {
-  rm(list = ls(envir = photon_env), envir = photon_env)
+  rm(list = ls(envir = photon_cache()), envir = photon_cache())
 }
 
 #' Initialize a photon instance
@@ -113,7 +117,7 @@ photon_remote <- R6::R6Class(
     },
 
     mount = function() {
-      assign("instance", self, envir = photon_env)
+      assign("instance", self, envir = photon_cache())
     }
   ),
 
@@ -270,7 +274,7 @@ photon_local <- R6::R6Class(
     #' send their requests to the URL of this instance. Manually mounting
     #' is useful if you want to switch between multiple photon instances.
     mount = function() {
-      assign("instance", self, envir = photon_env)
+      assign("instance", self, envir = photon_cache())
     },
 
     #' @description
@@ -364,10 +368,10 @@ photon_local <- R6::R6Class(
       assert_vector(password, "character")
       assert_vector(languages, "character", null = TRUE)
       assert_vector(countries, "character", null = TRUE)
-      assert_vector(extra_tags, "character")
-      assert_vector(json, "double")
-      assert_vector(java_opts, "character")
-      assert_vector(photon_opts, "character")
+      assert_vector(extra_tags, "character", null = TRUE)
+      assert_vector(timeout, "double")
+      assert_vector(java_opts, "character", null = TRUE)
+      assert_vector(photon_opts, "character", null = TRUE)
       assert_flag(structured)
       assert_flag(update)
       assert_flag(enable_update_api)
@@ -378,6 +382,7 @@ photon_local <- R6::R6Class(
           "Structured queries are only supported for OpenSearch photon.",
           "Setting {.code structured = FALSE}."
         ))
+        structured <- FALSE
       }
 
       popts <- cmd_options(
@@ -387,6 +392,7 @@ photon_local <- R6::R6Class(
         database = database,
         user = user,
         password = password,
+        structured = structured,
         nominatim_update = update,
         enable_update_api = enable_update_api,
         languages = languages,
