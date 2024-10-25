@@ -36,3 +36,5 @@ reference:
       - download_searchindex
       - download_photon
       - get_instance
+      - cmd_options
+      - purge_java
