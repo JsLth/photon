@@ -20,7 +20,7 @@ navbar:
       href: articles/photon.html
     - text: "Import Nominatim"
       icon: fa-database
-      href: reference/nominatim-import.html
+      href: articles/nominatim-import.html
     - text: "Reference"
       icon: fa-search
       href: reference/index.html
