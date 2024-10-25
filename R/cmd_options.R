@@ -28,9 +28,11 @@
 #' opts <- cmd_options(n = 1, w = 5)
 #' run("ping", c(opts, "127.0.0.1"), error_on_status = FALSE, echo_cmd = TRUE)
 #'
+#' if (nzchar(Sys.which("docker"))) {
 #' # sometimes, it is necessary to use double hyphens
 #' opts <- cmd_options(all = TRUE, format = "json", use_double_hyphens = TRUE)
 #' run("docker", c("ps", opts), error_on_status = FALSE, echo_cmd = TRUE)
+#' }
 #'
 #' if (FALSE) {
 #' # particularly useful together with photon
