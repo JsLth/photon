@@ -587,8 +587,8 @@ photon_local <- R6::R6Class(
       if (!quiet) {
         cli::cli_ul(c(
           sprintf("Version: %s", meta$version),
-          sprintf("Coverage: %s", meta$country),
-          sprintf("Time: %s", meta$date)
+          sprintf("Coverage: %s", meta$country %|||% NULL),
+          sprintf("Time: %s", meta$date %|||% NULL)
         ))
       }
 
@@ -611,35 +611,20 @@ setup_photon_directory <- function(path,
 
   files <- list.files(path, full.names = TRUE)
   if (!jar %in% basename(files) || overwrite) {
-    if (opensearch) {
-      link <- cli::style_hyperlink("README", "https://github.com/komoot/photon")
-      msg <- c(
-        "The OpenSearch version of photon has to be built manually.",
-        "i" = "Refer to the photon {link} for details."
-      )
-      ph_stop(msg)
-    }
-
+    abort_opensearch_build(opensearch)
     download_photon(path = path, version = version, quiet = quiet)
   } else if (!quiet) {
-    cli::cli_inform(c("i" = paste(
-      "A photon executable already exists in the given path.",
-      "Download will be skipped."
-    )))
+    inform_photon_exists()
   }
 
   if (opensearch) {
-    if (!is.null(country)) {
-      cli::cli_inform(c(
-        "i" = "OpenSearch does not support ElasticSearch indices. Skipping."
-      ))
-    }
+    inform_opensearch_incompatible(country)
     return()
   }
 
-  if ((!any(grepl("photon_data$", files)) || overwrite) && !is.null(country)) {
+  if ((!any(grepl("photon_data$", files)) || overwrite)) {
     has_archive <- grepl("\\.bz2$", files)
-    if (!any(has_archive)) {
+    if (!any(has_archive) && !is.null(country)) {
       archive_path <- download_searchindex(
         path = path,
         country = country,
@@ -647,27 +632,27 @@ setup_photon_directory <- function(path,
         exact = exact,
         quiet = quiet
       )
+    } else if (!any(has_archive)) {
+      inform_no_download()
+      return()
     } else {
+      inform_tar_exists()
       archive_path <- files[has_archive] # nocov
     }
-    on.exit(unlink(archive_path))
-    untared <- utils::untar(archive_path, files = "photon_data", exdir = path)
 
-    if (!identical(untared, 0L)) { # nocov start
-      ph_stop("Failed to untar the Elasticsearch index.")
-    } # nocov end
-
+    untar_es_index(archive_path, path)
     store_searchindex_metadata(path, archive_path)
-  } else if (!quiet && is.null(country)) {
-    cli::cli_inform(c("i" = paste(
-      "No search index downloaded!",
-      "Download one or import from a Nominatim database."
-    )))
   } else if (!quiet) {
-    cli::cli_inform(c("i" = paste(
-      "A search index already exists at the given path.",
-      "Download will be skipped"
-    )))
+    inform_index_exists()
+  }
+}
+
+
+untar_es_index <- function(archive_path, path) {
+  untared <- utils::untar(archive_path, files = "photon_data", exdir = path)
+
+  if (!identical(untared, 0L)) {
+    ph_stop("Failed to untar the Elasticsearch index.") # nocov
   }
 }
 
@@ -727,4 +712,57 @@ construct_jar <- function(version = NULL, opensearch = FALSE) {
   version <- version %||% get_latest_photon()
   opensearch <- ifelse(opensearch, "-opensearch", "")
   sprintf("photon%s-%s.jar", opensearch, version)
+}
+
+
+inform_no_download <- function() {
+  cli::cli_inform(c("i" = paste(
+    "No search index downloaded!",
+    "Download one or import from a Nominatim database."
+  )))
+}
+
+
+inform_index_exists <- function() {
+  cli::cli_inform(c("i" = paste(
+    "A search index already exists at the given path.",
+    "Download will be skipped"
+  )))
+}
+
+
+inform_photon_exists <- function() {
+  cli::cli_inform(c("i" = paste(
+    "A photon executable already exists in the given path.",
+    "Download will be skipped."
+  )))
+}
+
+
+inform_tar_exists <- function() {
+  cli::cli_inform(c("i" = paste(
+    "A search index archive already exists at the given path.",
+    "Download will be skipped"
+  )))
+}
+
+
+inform_opensearch_incompatible <- function(country) {
+  if (!is.null(country)) {
+    cli::cli_inform(c(
+      "i" = "OpenSearch does not support ElasticSearch indices. Skipping."
+    ))
+  }
+}
+
+
+abort_opensearch_build <- function(opensearch) {
+  if (opensearch) {
+    link <- cli::style_hyperlink("README", "https://github.com/komoot/photon")
+    msg <- c(
+      "The OpenSearch version of photon has to be built manually.",
+      "i" = "Refer to the photon {link} for details."
+    )
+    ph_stop(msg)
+  }
 }

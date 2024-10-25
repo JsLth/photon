@@ -3,6 +3,11 @@
 }
 
 
+"%|||%" <- function(x, y) {
+  if (is.null(x) || all(is.na(x))) y else x
+}
+
+
 ph_stop <- function(msg, env = parent.frame(), class = NULL, ...) {
   cli::cli_abort(msg, .envir = env, class = c(class, "ph_error"))
 }
