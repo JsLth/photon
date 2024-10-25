@@ -88,11 +88,14 @@ kill_process <- function(pids) {
 
 get_java_processes <- function() {
   if (is_linux() || is_macos()) {
-    procs <- run("ps", "-A")$stdout # nocov start
-    procs <- utils::read.table(text = procs, header = TRUE)
-    names(procs) <- c("pid", "tty", "time", "cmd") # nocov end
+    args <- c("-e", "-o", "%c,", "-o", "%p,", "-o", "%y,", "-o", "%U,", "-o", "%mem")
+    procs <- run("ps", args = args)$stdout # nocov start
+    procs <- utils::read.csv(text = procs, header = TRUE)
+    for (col in names(t)) t[, col] <- trimws(t[, col])
+    names(procs) <- c("cmd", "pid", "tty", "user", "mem_usage") # nocov end
   } else if (is_windows()) {
-    procs <- run("tasklist", args = c("/FO", "CSV"))$stdout
+    args <- c("/FO", "CSV")
+    procs <- run("tasklist", args = args)$stdout
     procs <- utils::read.csv(text = procs, header = TRUE)
     names(procs) <- c("cmd", "pid", "session_name", "session", "mem_usage")
   }
