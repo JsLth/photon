@@ -97,10 +97,12 @@ Can be one of <code>"house"</code>, <code>"street"</code>, <code>"locality"</cod
 
 
 <dt id="arg-locbias">locbias<a class="anchor" aria-label="anchor" href="#arg-locbias"></a></dt>
-<dd><p>Numeric vector of length 2 or an <code>sfg</code> point
-geometry that specifies a location bias for geocoding. Geocoding results
-are biased towards this point. The radius of the bias is controlled through
-<code>zoom</code> and its prominence through <code>location_bias_scale</code>.</p></dd>
+<dd><p>Numeric vector of length 2 or any object that can be coerced
+to a length-2 numeric vector (e.g. a list or <code>sfg</code> object). Specifies a
+location bias for geocoding in the format <code>c(lon, lat)</code>. Geocoding
+results are biased towards this point. The radius of the bias is controlled
+through <code>zoom</code> and the weight of place prominence through
+<code>location_bias_scale</code>.</p></dd>
 
 
 <dt id="arg-locbias-scale">locbias_scale<a class="anchor" aria-label="anchor" href="#arg-locbias-scale"></a></dt>
@@ -128,7 +130,7 @@ based on the distance to the input point. Defaults to <code>TRUE</code>.</p></dd
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An sf dataframe or tibble containing the following columns:</p>
-<ul><li><p><code>id</code>: Internal ID specifying the index of the <code>texts</code>
+<ul><li><p><code>idx</code>: Internal ID specifying the index of the <code>texts</code>
  parameter.</p></li>
 <li><p><code>osm_type</code>: Type of OSM element, one of N (node), W (way),
  R (relation), or P (polygon).</p></li>

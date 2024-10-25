@@ -92,10 +92,12 @@ Can be one of <code>"house"</code>, <code>"street"</code>, <code>"locality"</cod
 
 
 <dt id="arg-locbias">locbias<a class="anchor" aria-label="anchor" href="#arg-locbias"></a></dt>
-<dd><p>Numeric vector of length 2 or an <code>sfg</code> point
-geometry that specifies a location bias for geocoding. Geocoding results
-are biased towards this point. The radius of the bias is controlled through
-<code>zoom</code> and its prominence through <code>location_bias_scale</code>.</p></dd>
+<dd><p>Numeric vector of length 2 or any object that can be coerced
+to a length-2 numeric vector (e.g. a list or <code>sfg</code> object). Specifies a
+location bias for geocoding in the format <code>c(lon, lat)</code>. Geocoding
+results are biased towards this point. The radius of the bias is controlled
+through <code>zoom</code> and the weight of place prominence through
+<code>location_bias_scale</code>.</p></dd>
 
 
 <dt id="arg-locbias-scale">locbias_scale<a class="anchor" aria-label="anchor" href="#arg-locbias-scale"></a></dt>
@@ -118,7 +120,7 @@ Defaults to 16.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An sf dataframe or tibble containing the following columns:</p>
-<ul><li><p><code>id</code>: Internal ID specifying the index of the <code>texts</code>
+<ul><li><p><code>idx</code>: Internal ID specifying the index of the <code>texts</code>
  parameter.</p></li>
 <li><p><code>osm_type</code>: Type of OSM element, one of N (node), W (way),
  R (relation), or P (polygon).</p></li>
@@ -151,8 +153,7 @@ Defaults to 16.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># an instance must be mounted first</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># an instance must be mounted first</span></span></span>
 <span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># geocode a city</span></span></span>
@@ -317,7 +318,6 @@ Defaults to 16.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1 R        <span style="text-decoration: underline;">181</span>615 United… place   US          city      Berl… LaMou… Nort…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1 R        <span style="text-decoration: underline;">126</span>309 United… place   US          village   New … Sanga… Illi…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: type &lt;chr&gt;, extent &lt;list&gt;, geometry &lt;POINT [°]&gt;</span></span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

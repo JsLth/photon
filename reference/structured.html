@@ -119,10 +119,12 @@ Can be one of <code>"house"</code>, <code>"street"</code>, <code>"locality"</cod
 
 
 <dt id="arg-locbias">locbias<a class="anchor" aria-label="anchor" href="#arg-locbias"></a></dt>
-<dd><p>Numeric vector of length 2 or an <code>sfg</code> point
-geometry that specifies a location bias for geocoding. Geocoding results
-are biased towards this point. The radius of the bias is controlled through
-<code>zoom</code> and its prominence through <code>location_bias_scale</code>.</p></dd>
+<dd><p>Numeric vector of length 2 or any object that can be coerced
+to a length-2 numeric vector (e.g. a list or <code>sfg</code> object). Specifies a
+location bias for geocoding in the format <code>c(lon, lat)</code>. Geocoding
+results are biased towards this point. The radius of the bias is controlled
+through <code>zoom</code> and the weight of place prominence through
+<code>location_bias_scale</code>.</p></dd>
 
 
 <dt id="arg-locbias-scale">locbias_scale<a class="anchor" aria-label="anchor" href="#arg-locbias-scale"></a></dt>
@@ -142,6 +144,28 @@ Defaults to 16.</p></dd>
 <dd><p>If <code>TRUE</code>, shows a progress bar for longer queries.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An sf dataframe or tibble containing the following columns:</p>
+<ul><li><p><code>idx</code>: Internal ID specifying the index of the <code>texts</code>
+ parameter.</p></li>
+<li><p><code>osm_type</code>: Type of OSM element, one of N (node), W (way),
+ R (relation), or P (polygon).</p></li>
+<li><p><code>osm_id</code>: OpenStreetMap ID of the matched element.</p></li>
+<li><p><code>country</code>: Country of the matched place.</p></li>
+<li><p><code>city</code>: City of the matched place.</p></li>
+<li><p><code>osm_key</code>: OpenStreetMap key.</p></li>
+<li><p><code>countrycode</code>: ISO2 country code.</p></li>
+<li><p><code>housenumber</code>: House number, if applicable.</p></li>
+<li><p><code>postcode</code>: Post code, if applicable.</p></li>
+<li><p><code>locality</code>: Locality, if applicable.</p></li>
+<li><p><code>street</code>: Street, if applicable.</p></li>
+<li><p><code>district</code>: District name, if applicable.</p></li>
+<li><p><code>osm_value</code>: OpenStreetMap tag value.</p></li>
+<li><p><code>name</code>: Place name.</p></li>
+<li><p><code>type</code>: Layer type as described for the <code>layer</code> parameter.</p></li>
+<li><p><code>extent</code>: Boundary box of the match.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Filtering by OpenStreetMap tags follows a distinct syntax explained on
