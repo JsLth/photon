@@ -2,6 +2,7 @@
 % Please edit documentation in R/structured.R
 \name{structured}
 \alias{structured}
+\alias{has_structured_support}
 \title{Structured geocoding}
 \usage{
 structured(
@@ -16,13 +17,15 @@ structured(
   zoom = NULL,
   progress = interactive()
 )
+
+has_structured_support()
 }
 \arguments{
 \item{.data}{Dataframe or list containing structured information on a place
 to geocode. Can contain the columns \code{street}, \code{housenumber},
 \code{postcode}, \code{city}, \code{district}, \code{county}, \code{state},
 and \code{countrycode}. At least one of these columns must be present in the
-dataframe.}
+dataframe. Note that countries must be passed as ISO-2 country codes.}
 
 \item{limit}{Number of results to return. Defaults to 3.}
 
@@ -59,7 +62,10 @@ post code. Structured geocoding is generally more accurate but requires
 more information than \link[=geocode]{unstructured geocoding}. Note that
 structured geocoding must be specifically enabled when building a Nominatim
 database. It is generally not available on komoot's public API and on
-pre-built search indices through \code{\link{download_searchindex}}.
+pre-built search indices through \code{\link{download_searchindex}}. See
+\code{\link{photon_local}} for details. You can use the helper function
+\code{has_structured_support()} to check if the current API supports
+structured geocoding.
 }
 \details{
 Filtering by OpenStreetMap tags follows a distinct syntax explained on
@@ -72,5 +78,33 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
  \item{Include places wih tag value: \code{:value}}
  \item{Exclude places with tag key: \code{!key}}
  \item{Exclude places with tag value: \code{:!value}}
+}
+}
+\examples{
+if (FALSE) {
+# structured() requires an OpenSearch instance with structured support
+# the following code will not work off the shelf
+# refer to vignette("nominatim-import") for details
+dir <- file.path(tempdir(), "photon")
+photon <- new_photon(dir, opensearch = TRUE)
+photon$import(password = "psql_password", structured = TRUE)
+photon$start()
+
+# check if structured() is supported
+has_structured_support()
+
+# structured() works on dataframes containing structurized data
+place_data <- data.frame(
+  housenumber = c(NA, "77C", NA),
+  street = c("Falealilli Cross Island Road", "Main Beach Road", "Le Mafa Pass Road"),
+  state = c("Tuamasaga", "Tuamasaga", "Atua")
+)
+structured(place_data, limit = 1)
+
+# countries must be specified as iso2 country codes
+structured(data.frame(countrycode = "ws"))
+
+# traditional parameters from geocode() can also be used but are much more niche
+structured(data.frame(city = "Apia"), layer = "house") # matches nothing
 }
 }

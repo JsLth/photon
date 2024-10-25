@@ -78,6 +78,7 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
     }
   }
 
+  cli::cli_progress_done()
   invisible(proc)
 }
 

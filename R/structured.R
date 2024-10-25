@@ -5,17 +5,48 @@
 #' more information than \link[=geocode]{unstructured geocoding}. Note that
 #' structured geocoding must be specifically enabled when building a Nominatim
 #' database. It is generally not available on komoot's public API and on
-#' pre-built search indices through \code{\link{download_searchindex}}.
+#' pre-built search indices through \code{\link{download_searchindex}}. See
+#' \code{\link{photon_local}} for details. You can use the helper function
+#' \code{has_structured_support()} to check if the current API supports
+#' structured geocoding.
 #'
 #' @param .data Dataframe or list containing structured information on a place
 #' to geocode. Can contain the columns \code{street}, \code{housenumber},
 #' \code{postcode}, \code{city}, \code{district}, \code{county}, \code{state},
 #' and \code{countrycode}. At least one of these columns must be present in the
-#' dataframe.
+#' dataframe. Note that countries must be passed as ISO-2 country codes.
 #' @inheritParams geocode
 #' @inherit geocode details
 #'
 #' @export
+#'
+#' @examples
+#' if (FALSE) {
+#' # structured() requires an OpenSearch instance with structured support
+#' # the following code will not work off the shelf
+#' # refer to vignette("nominatim-import") for details
+#' dir <- file.path(tempdir(), "photon")
+#' photon <- new_photon(dir, opensearch = TRUE)
+#' photon$import(password = "psql_password", structured = TRUE)
+#' photon$start()
+#'
+#' # check if structured() is supported
+#' has_structured_support()
+#'
+#' # structured() works on dataframes containing structurized data
+#' place_data <- data.frame(
+#'   housenumber = c(NA, "77C", NA),
+#'   street = c("Falealilli Cross Island Road", "Main Beach Road", "Le Mafa Pass Road"),
+#'   state = c("Tuamasaga", "Tuamasaga", "Atua")
+#' )
+#' structured(place_data, limit = 1)
+#'
+#' # countries must be specified as iso2 country codes
+#' structured(data.frame(countrycode = "ws"))
+#'
+#' # traditional parameters from geocode() can also be used but are much more niche
+#' structured(data.frame(city = "Apia"), layer = "house") # matches nothing
+#' }
 structured <- function(.data,
                        limit = 3,
                        lang = "en",
@@ -64,7 +95,7 @@ structured <- function(.data,
 
 structured_impl <- function(i, ..., env) {
   if (env$progress) cli::cli_progress_update(.envir = env)
-  res <- structured_impl(
+  res <- query_photon(
     endpoint = "structured",
     ...,
     limit = env$limit,
@@ -86,6 +117,8 @@ is_komoot <- function(url) {
 }
 
 
+#' @rdname structured
+#' @export
 has_structured_support <- function() {
   url <- get_photon_url()
   if (is_komoot(url)) return(FALSE)
