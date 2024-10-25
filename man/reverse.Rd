@@ -11,6 +11,9 @@ reverse(
   lang = "en",
   osm_tag = NULL,
   layer = NULL,
+  locbias = NULL,
+  locbias_scale = NULL,
+  zoom = NULL,
   distance_sort = TRUE,
   progress = interactive()
 )
@@ -34,6 +37,20 @@ results by. See details.}
 Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
+
+\item{locbias}{Numeric vector of length 2 or an \code{sfg} point
+geometry that specifies a location bias for geocoding. Geocoding results
+are biased towards this point. The radius of the bias is controlled through
+\code{zoom} and its prominence through \code{location_bias_scale}.}
+
+\item{locbias_scale}{Numeric vector specifying the importance of prominence
+in \code{locbias}. A higher prominence scale gives more weight to important
+places. Defaults to 0.2.}
+
+\item{zoom}{Numeric specifying the radius for which the \code{locbias} is
+effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
+to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
+Defaults to 16.}
 
 \item{distance_sort}{If \code{TRUE}, sorts the reverse geocoding results
 based on the distance to the input point. Defaults to \code{TRUE}.}

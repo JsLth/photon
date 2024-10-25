@@ -41,11 +41,14 @@ geometry that specifies a location bias for geocoding. Geocoding results
 are biased towards this point. The radius of the bias is controlled through
 \code{zoom} and its prominence through \code{location_bias_scale}.}
 
-\item{locbias_scale}{Numeric vector specifying the prominence of
-point in \code{location_bias}. Defaults to 0.2.}
+\item{locbias_scale}{Numeric vector specifying the importance of prominence
+in \code{locbias}. A higher prominence scale gives more weight to important
+places. Defaults to 0.2.}
 
-\item{zoom}{Numeric vector specifying the radius of the \code{location_bias}.
-Corresponds to the zoom level in OpenStreetMap. Defaults to 16.}
+\item{zoom}{Numeric specifying the radius for which the \code{locbias} is
+effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
+to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
+Defaults to 16.}
 
 \item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
 }
@@ -118,5 +121,8 @@ geocode("Berlin", osm_tag = "tourism")
 
 # search for anything but tourism
 geocode("Berlin", osm_tag = "!tourism")
+
+# use location biases to match Berlin, IL instead of Berlin, DE
+geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")
 }
 }

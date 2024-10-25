@@ -36,12 +36,18 @@ reverse <- function(.data,
                     lang = "en",
                     osm_tag = NULL,
                     layer = NULL,
+                    locbias = NULL,
+                    locbias_scale = NULL,
+                    zoom = NULL,
                     distance_sort = TRUE,
                     progress = interactive()) {
   assert_vector(radius, "double", null = TRUE)
   assert_vector(limit, "double", null = TRUE)
   assert_vector(lang, "character", null = TRUE)
   assert_vector(osm_tag, "character", null = TRUE)
+  assert_vector(layer, "character", null = TRUE)
+  assert_vector(locbias_scale, "double", null = TRUE)
+  assert_vector(zoom, "double", null = TRUE)
   assert_length(limit, null = TRUE)
   assert_range(radius, 0, 5000)
   assert_flag(progress)
@@ -69,7 +75,11 @@ reverse_impl <- function(i, ..., env) {
     limit = env$limit,
     lang = env$lang,
     osm_tag = env$osm_tag,
-    layer = env$layer
+    layer = env$layer,
+    lon = env$locbias$lon,
+    lat = env$locbias$lat,
+    location_bias_scale = env$locbias_scale,
+    zoom = env$zoom
   )
   cbind(idx = rep(i, nrow(res)), res)
 }
