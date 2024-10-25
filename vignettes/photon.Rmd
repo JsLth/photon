@@ -92,15 +92,16 @@ photon <- new_photon(path, country = "Samoa")
 #> • Time: latest
 ```
 
-The resulting object is an R6 class with a few methods to control the instance. To start photon, run `$start()`. Here, you can also set photon options such as RAM to allocate or the port to listen to. Here, I use a maximum of 1 GB RAM because the search index of Samoa is rather small.
+The resulting object is an R6 class with a few methods to control the instance. To start photon, run `$start()`. This starts an external java process which can be accessed using the `$proc` attribute.
 
 ```{r start, eval=FALSE}
-photon$start(min_ram = 1, max_ram = 1)
-#> 2024-10-19 03:41:20,557 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
-#> 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node
-#> 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.
-#> 2024-10-19 03:41:26,369 [main] INFO  de.komoot.photon.App - ES cluster is now ready.
-#> ✔ Photon is now running. [7s]
+photon$start()
+#> Running java -jar photon-0.5.0.jar -listen-ip 0.0.0.0 -listen-port 2322
+#> 2024-10-25 17:04:26,912 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
+#> ✔ Photon is now running. [11s]
+
+photon$proc
+#> PROCESS 'java', running, pid 22744.
 ```
 
 To check if the service is up and running, you can use `$is_ready()`.
@@ -132,3 +133,12 @@ bench::mark(geocode("Apai", limit = 1), iterations = 25)$median
 ```
 
 That is a speed increase by a factor of almost 60 (and possibly more on faster machines)!
+
+Finally, to clean up photon, i.e. stop the instance and delete the photon directory, run `$purge()`.
+
+```{r purge, eval=FALSE}
+photon$purge()
+#> ℹ Purging an instance kills the photon process and removes the photon directory.
+#> Continue? (y/N/Cancel) y
+```
+
