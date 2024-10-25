@@ -154,17 +154,17 @@ created at a specific date.</p>
 <span><span class="co">#&gt; • Coverage: Samoa</span></span>
 <span><span class="co">#&gt; • Time: latest</span></span></code></pre></div>
 <p>The resulting object is an R6 class with a few methods to control the
-instance. To start photon, run <code>$start()</code>. Here, you can also
-set photon options such as RAM to allocate or the port to listen to.
-Here, I use a maximum of 1 GB RAM because the search index of Samoa is
-rather small.</p>
+instance. To start photon, run <code>$start()</code>. This starts an
+external java process which can be accessed using the <code>$proc</code>
+attribute.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span>min_ram <span class="op">=</span> <span class="fl">1</span>, max_ram <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2024-10-19 03:41:20,557 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
-<span><span class="co">#&gt; 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node</span></span>
-<span><span class="co">#&gt; 2024-10-19 03:41:26,046 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.</span></span>
-<span><span class="co">#&gt; 2024-10-19 03:41:26,369 [main] INFO  de.komoot.photon.App - ES cluster is now ready.</span></span>
-<span><span class="co">#&gt; ✔ Photon is now running. [7s]</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running java -jar photon-0.5.0.jar -listen-ip 0.0.0.0 -listen-port 2322</span></span>
+<span><span class="co">#&gt; 2024-10-25 17:04:26,912 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
+<span><span class="co">#&gt; ✔ Photon is now running. [11s]</span></span>
+<span></span>
+<span><span class="va">photon</span><span class="op">$</span><span class="va">proc</span></span>
+<span><span class="co">#&gt; PROCESS 'java', running, pid 22744.</span></span></code></pre></div>
 <p>To check if the service is up and running, you can use
 <code>$is_ready()</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -190,6 +190,12 @@ geocoding the Samoan capital Apia:</p>
 <span><span class="co">#&gt; [1] 1.05s</span></span></code></pre></div>
 <p>That is a speed increase by a factor of almost 60 (and possibly more
 on faster machines)!</p>
+<p>Finally, to clean up photon, i.e. stop the instance and delete the
+photon directory, run <code>$purge()</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">purge</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Purging an instance kills the photon process and removes the photon directory.</span></span>
+<span><span class="co">#&gt; Continue? (y/N/Cancel) y</span></span></code></pre></div>
 </div>
   </main>
 </div>
