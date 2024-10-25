@@ -87,17 +87,30 @@ kill_process <- function(pids) {
 
 
 get_java_processes <- function() {
-  if (is_linux() || is_macos()) {
-    args <- c("-e", "-o", "%c,", "-o", "%p,", "-o", "%y,", "-o", "%U,", "-o", "%mem")
-    procs <- run("ps", args = args)$stdout # nocov start
-    procs <- utils::read.csv(text = procs, header = TRUE)
+  if (is_linux()) {
+    args <- c( # nocov start
+      "-e", "-o", "%c,", "-o", "%p,", "-o",
+      "%y,", "-o", "%U,", "-o", "%mem"
+    )
+    procs <- run("ps", args = args)$stdout
+    # todo: is there a safer alternative? fill = TRUE is an interim hack
+    procs <- utils::read.csv(text = procs, header = TRUE, fill = TRUE)
     for (col in names(t)) t[, col] <- trimws(t[, col])
-    names(procs) <- c("cmd", "pid", "tty", "user", "mem_usage") # nocov end
+    names(procs) <- c("cmd", "pid", "tty", "user", "memory")
+  } else if (is_macos()) {
+    args <- c(
+      "-A", "-e", "-o", "ucomm,", "-o", "pid,",
+      "-o", "tty,", "-o", "user,", "-o", "%mem"
+    )
+    procs <- run("ps", args = args)$stdout
+    # todo: is there a safer alternative? fill = TRUE is an interim hack
+    procs <- utils::read.csv(text = procs, header = TRUE, fill = TRUE)
+    names(procs) <- c("cmd", "pid", "tty", "user", "memory") # nocov end
   } else if (is_windows()) {
     args <- c("/FO", "CSV")
     procs <- run("tasklist", args = args)$stdout
     procs <- utils::read.csv(text = procs, header = TRUE)
-    names(procs) <- c("cmd", "pid", "session_name", "session", "mem_usage")
+    names(procs) <- c("cmd", "pid", "session_name", "session", "memory")
   }
 
   procs <- procs[grepl("java", procs$cmd, fixed = TRUE), ]
