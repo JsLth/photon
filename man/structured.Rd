@@ -43,10 +43,12 @@ Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
 
-\item{locbias}{Numeric vector of length 2 or an \code{sfg} point
-geometry that specifies a location bias for geocoding. Geocoding results
-are biased towards this point. The radius of the bias is controlled through
-\code{zoom} and its prominence through \code{location_bias_scale}.}
+\item{locbias}{Numeric vector of length 2 or any object that can be coerced
+to a length-2 numeric vector (e.g. a list or \code{sfg} object). Specifies a
+location bias for geocoding in the format \code{c(lon, lat)}. Geocoding
+results are biased towards this point. The radius of the bias is controlled
+through \code{zoom} and the weight of place prominence through
+\code{location_bias_scale}.}
 
 \item{locbias_scale}{Numeric vector specifying the importance of prominence
 in \code{locbias}. A higher prominence scale gives more weight to important
@@ -58,6 +60,30 @@ to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
 Defaults to 16.}
 
 \item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
+}
+\value{
+An sf dataframe or tibble containing the following columns:
+
+\itemize{
+ \item{\code{idx}: Internal ID specifying the index of the \code{texts}
+ parameter.}
+ \item{\code{osm_type}: Type of OSM element, one of N (node), W (way),
+ R (relation), or P (polygon).}
+ \item{\code{osm_id}: OpenStreetMap ID of the matched element.}
+ \item{\code{country}: Country of the matched place.}
+ \item{\code{city}: City of the matched place.}
+ \item{\code{osm_key}: OpenStreetMap key.}
+ \item{\code{countrycode}: ISO2 country code.}
+ \item{\code{housenumber}: House number, if applicable.}
+ \item{\code{postcode}: Post code, if applicable.}
+ \item{\code{locality}: Locality, if applicable.}
+ \item{\code{street}: Street, if applicable.}
+ \item{\code{district}: District name, if applicable.}
+ \item{\code{osm_value}: OpenStreetMap tag value.}
+ \item{\code{name}: Place name.}
+ \item{\code{type}: Layer type as described for the \code{layer} parameter.}
+ \item{\code{extent}: Boundary box of the match.}
+}
 }
 \description{
 Geocode a set of place information such as street, house number, or

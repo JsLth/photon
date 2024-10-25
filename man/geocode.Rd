@@ -36,10 +36,12 @@ Can be one of \code{"house"}, \code{"street"}, \code{"locality"},
 \code{"district"}, \code{"city"}, \code{"county"}, \code{"state"},
 \code{"country"}, or \code{"other"}.}
 
-\item{locbias}{Numeric vector of length 2 or an \code{sfg} point
-geometry that specifies a location bias for geocoding. Geocoding results
-are biased towards this point. The radius of the bias is controlled through
-\code{zoom} and its prominence through \code{location_bias_scale}.}
+\item{locbias}{Numeric vector of length 2 or any object that can be coerced
+to a length-2 numeric vector (e.g. a list or \code{sfg} object). Specifies a
+location bias for geocoding in the format \code{c(lon, lat)}. Geocoding
+results are biased towards this point. The radius of the bias is controlled
+through \code{zoom} and the weight of place prominence through
+\code{location_bias_scale}.}
 
 \item{locbias_scale}{Numeric vector specifying the importance of prominence
 in \code{locbias}. A higher prominence scale gives more weight to important
@@ -56,7 +58,7 @@ Defaults to 16.}
 An sf dataframe or tibble containing the following columns:
 
 \itemize{
- \item{\code{id}: Internal ID specifying the index of the \code{texts}
+ \item{\code{idx}: Internal ID specifying the index of the \code{texts}
  parameter.}
  \item{\code{osm_type}: Type of OSM element, one of N (node), W (way),
  R (relation), or P (polygon).}
@@ -94,8 +96,7 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
 }
 }
 \examples{
-\donttest{
-# an instance must be mounted first
+\donttest{# an instance must be mounted first
 photon <- new_photon()
 
 # geocode a city
@@ -123,6 +124,5 @@ geocode("Berlin", osm_tag = "tourism")
 geocode("Berlin", osm_tag = "!tourism")
 
 # use location biases to match Berlin, IL instead of Berlin, DE
-geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")
-}
+geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")}
 }

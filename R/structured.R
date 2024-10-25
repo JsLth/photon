@@ -18,6 +18,7 @@
 #' dataframe. Note that countries must be passed as ISO-2 country codes.
 #' @inheritParams geocode
 #' @inherit geocode details
+#' @inherit geocode return
 #'
 #' @export
 #'
