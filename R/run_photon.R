@@ -63,7 +63,7 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
   while (!self$is_ready() && proc$is_alive()) {
     diff <- Sys.time() - start
     if (diff > timeout) {
-      ph_stop("Photon setup timeout reached.")
+      ph_stop("Photon setup timeout reached.") # nocov
     }
 
     out <- proc$read_output()

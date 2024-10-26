@@ -71,6 +71,13 @@ test_that("local setup works", {
   expect_no_message(new_photon(path = dir, quiet = TRUE))
   expect_error(photon$get_url(), class = "no_url_yet")
 
+  expect_error(
+    get_photon_executable(self$path, get_latest_photon(), TRUE),
+    regexp = "could not be found"
+  )
+
+  expect_false(photon$is_ready())
+  expect_false(photon$is_running())
   photon$start(host = "127.0.0.1")
   expect_true(photon$is_running())
   expect_gt(nrow(geocode("Apai")), 0)

@@ -89,3 +89,15 @@ test_that("assertions work", {
   expect_error(assert_range(5, min = 6, max = 10), class = "assert_range")
   expect_error(assert_range(5, min = 1, max = 2), class = "assert_range")
 })
+
+test_that("cmd_options work", {
+  expect_null(cmd_options())
+  expect_null(cmd_options(flag = FALSE))
+  expect_equal(cmd_options(flag = TRUE), "-flag")
+  expect_equal(cmd_options(nums = c(1,2,3)), c("-nums", "1,2,3"))
+  expect_equal(cmd_options("test"), "test")
+  expect_equal(cmd_options(test_underscore = TRUE), "-test_underscore")
+  expect_equal(cmd_options(test = TRUE, use_double_hyphens = TRUE), "--test")
+  expect_equal(cmd_options(a = 1, use_double_hyphens = TRUE), c("-a", "1"))
+  expect_equal(cmd_options(a = 1, b = 2), c("-a", "1", "-b", "2"))
+})
