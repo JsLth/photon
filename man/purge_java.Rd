@@ -25,7 +25,7 @@ kill Java processes other than the photon application using this function!
 }
 \details{
 A list of running Java tasks is retrieved using \code{ps} (on Linux and MacOS)
-or \code{tasklist} (in Windows). Tasks are killed using \code{pkill}
+or \code{tasklist} (on Windows). Tasks are killed using \code{pkill}
 (on Linux and MacOS) or \code{Taskkill} (on Windows).
 }
 \examples{
