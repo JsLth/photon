@@ -32,7 +32,10 @@
 #'
 #' @examples
 #' \donttest{# download the latest extract of Monaco
-#' download_searchindex(path = tempdir(), country = "Monaco")
+#' download_searchindex(path = tempdir())
+#'
+#' # download the latest extract of American Samoa
+#' download_searchindex(path = tempdir(), country = "Samoa")
 #'
 #' # download an extract from a month ago
 #' download_searchindex(path = tempdir(), country = "Monaco", date = Sys.time() - 2629800)
@@ -43,7 +46,7 @@
 #' # get the latest global coverage
 #' # NOTE: the file to be downloaded is several tens of gigabytes of size!
 #' if (FALSE) {
-#'   download_searchindex(path = tempdir())
+#'   download_searchindex(path = tempdir(), country = "planet")
 #' }}
 download_searchindex <- function(path = ".",
                                  country = "Monaco",
