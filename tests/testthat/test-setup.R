@@ -25,6 +25,18 @@ test_that("java can be purged", {
   expect_message(purge_java(consent = TRUE), regexp = "No java processes running.")
 })
 
+test_that("logs can be parsed", {
+  logs <- readLines(test_path("fixtures/log_elasticsearch.txt"))
+  logs <- rbind_list(lapply(logs, handle_log_conditions))
+  expect_named(logs, c("ts", "thread", "type", "class", "msg"))
+  expect_false(any(vapply(logs, FUN.VALUE = logical(1), \(x) all(is.na(x)))))
+
+  logs <- readLines(test_path("fixtures/log_opensearch.txt"))
+  logs <- rbind_list(lapply(logs, handle_log_conditions))
+  expect_named(logs, c("ts", "thread", "type", "class", "msg"))
+  expect_true(sum(vapply(logs, FUN.VALUE = logical(1), \(x) all(is.na(x)))) == 1)
+})
+
 test_that("remote photons work", {
   expect_error(get_instance(), class = "instance_missing")
   photon <- new_photon()
@@ -66,22 +78,45 @@ test_that("local setup works", {
     options(photon_setup_warn = NULL)
     photon$purge(ask = FALSE)
   })
+
+  # test pre-setup
   expect_no_error(print(photon))
   photon <- new_photon(path = dir, country = "samoa")
   expect_no_message(new_photon(path = dir, quiet = TRUE))
   expect_error(photon$get_url(), class = "no_url_yet")
-
   expect_error(
-    get_photon_executable(self$path, get_latest_photon(), TRUE),
+    get_photon_executable(photon$path, get_latest_photon(), TRUE),
     regexp = "could not be found"
   )
-
   expect_false(photon$is_ready())
   expect_false(photon$is_running())
+
+  # test setup
   photon$start(host = "127.0.0.1")
   expect_true(photon$is_running())
   expect_gt(nrow(geocode("Apai")), 0)
   photon$stop()
   expect_false(photon$is_running())
+
+  # remove photon_data directory to force setup error
+  unlink(file.path(photon$path, "photon_data"), recursive = TRUE)
+
+  # test error handling
+  photon <- new_photon(path = dir)
+  expect_error(photon$import(), class = "import_error")
+  logs <- photon$get_logs()
+  expect_s3_class(logs, "data.frame")
+  expect_contains(logs$type, "ERROR")
+  expect_contains(names(logs), "rid")
+
+  expect_error(photon$start(), class = "start_error")
+  logs <- photon$get_logs()
+  expect_equal(unique(logs$rid), c(1, 2))
+
+  expect_error(photon$start(photon_opts = "-structured"), class = "start_error")
+  logs <- photon$get_logs()
+  expect_contains(logs$type, c("WARN", "ERROR"))
+  expect_match(logs$msg, "usage error", all = FALSE)
+  expect_equal(unique(logs$rid), c(1, 2, 3))
 })
 

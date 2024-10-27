@@ -1,0 +1,24 @@
+2024-10-26 20:36:25,733 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
+2024-10-26 20:36:32,088 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node
+2024-10-26 20:36:32,088 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.
+2024-10-26 20:36:32,094 [main] INFO  de.komoot.photon.App - ES cluster is now ready.
+Exception in thread "main" [photon] IndexNotFoundException[no such index]
+        at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver.concreteIndices(IndexNameExpressionResolver.java:187)
+        at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver.concreteIndices(IndexNameExpressionResolver.java:123)
+        at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver.concreteSingleIndex(IndexNameExpressionResolver.java:244)
+        at org.elasticsearch.action.support.single.shard.TransportSingleShardAction$AsyncSingleAction.<init>(TransportSingleShardAction.java:146)
+        at org.elasticsearch.action.support.single.shard.TransportSingleShardAction$AsyncSingleAction.<init>(TransportSingleShardAction.java:123)
+        at org.elasticsearch.action.support.single.shard.TransportSingleShardAction.doExecute(TransportSingleShardAction.java:95)
+        at org.elasticsearch.action.support.single.shard.TransportSingleShardAction.doExecute(TransportSingleShardAction.java:59)
+        at org.elasticsearch.action.support.TransportAction.doExecute(TransportAction.java:146)
+        at org.elasticsearch.action.support.TransportAction$RequestFilterChain.proceed(TransportAction.java:170)
+        at org.elasticsearch.action.support.TransportAction.execute(TransportAction.java:142)
+        at org.elasticsearch.action.support.TransportAction.execute(TransportAction.java:84)
+        at org.elasticsearch.client.node.NodeClient.executeLocally(NodeClient.java:83)
+        at org.elasticsearch.client.node.NodeClient.doExecute(NodeClient.java:72)
+        at org.elasticsearch.client.support.AbstractClient.execute(AbstractClient.java:408)
+        at org.elasticsearch.action.ActionRequestBuilder.execute(ActionRequestBuilder.java:80)
+        at org.elasticsearch.action.ActionRequestBuilder.execute(ActionRequestBuilder.java:54)
+        at de.komoot.photon.elasticsearch.Server.loadFromDatabase(Server.java:248)
+        at de.komoot.photon.elasticsearch.Server.updateIndexSettings(Server.java:195)
+        at de.komoot.photon.App.main(App.java:55)

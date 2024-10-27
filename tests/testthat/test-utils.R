@@ -96,7 +96,7 @@ test_that("cmd_options work", {
   expect_equal(cmd_options(flag = TRUE), "-flag")
   expect_equal(cmd_options(nums = c(1,2,3)), c("-nums", "1,2,3"))
   expect_equal(cmd_options("test"), "test")
-  expect_equal(cmd_options(test_underscore = TRUE), "-test_underscore")
+  expect_equal(cmd_options(test_underscore = TRUE), "-test-underscore")
   expect_equal(cmd_options(test = TRUE, use_double_hyphens = TRUE), "--test")
   expect_equal(cmd_options(a = 1, use_double_hyphens = TRUE), c("-a", "1"))
   expect_equal(cmd_options(a = 1, b = 2), c("-a", "1", "-b", "2"))
