@@ -112,6 +112,7 @@ external process running photon.</p></dd>
 <li><p><a href="#method-photon_local-is_running"><code>photon_local$is_running()</code></a></p></li>
 <li><p><a href="#method-photon_local-is_ready"><code>photon_local$is_ready()</code></a></p></li>
 <li><p><a href="#method-photon_local-get_url"><code>photon_local$get_url()</code></a></p></li>
+<li><p><a href="#method-photon_local-get_logs"><code>photon_local$get_logs()</code></a></p></li>
 <li><p><a href="#method-photon_local-clone"><code>photon_local$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-photon_local-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -436,10 +437,22 @@ you can send requests.</p><div class="section">
 </div>
 
 
+</div><p></p><hr><a id="method-photon_local-get_logs"></a><div class="section">
+<h3 id="method-get-logs-">Method <code>get_logs()</code><a class="anchor" aria-label="anchor" href="#method-get-logs-"></a></h3>
+<p>Retrieve the logs of previous photon runs.
+Returns a dataframe containing the run ID (<code>rid</code>, the highest
+number is the most recent run), a timestamp (<code>ts</code>), the thread,
+the log type (INFO, WARN, or ERROR), the class trace and the
+error message.</p><div class="section">
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">get_logs</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-photon_local-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
