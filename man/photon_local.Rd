@@ -83,6 +83,7 @@ external process running photon.}
 \item \href{#method-photon_local-is_running}{\code{photon_local$is_running()}}
 \item \href{#method-photon_local-is_ready}{\code{photon_local$is_ready()}}
 \item \href{#method-photon_local-get_url}{\code{photon_local$get_url()}}
+\item \href{#method-photon_local-get_logs}{\code{photon_local$get_logs()}}
 \item \href{#method-photon_local-clone}{\code{photon_local$clone()}}
 }
 }
@@ -369,6 +370,20 @@ you can send requests.
 Constructs the URL that geocoding requests should be sent to.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$get_url()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-get_logs"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-get_logs}{}}}
+\subsection{Method \code{get_logs()}}{
+Retrieve the logs of previous photon runs.
+Returns a dataframe containing the run ID (\code{rid}, the highest
+number is the most recent run), a timestamp (\code{ts}), the thread,
+the log type (INFO, WARN, or ERROR), the class trace and the
+error message.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$get_logs()}\if{html}{\out{</div>}}
 }
 
 }

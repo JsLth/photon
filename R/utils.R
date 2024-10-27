@@ -9,7 +9,7 @@
 
 
 ph_stop <- function(msg, env = parent.frame(), class = NULL, ...) {
-  cli::cli_abort(msg, .envir = env, class = c(class, "ph_error"))
+  cli::cli_abort(msg, .envir = env, class = c(class, "ph_error"), ...)
 }
 
 

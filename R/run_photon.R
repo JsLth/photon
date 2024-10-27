@@ -21,7 +21,8 @@ run_photon <- function(self,
 
 
 run_import <- function(self, private, args, timeout = 60, quiet = FALSE) {
-  run(
+  logs <- list()
+  stderr <- run(
     "java",
     args = args,
     stdout = "|",
@@ -29,14 +30,13 @@ run_import <- function(self, private, args, timeout = 60, quiet = FALSE) {
     echo_cmd = globally_enabled("photon_debug"),
     wd = self$path,
     timeout = timeout,
-    error_on_status = TRUE,
-    stdout_callback = function(newout, proc) {
-      if (nzchar(newout) && !quiet) {
-        cli::cli_verbatim(newout)
-        handle_log_conditions(newout)
-      }
-    }
-  )
+    error_on_status = FALSE,
+    stderr_callback = log_callback(private, quiet = TRUE),
+    stdout_callback = log_callback(private, quiet)
+  )$stderr
+
+  versionize_logs(private)
+  abort_log_error(stderr, quiet, class = "import_error")
 }
 
 
@@ -59,25 +59,10 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
     )
   }
 
-  start <- Sys.time()
-  while (!self$is_ready() && proc$is_alive()) {
-    diff <- Sys.time() - start
-    if (diff > timeout) {
-      ph_stop("Photon setup timeout reached.") # nocov
-    }
-
-    out <- proc$read_output()
-    if (nzchar(out) && !quiet) {
-      cli::cli_verbatim(out)
-      handle_log_conditions(out)
-    }
-
-    err <- proc$read_error()
-    if (nzchar(err)) {
-      ph_stop(err) # nocov
-    }
-  }
-
+  start_supervise(self, private, proc, timeout, quiet)
+  versionize_logs(private)
+  log_error <- assemble_log_error(private$logs)
+  abort_log_error(log_error, quiet, class = "start_error")
   cli::cli_progress_done()
   invisible(proc)
 }
@@ -101,24 +86,71 @@ stop_photon <- function(self) {
 }
 
 
-handle_log_conditions <- function(out) {
-  warnings <- out[grepl("WARN", out, fixed = TRUE)]
-  if (length(warnings) && globally_enabled("photon_setup_warn")) {
-    msg <- parse_log_line(out)$msg
-    if (!is.null(msg)) {
-      cli::cli_warn(trimws(msg))
+start_supervise <- function(self, private, proc, timeout, quiet) {
+  stdout_callback <- log_callback(private, quiet)
+  stderr_callback <- log_callback(private, quiet = TRUE)
+  start <- Sys.time()
+  is_ready <- self$is_ready()
+  while (!is_ready) {
+    out <- proc$read_output()
+    out <- strsplit(out, "\r\n")[[1]]
+    lapply(out, stdout_callback, proc)
+
+    err <- proc$read_error()
+    stderr_callback(err, proc)
+    if (nzchar(err)) next # skip alive check to collect full error message
+
+    # if photon process is dead, break the loop and collect stderr afterwards
+    if (!is_ready && !proc$is_alive()) {
+      break
+    }
+
+    # evaluate timeout error at the latest possible chance to allow supervisor
+    # to throw a more useful error
+    diff <- Sys.time() - start
+    if (diff > timeout) {
+      ph_stop("Photon setup timeout reached.") # nocov
+    }
+
+    is_ready <- self$is_ready()
+  }
+}
+
+
+log_callback <- function(private, quiet = FALSE) {
+  function(newout, proc) {
+    if (length(newout) > 0 && isTRUE(nzchar(newout))) {
+      log <- handle_log_conditions(newout)
+      new_log <- list(private$logs %||% data.frame(), log)
+      private$logs <- as_data_frame(rbind_list(new_log))
+      if (!quiet) cli::cli_verbatim(newout)
     }
   }
+}
 
-  # exceptions <- out[grepl("exception", out, ignore.case = TRUE)]
-  # if (length(exceptions)) {
-  #   msg <- parse_log_line(out)$msg
-  #   ph_stop(trimws(msg))
-  # }
 
+handle_log_conditions <- function(out) {
   if (startsWith(out, "Usage")) {
-    ph_stop("Process returned an error.")
+    log <- data.frame(
+      type = "ERROR",
+      msg = paste(
+        "Process returned a usage error.",
+        "Verify that you passed valid command line options."
+      )
+    )
+    return(log)
   }
+
+  log <- parse_log_line(out)
+  if (identical(log$type, "WARN") && globally_enabled("photon_setup_warn")) {
+    cli::cli_warn(log$msg)
+  }
+
+  if (is.na(log$type) && grepl("exception", log$msg, ignore.case = TRUE)) {
+    log$type <- "ERROR"
+  }
+
+  log
 }
 
 
@@ -128,24 +160,65 @@ parse_log_line <- function(line) {
   # 2. [timestamp] [INFO] [stream] message
   # if 1. matches nothing, try 2.
   parsed <- utils::strcapture(
-    "^(.+) \\[(.+)\\] (INFO|WARN) (.+) - (.+)$",
+    "^(.+) \\[(.+)\\] (INFO|WARN)  (.+) - (.+)$",
     line,
-    proto = data.frame(ts = "", src = "", type = "", trace = "", msg = "")
+    proto = list(ts = "", thread = "", type = "", class = "", msg = "")
   )
 
   if (all(is.na(parsed))) {
     parsed <- utils::strcapture(
-      "\\[(.+)\\]\\[(.+)\\]\\[([a-zA-Z. ]+)\\](.+)",
+      "\\[(.+)\\]\\[(.+)\\]\\[([a-zA-Z.]+) +?\\](.+)",
       line,
-      proto = list(ts = "", type = "", src = "", msg = "")
+      proto = list(ts = "", type = "", class = "", msg = "")
     )
   }
 
   if (all(is.na(parsed))) {
-    parsed <- NULL
+    parsed <- data.frame(
+      ts = NA_character_,
+      thread = NA_character_,
+      type = NA_character_,
+      class = NA_character_,
+      msg = line
+    )
   }
 
+  parsed$type <- trimws(parsed$type)
+  parsed$msg <- trimws(parsed$msg)
   parsed
+}
+
+
+versionize_logs <- function(private) {
+  # add a "run id" to versionize log dataframe
+  # this is necessary so that subsequent calls know what the current call is
+  logs <- private$logs
+  if ("rid" %in% names(logs)) {
+    rid <- max(logs$rid, na.rm = TRUE) + 1
+    logs[is.na(logs$rid), "rid"] <- rid
+  } else {
+    logs <- as_data_frame(cbind(rid = 1, logs))
+  }
+  private$logs <- logs
+}
+
+
+assemble_log_error <- function(logs) {
+  if (!is.null(logs)) {
+    errs <- logs[logs$type %in% "ERROR" & logs$rid == max(logs$rid), ]
+    paste(errs$msg, collapse = "")
+  }
+}
+
+
+abort_log_error <- function(logerr, quiet, ...) {
+  if (!is.null(stderr) && nzchar(logerr)) {
+    if (!quiet) cli::cli_verbatim(logerr)
+    ph_stop(c(
+      strsplit(logerr, "\n")[[1]][1],
+      "i" = "See logs for details."
+    ), ...)
+  }
 }
 
 

@@ -552,6 +552,16 @@ photon_local <- R6::R6Class(
       if (identical(host, "0.0.0.0")) host <- "localhost" # nocov
       ssl <- ifelse(isTRUE(private$ssl), "s", "")
       sprintf("http%s://%s:%s", ssl, host, port)
+    },
+
+    #' @description
+    #' Retrieve the logs of previous photon runs.
+    #' Returns a dataframe containing the run ID (\code{rid}, the highest
+    #' number is the most recent run), a timestamp (\code{ts}), the thread,
+    #' the log type (INFO, WARN, or ERROR), the class trace and the
+    #' error message.
+    get_logs = function() {
+      private$logs
     }
   ),
 
@@ -565,6 +575,7 @@ photon_local <- R6::R6Class(
     country = NULL,
     date = NULL,
     opensearch = NULL,
+    logs = NULL,
     finalize = function() {
       self$stop() # nocov
     },
