@@ -99,19 +99,22 @@ test_that("local setup works", {
   expect_false(photon$is_running())
 
   # test error handling
+  fail_dir <- file.path(tempdir(), "photon_fail")
+  os_path <- file.path(fail_dir, "photon-opensearch-0.5.0.jar")
+  dir.create(fail_dir, showWarnings = FALSE)
+  expect_error(new_photon(fail_dir, opensearch = TRUE), class = "abort_opensearch_build")
+  file.create(os_path)
   expect_message(
-    new_photon("photon", opensearch = TRUE, country = "Samoa"),
+    new_photon(fail_dir, opensearch = TRUE, country = "Samoa"),
     regexp = "OpenSearch does not support ElasticSearch"
   )
 
-  photon <- new_photon(path = file.path(tempdir(), "photon_fail"))
+  photon <- new_photon(path = fail_dir)
   expect_error(photon$import(), class = "import_error")
   logs <- photon$get_logs()
   expect_s3_class(logs, "data.frame")
   expect_contains(logs$type, "ERROR")
   expect_contains(names(logs), "rid")
-
-  expect_error(photon$import(structured = TRUE), class = "structured_elasticsearch_error")
 
   expect_error(photon$start(), class = "start_error")
   logs <- photon$get_logs()
@@ -123,5 +126,10 @@ test_that("local setup works", {
   expect_contains(logs$type, c("WARN", "ERROR"))
   expect_match(logs$msg, "usage error", all = FALSE)
   expect_equal(unique(logs$rid), c(1, 2, 3))
+
+  expect_warning(
+    expect_error(photon$import(structured = TRUE)),
+    class = "structured_elasticsearch_error"
+  )
 })
 

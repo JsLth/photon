@@ -16,7 +16,7 @@ has_java <- function() {
 
 rje_link <- function() {
   c("i" = paste(
-    'Consider setting up a Java environment with {.code',
+    'Consider setting up a Java environment with {.pkg',
     '{cli::style_hyperlink("{rJavaEnv}", "https://www.ekotov.pro/rJavaEnv/")}}'
   ))
 }
