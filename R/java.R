@@ -10,7 +10,7 @@ check_jdk_version <- function(min_version, quiet = FALSE) {
 
 
 has_java <- function() {
-  any(as.logical(nchar(Sys.which("java"))))
+  any(nzchar(Sys.which("java")))
 }
 
 

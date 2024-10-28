@@ -55,9 +55,7 @@ is_url <- function(url) {
 
 
 loadable <- function(x) {
-  suppressPackageStartupMessages(suppressWarnings(suppressWarnings(
-    requireNamespace(x)
-  )))
+  suppressPackageStartupMessages(requireNamespace(x, quietly = TRUE))
 }
 
 
