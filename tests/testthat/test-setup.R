@@ -103,23 +103,23 @@ test_that("local setup works", {
 
   # test error handling
   photon <- new_photon(path = dir)
-  e <- expect_error(photon$import(), class = "import_error")
-  print(e)
+  expect_error(photon$import(), class = "import_error")
   logs <- photon$get_logs()
   expect_s3_class(logs, "data.frame")
   expect_contains(logs$type, "ERROR")
   expect_contains(names(logs), "rid")
 
-  e <- expect_error(photon$start(), class = "start_error")
-  print(e)
+  expect_error(photon$start(), class = "start_error")
+  print(list.files(dir))
   logs <- photon$get_logs()
   expect_equal(unique(logs$rid), c(1, 2))
 
-  e <- expect_error(photon$start(photon_opts = "-structured"), class = "start_error")
-  print(e)
+  expect_error(photon$start(photon_opts = "-structured"), class = "start_error")
   logs <- photon$get_logs()
   expect_contains(logs$type, c("WARN", "ERROR"))
   expect_match(logs$msg, "usage error", all = FALSE)
   expect_equal(unique(logs$rid), c(1, 2, 3))
+
+  run("java", c("-jar", "photon-0.5.0.jar", "-structured", timeout = 20, echo = TRUE))
 })
 
