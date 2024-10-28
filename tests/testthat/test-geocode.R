@@ -51,4 +51,25 @@ test_that("reversing only works with points", {
   expect_error(reverse(sf), class = "check_geometry")
 })
 
-rm(list = ls(envir = ))
+test_that("structured accepts parameters", {
+  skip_webfakes <- function(web) {
+    failed <- inherits(web, "try-error")
+    skip_if(failed, "webfakes bug: https://github.com/r-lib/webfakes/issues/103")
+  }
+  skip_if_not_installed("webfakes")
+
+  app <- webfakes::new_app()
+  app$get("/structured", function(req, res) {
+    if (length(req$query)) {
+      out <- readChar(testthat::test_path("fixtures/api_response.json"), nchar = 388)
+      res$send(out)
+    } else {
+      res$send_status(400)
+    }
+  })
+  web <- try(webfakes::local_app_process(app))
+  skip_webfakes(web)
+  new_photon(url = web$url())
+  expect_equal(nrow(structured(data.frame(street = "test"))), 1)
+  expect_error(structured(list(a = "test")), class = "assert_named")
+})

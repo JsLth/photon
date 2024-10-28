@@ -98,33 +98,27 @@ test_that("local setup works", {
   photon$stop()
   expect_false(photon$is_running())
 
-  # remove photon_data directory to force setup error
-  succ <- !as.logical(unlink(file.path(photon$path, "photon_data"), recursive = TRUE))
-  if (succ) {
-    succ <- file.rename(
-      file.path(photon$path, "photon_data"),
-      file.path(photon$path, "photon_data_old")
-    )
-  }
-
   # test error handling
-  photon <- new_photon(path = dir)
+  expect_message(
+    new_photon("photon", opensearch = TRUE, country = "Samoa"),
+    regexp = "OpenSearch does not support ElasticSearch"
+  )
+
+  photon <- new_photon(path = file.path(tempdir(), "photon_fail"))
   expect_error(photon$import(), class = "import_error")
   logs <- photon$get_logs()
   expect_s3_class(logs, "data.frame")
   expect_contains(logs$type, "ERROR")
   expect_contains(names(logs), "rid")
 
-  if (!succ) {
-    skip("Photon data could not be removed.")
-  }
+  expect_error(photon$import(structured = TRUE), class = "structured_elasticsearch_error")
 
   expect_error(photon$start(), class = "start_error")
-  print(list.files(dir))
   logs <- photon$get_logs()
   expect_equal(unique(logs$rid), c(1, 2))
 
-  expect_error(photon$start(photon_opts = "-structured"), class = "start_error")
+  options(photon_setup_warn = TRUE)
+  expect_warning(expect_error(photon$start(photon_opts = "-structured"), class = "start_error"))
   logs <- photon$get_logs()
   expect_contains(logs$type, c("WARN", "ERROR"))
   expect_match(logs$msg, "usage error", all = FALSE)

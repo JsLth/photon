@@ -50,19 +50,6 @@ assert_flag <- function(x, null = FALSE) {
 }
 
 
-assert_file <- function(x, null = FALSE) {
-  ignore_null()
-  cond <- is.character(x) && file.exists(x) && !file.info(x)$isdir
-  if (!cond) {
-    var <- deparse(substitute(x))
-    ph_stop(
-      "{.code {var}} must be a valid path to an existing file.",
-      class = get_caller_name()
-    )
-  }
-}
-
-
 assert_dir <- function(x, null = FALSE) {
   ignore_null()
   cond <- is.character(x) && file.exists(x) && file.info(x)$isdir

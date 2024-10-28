@@ -41,7 +41,7 @@ purge_java <- function(pids = NULL, consent = FALSE) {
   }
 
   check_pid_is_java(procs, pids)
-  cli::cli_inform("The following Java instances have been found:\f")
+  cli::cli_inform("The following Java instances have been found:\f") # nocov start
   cli::cli_verbatim(utils::capture.output(procs))
 
   if (interactive() && !consent) {
@@ -55,7 +55,7 @@ purge_java <- function(pids = NULL, consent = FALSE) {
   }
 
   pids <- pids %||% procs$pid
-  kill_process(pids)
+  kill_process(pids) # nocov end
 }
 
 

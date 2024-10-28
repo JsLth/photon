@@ -426,7 +426,7 @@ photon_local <- R6::R6Class(
         cli::cli_warn(paste(
           "Structured queries are only supported for OpenSearch photon.",
           "Setting {.code structured = FALSE}."
-        ))
+        ), class = "structured_elasticsearch_error")
         structured <- FALSE
       }
 
@@ -453,8 +453,8 @@ photon_local <- R6::R6Class(
         photon_opts = c(popts, photon_opts)
       )
 
-      self$mount()
-      invisible(self)
+      self$mount() # nocov
+      invisible(self) # nocov
     },
 
     #' @description
@@ -647,7 +647,7 @@ setup_photon_directory <- function(path,
       inform_no_download()
       return()
     } else {
-      inform_tar_exists()
+      inform_tar_exists() # nocov
       archive_path <- files[has_archive] # nocov
     }
 
@@ -751,17 +751,19 @@ inform_photon_exists <- function() {
 
 
 inform_tar_exists <- function() {
-  cli::cli_inform(c("i" = paste(
+  cli::cli_inform(c("i" = paste( # nocov start
     "A search index archive already exists at the given path.",
     "Download will be skipped"
-  )))
+  ))) # nocov end
 }
 
 
 inform_opensearch_incompatible <- function(country) {
   if (!is.null(country)) {
-    cli::cli_inform(c(
-      "i" = "OpenSearch does not support ElasticSearch indices. Skipping."
+    cli::cli_inform(c("i" = paste(
+      "OpenSearch does not support ElasticSearch indices.",
+      "Download will be skipped."
+    )
     ))
   }
 }
