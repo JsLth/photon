@@ -127,6 +127,7 @@ test_that("local setup works", {
   expect_match(logs$msg, "usage error", all = FALSE)
   expect_equal(unique(logs$rid), c(1, 2, 3))
 
+  options(photon_setup_warn = FALSE)
   expect_warning(
     expect_error(photon$import(structured = TRUE)),
     class = "structured_elasticsearch_error"
