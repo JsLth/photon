@@ -212,12 +212,12 @@ assemble_log_error <- function(logs) {
 
 
 abort_log_error <- function(logerr, quiet, ...) {
-  if (!is.null(stderr) && nzchar(logerr)) {
+  if (!is.null(logerr) && nzchar(logerr)) {
     if (!quiet) cli::cli_verbatim(logerr)
     ph_stop(c(
       strsplit(logerr, "\n")[[1]][1],
       "i" = "See logs for details."
-    ), ...)
+    ), ..., call = NULL)
   }
 }
 
