@@ -496,11 +496,16 @@ photon_local <- R6::R6Class(
       private$ssl <- ssl
 
       popts <- cmd_options(listen_ip = host, listen_port = port)
-      self$proc <- run_photon(
-        self, private,
-        mode = "start",
-        java_opts = java_opts,
-        photon_opts = c(popts, photon_opts)
+      cleanup <- function(e) self$stop()
+      self$proc <- withCallingHandlers(
+        run_photon(
+          self, private,
+          mode = "start",
+          java_opts = java_opts,
+          photon_opts = c(popts, photon_opts)
+        ),
+        error = cleanup,
+        interrupt = cleanup
       )
 
       self$mount()
@@ -776,6 +781,6 @@ abort_opensearch_build <- function(opensearch) {
       "The OpenSearch version of photon has to be built manually.",
       "i" = "Refer to the photon {link} for details."
     )
-    ph_stop(msg)
+    ph_stop(msg, class = get_caller_name())
   }
 }
