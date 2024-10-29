@@ -20,7 +20,5 @@ Character string giving the path to the downloaded file.
 Download the photon executable from GitHub.
 }
 \examples{
-if (FALSE) {
-download_photon(tempdir(), version = "0.4.1")
-}
+\donttest{download_photon(tempdir(), version = "0.4.1")}
 }

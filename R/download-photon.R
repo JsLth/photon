@@ -11,9 +11,7 @@
 #' @export
 #'
 #' @examples
-#' if (FALSE) {
-#' download_photon(tempdir(), version = "0.4.1")
-#' }
+#' \donttest{download_photon(tempdir(), version = "0.4.1")}
 download_photon <- function(path = ".", version = NULL, quiet = FALSE) {
   assert_dir(path)
   assert_length(path, 1)

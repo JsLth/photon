@@ -47,6 +47,15 @@ functions. These include:
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/jslth/photon}
+  \item \url{https://jslth.github.io/photon}
+  \item Report bugs at \url{https://github.com/jslth/photon/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Jonas Lieth \email{jonas.lieth@gesis.org} [copyright holder]
 
