@@ -148,7 +148,7 @@ place_data <- data.frame(
   state = c("Tuamasaga", "Tuamasaga", "Atua")
 )
 
-geocode(place_data, limit = 1)
+structured(place_data, limit = 1)
 #> Simple feature collection with 3 features and 14 fields
 #> Geometry type: POINT
 #> Dimension:     XY
