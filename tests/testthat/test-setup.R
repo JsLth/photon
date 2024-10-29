@@ -1,5 +1,11 @@
 clear_cache()
 
+has_minimum_java <- function() {
+  is <- numeric_version(get_java_version())
+  should <- numeric_version("11")
+  (is >= should) && has_java()
+}
+
 test_that("java checks work", {
   with_mocked_bindings(
     has_java = function() FALSE,
@@ -68,7 +74,7 @@ test_that("search indices are matched", {
 
 skip_if_offline("github.com")
 skip_if_offline("corretto.aws")
-skip_if_not(has_java())
+skip_if_not(has_minimum_java())
 
 test_that("local setup works", {
   options(photon_setup_warn = FALSE)
