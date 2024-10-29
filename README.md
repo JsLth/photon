@@ -6,12 +6,17 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml)
+[![R-hub](https://github.com/jslth/photon/actions/workflows/rhub.yaml/badge.svg)](https://github.com/jslth/photon/actions/workflows/rhub.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/photon)](https://CRAN.R-project.org/package=photon)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Codecov test
 coverage](https://codecov.io/gh/JsLth/photon/branch/main/graph/badge.svg)](https://app.codecov.io/gh/JsLth/photon?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/jslth/photon/badge/main)](https://www.codefactor.io/repository/github/jslth/photon/overview/main)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 `{photon}` is a simple interface and setup manager of the
