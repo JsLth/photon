@@ -4,17 +4,31 @@
 \alias{download_photon}
 \title{Download photon}
 \usage{
-download_photon(path = ".", version = NULL, quiet = FALSE)
+download_photon(
+  path = ".",
+  version = NULL,
+  opensearch = TRUE,
+  only_url = FALSE,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{path}{Path to a directory to store the exectutable.}
 
-\item{version}{Version tag of the photon release.}
+\item{version}{Version tag of the photon release. If \code{NULL},
+downloads the latest known version.}
+
+\item{opensearch}{If \code{TRUE}, downloads the OpenSearch version of
+photon if available. OpenSearch versions are available for photon >= 0.6.0.}
+
+\item{only_url}{If \code{TRUE}, performs a download. Otherwise,
+only returns a link to the file.}
 
 \item{quiet}{If \code{TRUE}, suppresses all informative messages.}
 }
 \value{
-Character string giving the path to the downloaded file.
+If \code{only_url = FALSE}, returns a character string giving the
+path to the downloaded file. Otherwise, returns the URL to be downloaded.
 }
 \description{
 Download the photon executable from GitHub.

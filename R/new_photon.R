@@ -69,7 +69,7 @@ new_photon <- function(path = NULL,
                        date = "latest",
                        exact = FALSE,
                        section = NULL,
-                       opensearch = FALSE,
+                       opensearch = TRUE,
                        overwrite = FALSE,
                        quiet = FALSE) {
   if (is.null(path) && is.null(url)) {

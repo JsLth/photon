@@ -39,7 +39,7 @@ version of photon. If \code{"archived"}, selects a dump made for an older
 version of photon. If \code{NULL}, selects a dump made for the current
 release. Defaults to \code{NULL}.}
 
-\item{only_url}{If \code{TRUE}, downloads the search index. Otherwise,
+\item{only_url}{If \code{TRUE}, performs a download. Otherwise,
 only returns a link to the file.}
 
 \item{quiet}{If \code{TRUE}, suppresses all informative messages.}

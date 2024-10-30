@@ -125,3 +125,15 @@ globally_enabled <- function(x) {
   )
   isTRUE(getOption(x, dflt))
 }
+
+
+is_numver <- function(x) {
+  !is.na(numeric_version(x, strict = FALSE))
+}
+
+
+minimum_version <- function(v1, v2) {
+  if (is_numver(v1) && is_numver(v2)) {
+    numeric_version(v1) >= numeric_version(v2)
+  }
+}

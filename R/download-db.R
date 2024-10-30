@@ -22,7 +22,7 @@
 #' version of photon. If \code{"archived"}, selects a dump made for an older
 #' version of photon. If \code{NULL}, selects a dump made for the current
 #' release. Defaults to \code{NULL}.
-#' @param only_url If \code{TRUE}, downloads the search index. Otherwise,
+#' @param only_url If \code{TRUE}, performs a download. Otherwise,
 #' only returns a link to the file.
 #' @param quiet If \code{TRUE}, suppresses all informative messages.
 #' @returns If \code{only_url = FALSE}, returns the local path to the downloaded

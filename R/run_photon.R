@@ -222,12 +222,17 @@ abort_log_error <- function(logerr, quiet, ...) {
 }
 
 
+build_photon_name <- function(version, opensearch) {
+  ifelse(
+    opensearch,
+    sprintf("photon-opensearch-%s.jar", version),
+    sprintf("photon-%s.jar", version)
+  )
+}
+
+
 get_photon_executable <- function(path, version, opensearch) {
-  if (opensearch) {
-    file <- sprintf("photon-opensearch-%s.jar", version)
-  } else {
-    file <- sprintf("photon-%s.jar", version)
-  }
+  file <- build_photon_name(version, opensearch)
 
   if (!file.exists(file.path(path, file))) {
     ph_stop("Photon jar {.val {file}} could not be found in the given path.")

@@ -102,7 +102,7 @@ photon_local <- R6::R6Class(
                           country = NULL,
                           date = "latest",
                           exact = FALSE,
-                          opensearch = FALSE,
+                          opensearch = TRUE,
                           overwrite = FALSE,
                           quiet = FALSE) {
       assert_flag(quiet)
@@ -453,15 +453,14 @@ setup_photon_directory <- function(path,
 
   files <- list.files(path, full.names = TRUE)
   if (!jar %in% basename(files) || overwrite) {
-    abort_opensearch_build(opensearch)
-    download_photon(path = path, version = version, quiet = quiet)
+    download_photon(
+      path = path,
+      version = version,
+      opensearch = opensearch,
+      quiet = quiet
+    )
   } else if (!quiet) {
     inform_photon_exists()
-  }
-
-  if (opensearch) {
-    inform_opensearch_incompatible(country)
-    return()
   }
 
   if ((!any(grepl("photon_data$", files)) || overwrite)) {
@@ -472,6 +471,7 @@ setup_photon_directory <- function(path,
         country = country,
         date = date,
         exact = exact,
+        section = if (opensearch) "experimental",
         quiet = quiet
       )
     } else if (!any(has_archive)) {
