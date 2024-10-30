@@ -17,6 +17,11 @@
 #' \code{date}.
 #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 #' selects the date with lowest difference to the \code{date} parameter.
+#' @param section Subdirectory of the download server from which to select a
+#' search index. If \code{"experimental"}, selects a dump made for the master
+#' version of photon. If \code{"archived"}, selects a dump made for an older
+#' version of photon. If \code{NULL}, selects a dump made for the current
+#' release. Defaults to \code{NULL}.
 #' @param only_url If \code{TRUE}, downloads the search index. Otherwise,
 #' only returns a link to the file.
 #' @param quiet If \code{TRUE}, suppresses all informative messages.
@@ -52,6 +57,7 @@ download_searchindex <- function(path = ".",
                                  country = "Monaco",
                                  date = "latest",
                                  exact = FALSE,
+                                 section = NULL,
                                  only_url = FALSE,
                                  quiet = FALSE) {
   assert_length(country, 1, null = TRUE)
@@ -61,6 +67,12 @@ download_searchindex <- function(path = ".",
   assert_flag(exact)
   is_planet <- identical(country, "planet")
   req <- httr2::request("https://download1.graphhopper.com/public/")
+  req <- httr2::req_url_path_append(req, switch(
+    section %||% "",
+    experimental = "experimental",
+    archived = "archived/0.3",
+    ""
+  ))
 
   if (!is_planet) {
     country <- tolower(countrycode::countryname(

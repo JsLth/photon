@@ -38,6 +38,11 @@
 #' for details.
 #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 #' selects the date with lowest difference to the \code{date} parameter.
+#' @param section Subdirectory of the download server from which to select a
+#' search index. If \code{"experimental"}, selects a dump made for the master
+#' version of photon. If \code{"archived"}, selects a dump made for an older
+#' version of photon. If \code{NULL} (or any arbitrary string), selects a
+#' dump made for the current release. Defaults to \code{NULL}.
 #' @param overwrite If \code{TRUE}, overwrites existing jar files and
 #' search indices when initializing a new instance. Defaults to
 #' \code{FALSE}.
