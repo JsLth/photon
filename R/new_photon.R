@@ -31,10 +31,8 @@
 #' \code{date}.
 #' @param opensearch If \code{TRUE}, looks for an OpenSearch version of
 #' photon in the specified path. Opensearch-based photon supports structured
-#' geocoding queries but has to be built manually using gradle. Hence,
-#' it cannot be downloaded directly. If no OpenSearch executable is found
-#' in the search path, then this parameter is set to \code{FALSE}. Defaults
-#' to \code{FALSE}. See \code{vignette("nominatim-import", package = "photon")}
+#' geocoding queries but is currently only experimental. Defaults to
+#' \code{FALSE}. See \code{vignette("nominatim-import", package = "photon")}
 #' for details.
 #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 #' selects the date with lowest difference to the \code{date} parameter.
@@ -59,9 +57,10 @@
 #' # connect to arbitrary server
 #' photon <- new_photon(url = "photonserver.org")
 #'
-#' \dontrun{
+#' if (FALSE) {
 #' # set up a local instance in the current working directory
-#' photon <- new_photon("photon", country = "Ireland")}
+#' photon <- new_photon("photon", country = "Ireland")
+#' }
 new_photon <- function(path = NULL,
                        url = NULL,
                        photon_version = NULL,
@@ -69,7 +68,7 @@ new_photon <- function(path = NULL,
                        date = "latest",
                        exact = FALSE,
                        section = NULL,
-                       opensearch = TRUE,
+                       opensearch = FALSE,
                        overwrite = FALSE,
                        quiet = FALSE) {
   if (is.null(path) && is.null(url)) {

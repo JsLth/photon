@@ -102,7 +102,7 @@ photon_local <- R6::R6Class(
                           country = NULL,
                           date = "latest",
                           exact = FALSE,
-                          opensearch = TRUE,
+                          opensearch = FALSE,
                           overwrite = FALSE,
                           quiet = FALSE) {
       assert_flag(quiet)
@@ -586,27 +586,4 @@ inform_tar_exists <- function() {
     "A search index archive already exists at the given path.",
     "Download will be skipped"
   ))) # nocov end
-}
-
-
-inform_opensearch_incompatible <- function(country) {
-  if (!is.null(country)) {
-    cli::cli_inform(c("i" = paste(
-      "OpenSearch does not support ElasticSearch indices.",
-      "Download will be skipped."
-    )
-    ))
-  }
-}
-
-
-abort_opensearch_build <- function(opensearch) {
-  if (opensearch) {
-    link <- cli::style_hyperlink("README", "https://github.com/komoot/photon")
-    msg <- c(
-      "The OpenSearch version of photon has to be built manually.",
-      "i" = "Refer to the photon {link} for details."
-    )
-    ph_stop(msg, class = get_caller_name())
-  }
 }

@@ -18,7 +18,7 @@
 #' \donttest{download_photon(tempdir(), version = "0.4.1")}
 download_photon <- function(path = ".",
                             version = NULL,
-                            opensearch = TRUE,
+                            opensearch = FALSE,
                             only_url = FALSE,
                             quiet = FALSE) {
   assert_dir(path)
@@ -33,7 +33,7 @@ download_photon <- function(path = ".",
     ph_stop(c(
       "OpenSearch versions of photon are only available for photon >= 0.6.0.",
       "i" = "For earlier versions, you have to build it yourself using gradle."
-    ))
+    ), class = "opensearch_unsupported")
   }
 
   if (!quiet) {
