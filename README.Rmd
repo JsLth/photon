@@ -82,4 +82,4 @@ photon$start()
 
 - The [`{photon}`](https://github.com/rCarto/photon) package by Timothée Giraud interfaces photon but does not allow the setup of local setups and was abandoned a while ago.
 - The [`{revgeo}`](https://CRAN.R-project.org/package=revgeo) package by Michael Hudecheck implements reverse geocoding using (among others) photon.
-- The [`{tidygeocoder}`](https://jessecambon.github.io/tidygeocoder/) and [nominatimlite](https://dieghernan.github.io/nominatimlite/) packages implement general (OSM) geocoding using web APIs.
+- The [`{tidygeocoder}`](https://jessecambon.github.io/tidygeocoder/) and [`{nominatimlite}`](https://dieghernan.github.io/nominatimlite/) packages implement general (OSM) geocoding using web APIs.

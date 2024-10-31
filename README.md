@@ -115,5 +115,5 @@ photon$start()
   Michael Hudecheck implements reverse geocoding using (among others)
   photon.
 - The [`{tidygeocoder}`](https://jessecambon.github.io/tidygeocoder/)
-  and [nominatimlite](https://dieghernan.github.io/nominatimlite/)
+  and [`{nominatimlite}`](https://dieghernan.github.io/nominatimlite/)
   packages implement general (OSM) geocoding using web APIs.
