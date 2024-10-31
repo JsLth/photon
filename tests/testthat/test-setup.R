@@ -30,7 +30,7 @@ test_that("java can be purged", {
   expect_s3_class(proc, "data.frame")
   with_mocked_bindings(
     get_java_processes = function() data.frame(pids = 1),
-    expect_error(purge_java(-1, consent = TRUE), class = "pid_not_java")
+    expect_error(purge_java(-1L, consent = TRUE), class = "pid_not_java")
   )
   expect_vector(kill_process(rep(-1, 2)), integer(), size = 2)
 
