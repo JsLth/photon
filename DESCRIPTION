@@ -1,14 +1,14 @@
 Package: photon
 Type: Package
 Title: High-performance geocoding using 'photon'
-Version: 0.2.1.9000
+Version: 0.3.1
 Authors@R: 
     person("Jonas", "Lieth", email = "jonas.lieth@gesis.org", role = c("aut", "cre", "cph"))
 Description: Features unstructured, structured and reverse geocoding using the
     'photon' geocoding API. Facilitates the setup of local Photon instances to
     enable offline geocoding.
 License: Apache License (>= 2)
-URL: https://github.com/jslth/photon, https://jslth.github.io/photon
+URL: https://github.com/jslth/photon/, https://jslth.github.io/photon/
 BugReports: https://github.com/jslth/photon/issues
 Encoding: UTF-8
 LazyData: true
