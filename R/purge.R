@@ -31,8 +31,18 @@
 #'
 #' # kill photon using a sledgehammer
 #' purge_java()
+#'
+#' photon$start()
+#'
+#' # kill photon using a scalpel
+#' library(ps)
+#' p <- ps_handle(photon$proc$get_pid())
+#' pids <- sapply(ps_children(p), ps::ps_pid)
+#' purge_java(pids)
 #' }
 purge_java <- function(pids = NULL, consent = FALSE) {
+  assert_vector(pids, "integer", null = TRUE)
+  assert_flag(consent)
   procs <- get_java_processes()
 
   if (!nrow(procs)) {
