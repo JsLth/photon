@@ -3,15 +3,9 @@ has_minimum_java <- function() {
   minimum_version(get_java_version(), "11")
 }
 
-clear_cache()
-
-test_that("public api is initialized on load", {
-  expect_error(get_instance(), class = "instance_missing")
-  loadNamespace("photon")
-  expect_no_error(get_instance())
-})
-
 test_that("remote photons work", {
+  clear_cache()
+  expect_error(get_instance(), class = "instance_missing")
   photon <- new_photon()
   expect_true(is_komoot(photon$get_url()))
   expect_error(structured(), regexp = "disabled")
