@@ -7,7 +7,7 @@
 download_photon(
   path = ".",
   version = NULL,
-  opensearch = TRUE,
+  opensearch = FALSE,
   only_url = FALSE,
   quiet = FALSE
 )

@@ -1,60 +1,104 @@
+Creating <redacted>
 Cluster Name: photon
-Base Path:    <redacted path>
+Base Path:    <redacted>
 Num Of Node:  1
+Creating <redacted>
+Creating <redacted>
+Creating <redacted>
+Creating <redacted>
 Node Name:      Node 1
 HTTP Port:      9201
-Data Directory: <redacted path>
-Log Directory:  <redacted path>
-[2024-10-26T19:36:41,613][INFO ][o.o.n.Node               ] version[2.13.0], pid[19484], build[unknown/unknown/unknown], OS[Windows 11/10.0/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/22/22+36-2370]
-[2024-10-26T19:36:41,634][INFO ][o.o.n.Node               ] JVM home [C:\Program Files\Java\jdk-22]
-[2024-10-26T19:36:41,640][INFO ][o.o.n.Node               ] JVM arguments []
-[2024-10-26T19:36:41,658][INFO ][o.o.p.PluginsService     ] no modules loaded
-[2024-10-26T19:36:41,660][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.analysis.common.CommonAnalysisPlugin]
-[2024-10-26T19:36:41,660][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.index.mapper.MapperExtrasPlugin]
-[2024-10-26T19:36:41,660][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.index.rankeval.RankEvalPlugin]
-[2024-10-26T19:36:41,660][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.index.reindex.ReindexPlugin]
-[2024-10-26T19:36:41,660][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.ingest.common.IngestCommonPlugin]
-[2024-10-26T19:36:41,660][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.ingest.useragent.IngestUserAgentPlugin]
-[2024-10-26T19:36:41,661][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.join.ParentJoinPlugin]
-[2024-10-26T19:36:41,661][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.painless.PainlessPlugin]
-[2024-10-26T19:36:41,661][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.percolator.PercolatorPlugin]
-[2024-10-26T19:36:41,661][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.plugin.repository.url.URLRepositoryPlugin]
-[2024-10-26T19:36:41,662][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.script.expression.ExpressionPlugin]
-[2024-10-26T19:36:41,662][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.script.mustache.MustachePlugin]
-[2024-10-26T19:36:41,662][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.search.aggregations.matrix.MatrixAggregationPlugin]
-[2024-10-26T19:36:41,663][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.transport.Netty4Plugin]
-[2024-10-26T19:36:41,698][INFO ][o.o.e.ExtensionsManager  ] ExtensionsManager initialized
-[2024-10-26T19:36:41,728][WARN ][stderr                   ] Oct 26, 2024 7:36:41 PM org.apache.lucene.store.MemorySegmentIndexInputProvider <init>
-[2024-10-26T19:36:41,729][WARN ][stderr                   ] INFO: Using MemorySegmentIndexInput with Java 21 or later; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false
-[2024-10-26T19:36:41,739][INFO ][o.o.e.NodeEnvironment    ] using [1] data paths, mounts [[(C:)]], net usable_space [130.9gb], net total_space [784.3gb], types [NTFS]
-[2024-10-26T19:36:41,743][INFO ][o.o.e.NodeEnvironment    ] heap size [3.9gb], compressed ordinary object pointers [true]
-[2024-10-26T19:36:41,966][INFO ][o.o.n.Node               ] node name [Node 1], node ID [Sm-KX7KtTl2DQ3CcuwxfjA], cluster name [photon], roles [data, cluster_manager]
-[2024-10-26T19:36:46,343][INFO ][o.o.t.NettyAllocator     ] creating NettyAllocator with the following configs: [name=opensearch_configured, chunk_size=512kb, suggested_max_allocation_size=512kb, factors={opensearch.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=2mb}]
-[2024-10-26T19:36:46,448][INFO ][o.o.d.DiscoveryModule    ] using discovery type [single-node] and seed hosts providers [settings]
-[2024-10-26T19:36:46,790][WARN ][o.o.g.DanglingIndicesState] gateway.auto_import_dangling_indices is disabled, dangling indices will not be automatically detected or imported and must be managed manually
-[2024-10-26T19:36:47,058][INFO ][o.o.n.Node               ] initialized
-[2024-10-26T19:36:47,058][INFO ][o.o.n.Node               ] starting ...
-[2024-10-26T19:36:47,215][INFO ][o.o.t.TransportService   ] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}
-[2024-10-26T19:36:47,445][INFO ][o.o.c.c.Coordinator      ] cluster UUID [adtZyF1-QDmw8uM0okawXw]
-[2024-10-26T19:36:47,525][INFO ][o.o.c.s.MasterService    ] elected-as-cluster-manager ([1] nodes joined)[{Node 1}{Sm-KX7KtTl2DQ3CcuwxfjA}{CgKwWtNfTeCAy3fEWVc4Pw}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true} elect leader, _BECOME_CLUSTER_MANAGER_TASK_, _FINISH_ELECTION_], term: 6, version: 80, delta: cluster-manager node changed {previous [], current [{Node 1}{Sm-KX7KtTl2DQ3CcuwxfjA}{CgKwWtNfTeCAy3fEWVc4Pw}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}
-[2024-10-26T19:36:47,581][INFO ][o.o.c.s.ClusterApplierService] cluster-manager node changed {previous [], current [{Node 1}{Sm-KX7KtTl2DQ3CcuwxfjA}{CgKwWtNfTeCAy3fEWVc4Pw}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}, term: 6, version: 80, reason: Publication{term=6, version=80}
-[2024-10-26T19:36:47,598][INFO ][o.o.d.PeerFinder         ] setting findPeersInterval to [1s] as node commission status = [true] for local node [{Node 1}{Sm-KX7KtTl2DQ3CcuwxfjA}{CgKwWtNfTeCAy3fEWVc4Pw}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]
-[2024-10-26T19:36:47,609][INFO ][o.o.h.AbstractHttpServerTransport] publish_address {127.0.0.1:9201}, bound_addresses {[::1]:9201}, {127.0.0.1:9201}
-[2024-10-26T19:36:47,609][INFO ][o.o.n.Node               ] started
-[2024-10-26T19:36:47,654][INFO ][o.o.g.GatewayService     ] recovered [1] indices into cluster_state
-[2024-10-26T19:36:47,800][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/67dtXknnREePye8MaRykZQ]
-[2024-10-26T19:36:48,521][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][0]]]).
-[2024-10-26T19:36:48,832][INFO ][d.k.p.App                ] Make sure that the ES cluster is ready, this might take some time.
-[2024-10-26T19:36:49,028][INFO ][d.k.p.App                ] ES cluster is now ready.
-[2024-10-26T19:36:49,179][INFO ][o.o.c.m.MetadataIndexStateService] closing indices [photon/67dtXknnREePye8MaRykZQ]
-[2024-10-26T19:36:49,255][INFO ][o.o.c.m.MetadataIndexStateService] completed closing of indices [photon]
-[2024-10-26T19:36:49,417][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/67dtXknnREePye8MaRykZQ]
-[2024-10-26T19:36:49,633][INFO ][o.o.c.m.MetadataIndexStateService] opening indices [[photon/67dtXknnREePye8MaRykZQ]]
-[2024-10-26T19:36:49,638][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/67dtXknnREePye8MaRykZQ]
-[2024-10-26T19:36:49,727][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/67dtXknnREePye8MaRykZQ]
-[2024-10-26T19:36:50,239][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][0]]]).
-[2024-10-26T19:36:50,360][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/67dtXknnREePye8MaRykZQ]
-[2024-10-26T19:36:50,520][INFO ][o.e.j.u.log              ] Logging initialized @10399ms to org.eclipse.jetty.util.log.Slf4jLog
-[2024-10-26T19:36:50,617][INFO ][s.e.j.EmbeddedJettyServer] == Spark has ignited ...
-[2024-10-26T19:36:50,617][INFO ][s.e.j.EmbeddedJettyServer] >> Listening on 0.0.0.0:2322
-[2024-10-26T19:36:50,622][INFO ][o.e.j.s.Server           ] jetty-9.4.54.v20240208; built: 2024-02-08T19:42:39.027Z; git: cef3fbd6d736a21e7d541a5db490381d95a2047d; jvm 22+36-2370
+Data Directory: <redacted>
+Log Directory:  <redacted>
+[2024-10-31T01:16:27,142][INFO ][stdout                   ] <redacted>
+[2024-10-31T01:16:27,148][INFO ][stdout                   ] <redacted>
+[2024-10-31T01:16:27,179][INFO ][o.o.n.Node               ] version[2.17.1], pid[18940], build[unknown/unknown/unknown], OS[Windows 11/10.0/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/22/22+36-2370]
+[2024-10-31T01:16:27,179][INFO ][o.o.n.Node               ] JVM home [C:\Program Files\Java\jdk-22]
+[2024-10-31T01:16:27,188][INFO ][o.o.n.Node               ] JVM arguments []
+[2024-10-31T01:16:27,217][INFO ][o.o.p.PluginsService     ] no modules loaded
+[2024-10-31T01:16:27,219][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.analysis.common.CommonAnalysisPlugin]
+[2024-10-31T01:16:27,220][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.index.mapper.MapperExtrasPlugin]
+[2024-10-31T01:16:27,220][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.index.rankeval.RankEvalPlugin]
+[2024-10-31T01:16:27,220][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.index.reindex.ReindexPlugin]
+[2024-10-31T01:16:27,221][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.ingest.common.IngestCommonPlugin]
+[2024-10-31T01:16:27,221][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.ingest.useragent.IngestUserAgentPlugin]
+[2024-10-31T01:16:27,221][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.join.ParentJoinPlugin]
+[2024-10-31T01:16:27,221][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.painless.PainlessPlugin]
+[2024-10-31T01:16:27,221][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.percolator.PercolatorPlugin]
+[2024-10-31T01:16:27,221][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.plugin.repository.url.URLRepositoryPlugin]
+[2024-10-31T01:16:27,221][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.script.expression.ExpressionPlugin]
+[2024-10-31T01:16:27,222][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.script.mustache.MustachePlugin]
+[2024-10-31T01:16:27,222][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.search.aggregations.matrix.MatrixAggregationPlugin]
+[2024-10-31T01:16:27,222][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.transport.Netty4Plugin]
+[2024-10-31T01:16:27,305][INFO ][o.a.l.s.MemorySegmentIndexInputProvider] Using MemorySegmentIndexInput with Java 21 or later; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false
+[2024-10-31T01:16:27,317][INFO ][o.o.e.NodeEnvironment    ] using [1] data paths, mounts [[(C:)]], net usable_space [139.3gb], net total_space [784.3gb], types [NTFS]
+[2024-10-31T01:16:27,322][INFO ][o.o.e.NodeEnvironment    ] heap size [3.9gb], compressed ordinary object pointers [true]
+[2024-10-31T01:16:27,462][INFO ][o.o.n.Node               ] node name [Node 1], node ID [W8FDjmbbSLClObUrKihiUw], cluster name [photon], roles [data, cluster_manager]
+[2024-10-31T01:16:27,511][INFO ][o.o.e.ExtensionsManager  ] ExtensionsManager initialized
+[2024-10-31T01:16:31,367][INFO ][o.o.t.NettyAllocator     ] creating NettyAllocator with the following configs: [name=opensearch_configured, chunk_size=512kb, suggested_max_allocation_size=512kb, factors={opensearch.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=2mb}]
+[2024-10-31T01:16:31,508][INFO ][o.o.d.DiscoveryModule    ] using discovery type [single-node] and seed hosts providers [settings]
+[2024-10-31T01:16:31,879][WARN ][o.o.g.DanglingIndicesState] gateway.auto_import_dangling_indices is disabled, dangling indices will not be automatically detected or imported and must be managed manually
+[2024-10-31T01:16:32,168][INFO ][o.o.n.Node               ] initialized
+[2024-10-31T01:16:32,168][INFO ][o.o.n.Node               ] starting ...
+[2024-10-31T01:16:32,309][INFO ][o.o.t.TransportService   ] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}
+[2024-10-31T01:16:32,398][WARN ][o.a.l.i.v.VectorizationProvider] Java vector incubator module is not readable. For optimal vector performance, pass '--add-modules jdk.incubator.vector' to enable Vector API.
+[2024-10-31T01:16:32,606][INFO ][o.o.c.c.Coordinator      ] setting initial configuration to VotingConfiguration{W8FDjmbbSLClObUrKihiUw}
+[2024-10-31T01:16:32,748][INFO ][o.o.c.s.MasterService    ] Tasks batched with key: org.opensearch.cluster.coordination.JoinHelper and count: 3, term: 1, version: 1, delta: cluster-manager node changed {previous [], current [{Node 1}{W8FDjmbbSLClObUrKihiUw}{tvbGs2T-Q8igy-n_l8vMuw}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}
+[2024-10-31T01:16:32,797][INFO ][o.o.c.c.CoordinationState] cluster UUID set to [xWNW4oK0SXqPLabaeF_ZRw]
+[2024-10-31T01:16:32,835][INFO ][o.o.c.s.ClusterApplierService] cluster-manager node changed {previous [], current [{Node 1}{W8FDjmbbSLClObUrKihiUw}{tvbGs2T-Q8igy-n_l8vMuw}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}, term: 1, version: 1, reason: Publication{term=1, version=1}
+[2024-10-31T01:16:32,851][INFO ][o.o.d.PeerFinder         ] setting findPeersInterval to [1s] as node commission status = [true] for local node [{Node 1}{W8FDjmbbSLClObUrKihiUw}{tvbGs2T-Q8igy-n_l8vMuw}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]
+[2024-10-31T01:16:32,854][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
+[2024-10-31T01:16:32,859][INFO ][o.o.h.AbstractHttpServerTransport] publish_address {127.0.0.1:9201}, bound_addresses {[::1]:9201}, {127.0.0.1:9201}
+[2024-10-31T01:16:32,860][INFO ][o.o.n.Node               ] started
+[2024-10-31T01:16:32,862][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
+[2024-10-31T01:16:32,874][INFO ][o.o.g.GatewayService     ] recovered [0] indices into cluster_state
+[2024-10-31T01:16:33,028][INFO ][d.k.p.App                ] Make sure that the ES cluster is ready, this might take some time.
+[2024-10-31T01:16:33,197][INFO ][d.k.p.App                ] ES cluster is now ready.
+[2024-10-31T01:16:33,389][INFO ][o.o.n.Node               ] stopping ...
+[2024-10-31T01:16:33,399][INFO ][o.o.n.Node               ] stopped
+[2024-10-31T01:16:33,400][INFO ][o.o.n.Node               ] closing ...
+[2024-10-31T01:16:33,409][INFO ][o.o.n.Node               ] closed
+[2024-10-31T01:16:33,409][INFO ][stdout                   ] Closed all nodes.
+[2024-10-31T01:16:33,411][WARN ][stderr                   ] Exception in thread "main" org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLException: Cannot create PoolableConnectionFactory (Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.)
+[2024-10-31T01:16:33,412][WARN ][stderr                   ] 	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:84)
+[2024-10-31T01:16:33,412][WARN ][stderr                   ] 	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:643)
+[2024-10-31T01:16:33,412][WARN ][stderr                   ] 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713)
+[2024-10-31T01:16:33,412][WARN ][stderr                   ] 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744)
+[2024-10-31T01:16:33,413][WARN ][stderr                   ] 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757)
+[2024-10-31T01:16:33,413][WARN ][stderr                   ] 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815)
+[2024-10-31T01:16:33,413][WARN ][stderr                   ] 	at de.komoot.photon.nominatim.PostgisDataAdapter.hasColumn(PostgisDataAdapter.java:48)
+[2024-10-31T01:16:33,413][WARN ][stderr                   ] 	at de.komoot.photon.nominatim.NominatimConnector.<init>(NominatimConnector.java:103)
+[2024-10-31T01:16:33,413][WARN ][stderr                   ] 	at de.komoot.photon.nominatim.NominatimConnector.<init>(NominatimConnector.java:91)
+[2024-10-31T01:16:33,413][WARN ][stderr                   ] 	at de.komoot.photon.App.startNominatimImport(App.java:115)
+[2024-10-31T01:16:33,413][WARN ][stderr                   ] 	at de.komoot.photon.App.main(App.java:49)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] Caused by: java.sql.SQLException: Cannot create PoolableConnectionFactory (Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] 	at org.apache.commons.dbcp2.BasicDataSource.createPoolableConnectionFactory(BasicDataSource.java:636)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] 	at org.apache.commons.dbcp2.BasicDataSource.createDataSource(BasicDataSource.java:538)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] 	at org.apache.commons.dbcp2.BasicDataSource.getConnection(BasicDataSource.java:714)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] 	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:160)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] 	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:118)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] 	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:81)
+[2024-10-31T01:16:33,414][WARN ][stderr                   ] 	... 10 more
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] Caused by: org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:352)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.postgresql.Driver.makeConnection(Driver.java:446)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.postgresql.Driver.connect(Driver.java:298)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.apache.commons.dbcp2.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:52)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.apache.commons.dbcp2.PoolableConnectionFactory.makeObject(PoolableConnectionFactory.java:414)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.apache.commons.dbcp2.BasicDataSource.validateConnectionFactory(BasicDataSource.java:113)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	at org.apache.commons.dbcp2.BasicDataSource.createPoolableConnectionFactory(BasicDataSource.java:632)
+[2024-10-31T01:16:33,415][WARN ][stderr                   ] 	... 15 more
+[2024-10-31T01:16:33,416][WARN ][stderr                   ] Caused by: java.net.ConnectException: Connection refused: getsockopt
+[2024-10-31T01:16:33,416][WARN ][stderr                   ] 	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+[2024-10-31T01:16:33,416][WARN ][stderr                   ] 	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+[2024-10-31T01:16:33,416][WARN ][stderr                   ] 	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+[2024-10-31T01:16:33,416][WARN ][stderr                   ] 	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+[2024-10-31T01:16:33,416][WARN ][stderr                   ] 	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+[2024-10-31T01:16:33,417][WARN ][stderr                   ] 	at java.base/java.net.Socket.connect(Socket.java:752)
+[2024-10-31T01:16:33,417][WARN ][stderr                   ] 	at org.postgresql.core.PGStream.createSocket(PGStream.java:260)
+[2024-10-31T01:16:33,417][WARN ][stderr                   ] 	at org.postgresql.core.PGStream.<init>(PGStream.java:121)
+[2024-10-31T01:16:33,417][WARN ][stderr                   ] 	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:140)
+[2024-10-31T01:16:33,417][WARN ][stderr                   ] 	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:268)
+[2024-10-31T01:16:33,417][WARN ][stderr                   ] 	... 23 more

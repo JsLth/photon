@@ -1,8 +1,6 @@
 skip_if_offline("photon.komoot.io")
 skip_on_cran()
 
-new_photon()
-
 test_that("basic requests work", {
   res1 <- geocode("Berlin", progress = TRUE)
   expect_s3_class(res1, "sf")

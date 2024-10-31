@@ -1,9 +1,8 @@
 clear_cache()
 
 has_minimum_java <- function() {
-  is <- numeric_version(get_java_version())
-  should <- numeric_version("11")
-  (is >= should) && has_java()
+  if (!has_java()) return(FALSE)
+  minimum_version(get_java_version(), "11")
 }
 
 test_that("java checks work", {
@@ -72,6 +71,13 @@ test_that("search indices are matched", {
   )
 })
 
+test_that("opensearch is denied when unsupported", {
+  expect_error(
+    download_photon(tempdir(), version = "0.5.0", opensearch = TRUE),
+    class = "opensearch_unsupported"
+  )
+})
+
 skip_if_offline("github.com")
 skip_if_offline("corretto.aws")
 skip_if_not(has_minimum_java())
@@ -106,15 +112,6 @@ test_that("local setup works", {
 
   # test error handling
   fail_dir <- file.path(tempdir(), "photon_fail")
-  os_path <- file.path(fail_dir, "photon-opensearch-0.5.0.jar")
-  dir.create(fail_dir, showWarnings = FALSE)
-  expect_error(new_photon(fail_dir, opensearch = TRUE), class = "abort_opensearch_build")
-  file.create(os_path)
-  expect_message(
-    new_photon(fail_dir, opensearch = TRUE, country = "Samoa"),
-    regexp = "OpenSearch does not support ElasticSearch"
-  )
-
   photon <- new_photon(path = fail_dir)
   expect_error(photon$import(), class = "import_error")
   logs <- photon$get_logs()
@@ -127,7 +124,7 @@ test_that("local setup works", {
   expect_equal(unique(logs$rid), c(1, 2))
 
   options(photon_setup_warn = TRUE)
-  expect_warning(expect_error(photon$start(photon_opts = "-structured"), class = "start_error"))
+  expect_warning(expect_error(photon$start(photon_opts = "-notanoption"), class = "start_error"))
   logs <- photon$get_logs()
   expect_contains(logs$type, c("WARN", "ERROR"))
   expect_match(logs$msg, "usage error", all = FALSE)
