@@ -43,25 +43,16 @@ remotes::install_github("jslth/photon")
 
 ## Usage
 
-Before geocoding, `{photon}` needs to know where to send requests. This
-can be done using the workhorse function `new_photon()`.
+When loading `{photon}`, the package assumes that you want send
+geocoding requests to the public photon API. If you want to change this,
+you can use the workhorse function `new_photon()`. Otherwise, you can
+directly start geocoding.
 
 ``` r
 library(photon)
-new_photon()
-#> <photon>
-#>   Type   : remote
-#>   Server : https://photon.komoot.io/
-```
+places <- c("Paris", "Beijing", "Sao Paolo", "Kinshasa")
 
-With a photon instance registered, you can start geocoding.
-
-``` r
-cities1 <- geocode(
-  c("Paris", "Beijing", "Sao Paolo", "Kinshasa"),
-  limit = 1,
-  layer = "city"
-)
+cities1 <- geocode(places, limit = 1, layer = "city")
 cities1
 #> Simple feature collection with 4 features and 12 fields
 #> Geometry type: POINT
@@ -120,10 +111,9 @@ photon$start()
 - The [`{photon}`](https://github.com/rCarto/photon) package by Timothée
   Giraud interfaces photon but does not allow the setup of local setups
   and was abandoned a while ago.
-- The
-  [`{revgeo}`](https://cran.r-project.org/web/packages/revgeo/index.html)
-  package by Michael Hudecheck implements reverse geocoding using (among
-  others) photon.
-- The
-  [`{MazamaLocationUtils}`](https://cran.r-project.org/web/packages/MazamaLocationUtils/)
-  package by Mazama Science features reverse geocoding using photon.
+- The [`{revgeo}`](https://CRAN.R-project.org/package=revgeo) package by
+  Michael Hudecheck implements reverse geocoding using (among others)
+  photon.
+- The [`{tidygeocoder}`](https://jessecambon.github.io/tidygeocoder/)
+  and [nominatimlite](https://dieghernan.github.io/nominatimlite/)
+  packages implement general (OSM) geocoding using web APIs.
