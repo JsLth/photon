@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+on:
+  push:
+    branches: [main, master]
+    paths: ['R/**', 'tests/**']
+  pull_request:
+    branches: [main, master]
+    paths: ['R/**', 'tests/**']
+
 name: test-coverage
 
 jobs:
