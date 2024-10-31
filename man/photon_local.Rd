@@ -72,6 +72,8 @@ external process running photon.}
 \item \href{#method-photon_local-import}{\code{photon_local$import()}}
 \item \href{#method-photon_local-start}{\code{photon_local$start()}}
 \item \href{#method-photon_local-stop}{\code{photon_local$stop()}}
+\item \href{#method-photon_local-download_data}{\code{photon_local$download_data()}}
+\item \href{#method-photon_local-remove_data}{\code{photon_local$remove_data()}}
 \item \href{#method-photon_local-is_running}{\code{photon_local$is_running()}}
 \item \href{#method-photon_local-is_ready}{\code{photon_local$is_ready()}}
 \item \href{#method-photon_local-get_url}{\code{photon_local$get_url()}}
@@ -92,6 +94,7 @@ executable, the search index, and Java.
   country = NULL,
   date = "latest",
   exact = FALSE,
+  section = NULL,
   opensearch = FALSE,
   overwrite = FALSE,
   quiet = FALSE
@@ -124,6 +127,12 @@ Otherwise, a file will be selected that exactly matches the input to
 
 \item{\code{exact}}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 selects the date with lowest difference to the \code{date} parameter.}
+
+\item{\code{section}}{Subdirectory of the download server from which to select a
+search index. If \code{"experimental"}, selects a dump made for the master
+version of photon. If \code{"archived"}, selects a dump made for an older
+version of photon. If \code{NULL} (or any arbitrary string), selects a
+dump made for the current release. Defaults to \code{NULL}.}
 
 \item{\code{opensearch}}{If \code{TRUE}, looks for an OpenSearch version of
 photon in the specified path. Opensearch-based photon supports structured
@@ -322,6 +331,58 @@ be interrupted manually.
 Kills the running photon process.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$stop()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-download_data"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-download_data}{}}}
+\subsection{Method \code{download_data()}}{
+Downloads a search index using \code{\link{download_searchindex}}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$download_data(
+  country = NULL,
+  date = "latest",
+  exact = FALSE,
+  section = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{country}}{Character string that can be identified by
+\code{\link[countrycode]{countryname}} as a country. An extract for this
+country will be downloaded. If \code{NULL}, downloads a global search index.}
+
+\item{\code{date}}{Character string or date-time object used to specify the creation
+date of the search index. If \code{"latest"}, will download the file tagged
+with "latest". If a character string, the value should be parseable by
+\code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
+compared to all available dates and the closest date will be selected.
+Otherwise, a file will be selected that exactly matches the input to
+\code{date}.}
+
+\item{\code{exact}}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
+selects the date with lowest difference to the \code{date} parameter.}
+
+\item{\code{section}}{Subdirectory of the download server from which to select a
+search index. If \code{"experimental"}, selects a dump made for the master
+version of photon. If \code{"archived"}, selects a dump made for an older
+version of photon. If \code{NULL} (or any arbitrary string), selects a
+dump made for the current release. Defaults to \code{NULL}.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-remove_data"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-remove_data}{}}}
+\subsection{Method \code{remove_data()}}{
+Removes the data currently used in the photon directory. This only
+affects the unpacked \code{photon_data} directory, not archived files.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$remove_data()}\if{html}{\out{</div>}}
 }
 
 }

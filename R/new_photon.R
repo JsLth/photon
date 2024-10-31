@@ -82,6 +82,7 @@ new_photon <- function(path = NULL,
       country = country,
       date = date,
       exact = exact,
+      section = section,
       opensearch = opensearch,
       overwrite = overwrite,
       quiet = quiet

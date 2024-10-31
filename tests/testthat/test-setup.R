@@ -133,5 +133,9 @@ test_that("local setup works", {
     expect_error(photon$import(structured = TRUE)),
     class = "structured_elasticsearch_error"
   )
+
+  photon$stop()
+  expect_no_warning(photon$remove_data())
+  expect_false(dir.exists(file.path(photon$path, "photon_data")))
 })
 

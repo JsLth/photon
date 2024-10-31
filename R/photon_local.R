@@ -78,14 +78,19 @@ photon_local <- R6::R6Class(
     #' compared to all available dates and the closest date will be selected.
     #' Otherwise, a file will be selected that exactly matches the input to
     #' \code{date}.
+    #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
+    #' selects the date with lowest difference to the \code{date} parameter.
+    #' @param section Subdirectory of the download server from which to select a
+    #' search index. If \code{"experimental"}, selects a dump made for the master
+    #' version of photon. If \code{"archived"}, selects a dump made for an older
+    #' version of photon. If \code{NULL} (or any arbitrary string), selects a
+    #' dump made for the current release. Defaults to \code{NULL}.
     #' @param opensearch If \code{TRUE}, looks for an OpenSearch version of
     #' photon in the specified path. Opensearch-based photon supports structured
     #' geocoding queries but has to be built manually using gradle. Hence,
     #' it cannot be downloaded directly. If no OpenSearch executable is found
     #' in the search path, then this parameter is set to \code{FALSE}. Defaults
     #' to \code{FALSE}.
-    #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-    #' selects the date with lowest difference to the \code{date} parameter.
     #' @param overwrite If \code{TRUE}, overwrites existing jar files and
     #' search indices when initializing a new instance. Defaults to
     #' \code{FALSE}.
@@ -95,6 +100,7 @@ photon_local <- R6::R6Class(
                           country = NULL,
                           date = "latest",
                           exact = FALSE,
+                          section = NULL,
                           opensearch = FALSE,
                           overwrite = FALSE,
                           quiet = FALSE) {
@@ -114,6 +120,7 @@ photon_local <- R6::R6Class(
         country = country,
         date = date,
         exact = exact,
+        section = section,
         opensearch = opensearch,
         overwrite = overwrite,
         quiet = quiet
@@ -339,6 +346,59 @@ photon_local <- R6::R6Class(
     },
 
     #' @description
+    #' Downloads a search index using \code{\link{download_searchindex}}.
+    #' @param country Character string that can be identified by
+    #' \code{\link[countrycode]{countryname}} as a country. An extract for this
+    #' country will be downloaded. If \code{NULL}, downloads a global search index.
+    #' @param date Character string or date-time object used to specify the creation
+    #' date of the search index. If \code{"latest"}, will download the file tagged
+    #' with "latest". If a character string, the value should be parseable by
+    #' \code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
+    #' compared to all available dates and the closest date will be selected.
+    #' Otherwise, a file will be selected that exactly matches the input to
+    #' \code{date}.
+    #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
+    #' selects the date with lowest difference to the \code{date} parameter.
+    #' @param section Subdirectory of the download server from which to select a
+    #' search index. If \code{"experimental"}, selects a dump made for the master
+    #' version of photon. If \code{"archived"}, selects a dump made for an older
+    #' version of photon. If \code{NULL} (or any arbitrary string), selects a
+    #' dump made for the current release. Defaults to \code{NULL}.
+    download_data = function(country = NULL,
+                             date = "latest",
+                             exact = FALSE,
+                             section = NULL) {
+      download_searchindex( # nocov start
+        path = self$path,
+        quiet = private$quiet,
+        country = country,
+        date = date,
+        exact = exact,
+        section = section
+      ) # nocov end
+    },
+
+    #' @description
+    #' Removes the data currently used in the photon directory. This only
+    #' affects the unpacked \code{photon_data} directory, not archived files.
+    remove_data = function() {
+      status <- unlink(
+        file.path(self$path, "photon_data"),
+        recursive = TRUE,
+        force = TRUE
+      )
+
+      if (!identical(status, 0L)) {
+        cli::cli_warn(c(
+          "Photon data could not be removed.",
+          "i" = "Is photon still running?"
+        ))
+      }
+
+      status
+    },
+
+    #' @description
     #' Checks whether the photon instance is running and ready. The difference
     #' to \code{$is_ready()} is that \code{$is_running()} checks specifically
     #' if the running photon instance is managed by a process from its own
@@ -439,6 +499,7 @@ setup_photon_directory <- function(path,
                                    country = NULL,
                                    date = NULL,
                                    exact = FALSE,
+                                   section = NULL,
                                    opensearch = FALSE,
                                    overwrite = FALSE,
                                    quiet = FALSE) {
@@ -459,12 +520,13 @@ setup_photon_directory <- function(path,
   if (!any(grepl("photon_data$", files)) || overwrite) {
     has_archive <- grepl("\\.bz2$", files)
     if ((!any(has_archive) || overwrite) && !is.null(country)) {
+      section <- if (opensearch) "experimental" else section
       archive_path <- download_searchindex(
         path = path,
         country = country,
         date = date,
         exact = exact,
-        section = if (opensearch) "experimental",
+        section = section,
         quiet = quiet
       )
     } else if (!any(has_archive)) {
