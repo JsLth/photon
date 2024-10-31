@@ -10,7 +10,7 @@ Elasticsearch search index. It can start, stop, and query the status of the
 photon instance. It is also the basis for geocoding requests at it is used
 to retrieve the URL for geocoding.
 }
-\section{ElasticSearch}{
+\section{ElasticSearch / OpenSearch}{
 
 The standard version of photon uses ElasticSearch indices to geocode.
 These search indices can be self-provided by importing an existing
@@ -20,20 +20,12 @@ Use \code{nominatim = TRUE} to indicate that no ElasticSearch indices
 should be downloaded. See
 \code{vignette("nominatim-import", package = "photon")} for details on how
 to import from Nominatim.
-}
-
-\section{OpenSearch}{
 
 To enable structured geocoding, the photon geocoder needs to be built to
-support OpenSearch. Currently, this feature is only experimental and needs
-to be manually built using gradle.
-When using the OpenSearch version of photon, no pre-built ElasticSearch
-indices can be used and the data must be directly imported from a
-Nominatim database. Refer to the photon
-\href{https://github.com/komoot/photon}{README} for details. These steps
-cannot be done by \code{\{photon\}} and must be done before initializing
-\code{photon_local}. If an OpenSearch jar is detected, the \code{nominatim}
-parameter is forced to \code{TRUE}.
+support OpenSearch. Since photon 0.6.0, OpenSearch jar files are included
+in the photon releases. OpenSearch indices can also be downloaded, but
+do not support structured geocoding as of yet. To enable structured
+geocoding, indices have to be imported from an existing Nominatim database.
 }
 
 \examples{
