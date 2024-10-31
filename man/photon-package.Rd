@@ -50,8 +50,8 @@ functions. These include:
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/jslth/photon}
-  \item \url{https://jslth.github.io/photon}
+  \item \url{https://github.com/jslth/photon/}
+  \item \url{https://jslth.github.io/photon/}
   \item Report bugs at \url{https://github.com/jslth/photon/issues}
 }
 
