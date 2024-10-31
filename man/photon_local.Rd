@@ -172,6 +172,10 @@ as the country and creation date of the Eleasticsearch search index.
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$info()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A list containing the java version, the photon version, and
+if applicable, the spatial and temporal coverage of the search index.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-purge"></a>}}
@@ -190,6 +194,9 @@ of an instance entirely.
 instance.}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{NULL}, invisibly.
 }
 }
 \if{html}{\out{<hr>}}
@@ -402,6 +409,9 @@ use).
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$is_running()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A logical of length 1.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-is_ready"></a>}}
@@ -415,6 +425,9 @@ you can send requests.
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$is_ready()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A logical of length 1.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-get_url"></a>}}
@@ -425,20 +438,25 @@ Constructs the URL that geocoding requests should be sent to.
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$get_url()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A URL to send requests to.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-get_logs"></a>}}
 \if{latex}{\out{\hypertarget{method-photon_local-get_logs}{}}}
 \subsection{Method \code{get_logs()}}{
 Retrieve the logs of previous photon runs.
-Returns a dataframe containing the run ID (\code{rid}, the highest
-number is the most recent run), a timestamp (\code{ts}), the thread,
-the log type (INFO, WARN, or ERROR), the class trace and the
-error message.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$get_logs()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+Returns a dataframe containing the run ID (\code{rid}, the
+highest number is the most recent run), a timestamp (\code{ts}), the
+thread, the log type (INFO, WARN, or ERROR), the class trace and the
+error message.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-clone"></a>}}

@@ -149,6 +149,8 @@ photon_local <- R6::R6Class(
     #' @description
     #' Retrieve metadata about the java and photon version used as well
     #' as the country and creation date of the Eleasticsearch search index.
+    #' @return A list containing the java version, the photon version, and
+    #' if applicable, the spatial and temporal coverage of the search index.
     info = function() {
       info <- list(java = get_java_version(quiet = TRUE))
       c(info, private$get_metadata(quiet = TRUE))
@@ -159,6 +161,7 @@ photon_local <- R6::R6Class(
     #' of an instance entirely.
     #' @param ask If \code{TRUE}, asks for confirmation before purging the
     #' instance.
+    #' @return \code{NULL}, invisibly.
     purge = function(ask = TRUE) {
       if (interactive() || !ask) {
         cli::cli_inform(c("i" = paste( # nocov start
@@ -375,7 +378,8 @@ photon_local <- R6::R6Class(
         date = date,
         exact = exact,
         section = section
-      ) # nocov end
+      )
+      invisible(self) # nocov end
     },
 
     #' @description
@@ -395,7 +399,7 @@ photon_local <- R6::R6Class(
         ))
       }
 
-      status
+      invisible(self)
     },
 
     #' @description
@@ -407,6 +411,7 @@ photon_local <- R6::R6Class(
     #' return \code{TRUE}. This method is useful if you want to ensure that
     #' the \code{photon} object can control its photon server (mostly internal
     #' use).
+    #' @return A logical of length 1.
     is_running = function() {
       photon_running(self)
     },
@@ -416,12 +421,14 @@ photon_local <- R6::R6Class(
     #' is the case if the photon server returns a HTTP 400 when sending a
     #' queryless request. This method is useful if you want to check whether
     #' you can send requests.
+    #' @return A logical of length 1.
     is_ready = function() {
       photon_ready(self, private)
     },
 
     #' @description
     #' Constructs the URL that geocoding requests should be sent to.
+    #' @return A URL to send requests to.
     get_url = function() {
       host <- private$host
       port <- private$port
@@ -440,9 +447,10 @@ photon_local <- R6::R6Class(
 
     #' @description
     #' Retrieve the logs of previous photon runs.
-    #' Returns a dataframe containing the run ID (\code{rid}, the highest
-    #' number is the most recent run), a timestamp (\code{ts}), the thread,
-    #' the log type (INFO, WARN, or ERROR), the class trace and the
+
+    #' @return Returns a dataframe containing the run ID (\code{rid}, the
+    #' highest number is the most recent run), a timestamp (\code{ts}), the
+    #' thread, the log type (INFO, WARN, or ERROR), the class trace and the
     #' error message.
     get_logs = function() {
       private$logs
