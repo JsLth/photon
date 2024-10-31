@@ -68,6 +68,6 @@ test_that("structured accepts parameters", {
   web <- try(webfakes::local_app_process(app))
   skip_webfakes(web)
   new_photon(url = web$url())
-  expect_equal(nrow(structured(data.frame(street = "test"))), 1)
-  expect_error(structured(list(a = "test"), progress = TRUE), class = "assert_named")
+  expect_equal(nrow(structured(data.frame(street = "test"), progress = TRUE)), 1)
+  expect_error(structured(list(a = "test")), class = "assert_named")
 })

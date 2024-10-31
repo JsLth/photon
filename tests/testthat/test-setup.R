@@ -1,9 +1,23 @@
-clear_cache()
-
 has_minimum_java <- function() {
   if (!has_java()) return(FALSE)
   minimum_version(get_java_version(), "11")
 }
+
+clear_cache()
+
+test_that("public api is initialized on load", {
+  expect_error(get_instance(), class = "instance_missing")
+  loadNamespace("photon")
+  expect_no_error(get_instance())
+})
+
+test_that("remote photons work", {
+  photon <- new_photon()
+  expect_true(is_komoot(photon$get_url()))
+  expect_error(structured(), regexp = "disabled")
+  photon <- new_photon(url = "test.org")
+  expect_equal(photon$get_url(), "test.org")
+})
 
 test_that("java checks work", {
   with_mocked_bindings(
@@ -42,15 +56,6 @@ test_that("logs can be parsed", {
   expect_true(sum(vapply(logs, FUN.VALUE = logical(1), \(x) all(is.na(x)))) == 1)
 })
 
-test_that("remote photons work", {
-  expect_error(get_instance(), class = "instance_missing")
-  photon <- new_photon()
-  expect_true(is_komoot(photon$get_url()))
-  expect_error(structured(), regexp = "disabled")
-  photon <- new_photon(url = "test.org")
-  expect_equal(photon$get_url(), "test.org")
-})
-
 skip_if_offline("graphhopper.com")
 skip_on_cran()
 
@@ -79,7 +84,6 @@ test_that("opensearch is denied when unsupported", {
 })
 
 skip_if_offline("github.com")
-skip_if_offline("corretto.aws")
 skip_if_not(has_minimum_java())
 
 test_that("local setup works", {
