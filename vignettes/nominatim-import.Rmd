@@ -121,7 +121,7 @@ geocode("Apia")
 
 ## OpenSearch
 
-Previous setups of photon were based on the ElasticSearch search engine. Photon also offers a version that is based on [OpenSearch](https://opensearch.org/). This photon version is necessary to enable structured geocoding queries. Currently, OpenSearch photon still needs to be build manually using [gradle](https://gradle.org/). For this step, we assume a working `photon-opensearch-0.5.0.jar` in the photon directory.
+Previous setups of photon were based on the ElasticSearch search engine. Photon also offers a version that is based on [OpenSearch](https://opensearch.org/). This photon version is necessary to enable structured geocoding queries. Since photon 0.6.0, OpenSearch jar files are provided with new photon releases and can be downloaded by setting `opensearch = TRUE` in the `new_photon()` function.
 
 ```{r, eval=FALSE}
 # set opensearch = TRUE to use OpenSearch photon
