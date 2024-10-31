@@ -167,7 +167,7 @@ parse_log_line <- function(line) {
 
   if (all(is.na(parsed))) {
     parsed <- utils::strcapture(
-      "\\[(.+)\\]\\[(.+)\\]\\[([a-zA-Z.]+) +?\\](.+)",
+      "\\[(.+)\\]\\[(.+)\\]\\[([a-zA-Z.]+) *?\\](.+)",
       line,
       proto = list(ts = "", type = "", class = "", msg = "")
     )
