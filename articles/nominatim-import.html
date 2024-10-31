@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -170,10 +170,10 @@ given photon directory.</p>
 </h2>
 <p>Previous setups of photon were based on the ElasticSearch search
 engine. Photon also offers a version that is based on <a href="https://opensearch.org/" class="external-link">OpenSearch</a>. This photon version is
-necessary to enable structured geocoding queries. Currently, OpenSearch
-photon still needs to be build manually using <a href="https://gradle.org/" class="external-link">gradle</a>. For this step, we assume a
-working <code>photon-opensearch-0.5.0.jar</code> in the photon
-directory.</p>
+necessary to enable structured geocoding queries. Since photon 0.6.0,
+OpenSearch jar files are provided with new photon releases and can be
+downloaded by setting <code>opensearch = TRUE</code> in the
+<code><a href="../reference/new_photon.html">new_photon()</a></code> function.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set opensearch = TRUE to use OpenSearch photon</span></span>
 <span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">dir</span>, opensearch <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

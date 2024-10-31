@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><a href="https://github.com/jslth/photon" class="external-link">photon</a> is a simple interface and setup manager of the <a href="https://photon.komoot.io" class="external-link">photon</a> OpenStreetMap geocoder. It features unstructured, structured, and reverse geocoding. The package allows requests to the public API but shines at setting up local instances to enable high-performance offline geocoding.</p>
+<p><a href="https://github.com/jslth/photon/" class="external-link">photon</a> is a simple interface and setup manager of the <a href="https://photon.komoot.io" class="external-link">photon</a> OpenStreetMap geocoder. It features unstructured, structured, and reverse geocoding. The package allows requests to the public API but shines at setting up local instances to enable high-performance offline geocoding.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -71,20 +71,12 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Before geocoding, <a href="https://github.com/jslth/photon" class="external-link">photon</a> needs to know where to send requests. This can be done using the workhorse function <code><a href="reference/new_photon.html">new_photon()</a></code>.</p>
+<p>When loading <a href="https://github.com/jslth/photon/" class="external-link">photon</a>, the package assumes that you want send geocoding requests to the public photon API. If you want to change this, you can use the workhorse function <code><a href="reference/new_photon.html">new_photon()</a></code>. Otherwise, you can directly start geocoding.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jslth/photon" class="external-link">photon</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;photon&gt;</span></span>
-<span><span class="co">#&gt;   Type   : remote</span></span>
-<span><span class="co">#&gt;   Server : https://photon.komoot.io/</span></span></code></pre></div>
-<p>With a photon instance registered, you can start geocoding.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cities1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/geocode.html">geocode</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Paris"</span>, <span class="st">"Beijing"</span>, <span class="st">"Sao Paolo"</span>, <span class="st">"Kinshasa"</span><span class="op">)</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  layer <span class="op">=</span> <span class="st">"city"</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jslth/photon/" class="external-link">photon</a></span><span class="op">)</span></span>
+<span><span class="va">places</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Paris"</span>, <span class="st">"Beijing"</span>, <span class="st">"Sao Paolo"</span>, <span class="st">"Kinshasa"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cities1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/geocode.html">geocode</a></span><span class="op">(</span><span class="va">places</span>, limit <span class="op">=</span> <span class="fl">1</span>, layer <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">cities1</span></span>
 <span><span class="co">#&gt; Simple feature collection with 4 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
@@ -100,7 +92,7 @@
 <span><span class="co">#&gt; 4     4 R         3.88e5 Democr… bounda… CD          administ… Kins… Kins… city </span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: extent &lt;list&gt;, county &lt;chr&gt;, geometry &lt;POINT [°]&gt;</span></span></code></pre></div>
 <p>Reverse geocoding means taking point geometries and returning their addresses or place names.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cities2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reverse.html">reverse</a></span><span class="op">(</span><span class="va">cities1</span><span class="op">$</span><span class="va">geometry</span>, limit <span class="op">=</span> <span class="fl">1</span>, layer <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">cities2</span></span>
 <span><span class="co">#&gt; Simple feature collection with 4 features and 12 fields</span></span>
@@ -116,15 +108,15 @@
 <span><span class="co">#&gt; 3     3 R         2.98e5 Brazil  place   BR          municipa… São … São … city </span></span>
 <span><span class="co">#&gt; 4     4 R         3.88e5 Democr… bounda… CD          administ… Kins… Kins… city </span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: extent &lt;list&gt;, county &lt;chr&gt;, geometry &lt;POINT [°]&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">cities1</span>, <span class="va">cities2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="offline-geocoding">Offline geocoding<a class="anchor" aria-label="anchor" href="#offline-geocoding"></a>
 </h2>
-<p><a href="https://github.com/jslth/photon" class="external-link">photon</a> is designed to facilitate offline geocoding. <code><a href="reference/new_photon.html">new_photon()</a></code> can install photon locally. The following code would install and start photon covering the country of Germany in the current working directory.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p><a href="https://github.com/jslth/photon/" class="external-link">photon</a> is designed to facilitate offline geocoding. <code><a href="reference/new_photon.html">new_photon()</a></code> can install photon locally. The following code would install and start photon covering the country of Germany in the current working directory.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"./photon"</span>, country <span class="op">=</span> <span class="st">"Germany"</span><span class="op">)</span></span>
 <span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -133,8 +125,8 @@
 </h2>
 <ul>
 <li>The <a href="https://github.com/rCarto/photon" class="external-link"><code>{photon}</code></a> package by Timothée Giraud interfaces photon but does not allow the setup of local setups and was abandoned a while ago.</li>
-<li>The <a href="https://cran.r-project.org/web/packages/revgeo/index.html" class="external-link"><code>{revgeo}</code></a> package by Michael Hudecheck implements reverse geocoding using (among others) photon.</li>
-<li>The <a href="https://cran.r-project.org/web/packages/MazamaLocationUtils/" class="external-link"><code>{MazamaLocationUtils}</code></a> package by Mazama Science features reverse geocoding using photon.</li>
+<li>The <a href="https://CRAN.R-project.org/package=revgeo" class="external-link"><code>{revgeo}</code></a> package by Michael Hudecheck implements reverse geocoding using (among others) photon.</li>
+<li>The <a href="https://jessecambon.github.io/tidygeocoder/" class="external-link"><code>{tidygeocoder}</code></a> and <a href="https://dieghernan.github.io/nominatimlite/" class="external-link">nominatimlite</a> packages implement general (OSM) geocoding using web APIs.</li>
 </ul>
 </div>
 </div>

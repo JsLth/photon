@@ -15,7 +15,7 @@ to retrieve the URL for geocoding."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ to retrieve the URL for geocoding.</p>
 
 
     <div class="section level2">
-    <h2 id="elasticsearch">ElasticSearch<a class="anchor" aria-label="anchor" href="#elasticsearch"></a></h2>
+    <h2 id="elasticsearch-opensearch">ElasticSearch / OpenSearch<a class="anchor" aria-label="anchor" href="#elasticsearch-opensearch"></a></h2>
 
 
 <p>The standard version of photon uses ElasticSearch indices to geocode.
@@ -64,21 +64,11 @@ Use <code>nominatim = TRUE</code> to indicate that no ElasticSearch indices
 should be downloaded. See
 <code><a href="../articles/nominatim-import.html">vignette("nominatim-import", package = "photon")</a></code> for details on how
 to import from Nominatim.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="opensearch">OpenSearch<a class="anchor" aria-label="anchor" href="#opensearch"></a></h2>
-
-
 <p>To enable structured geocoding, the photon geocoder needs to be built to
-support OpenSearch. Currently, this feature is only experimental and needs
-to be manually built using gradle.
-When using the OpenSearch version of photon, no pre-built ElasticSearch
-indices can be used and the data must be directly imported from a
-Nominatim database. Refer to the photon
-<a href="https://github.com/komoot/photon" class="external-link">README</a> for details. These steps
-cannot be done by <code>{photon}</code> and must be done before initializing
-<code>photon_local</code>. If an OpenSearch jar is detected, the <code>nominatim</code>
-parameter is forced to <code>TRUE</code>.</p>
+support OpenSearch. Since photon 0.6.0, OpenSearch jar files are included
+in the photon releases. OpenSearch indices can also be downloaded, but
+do not support structured geocoding as of yet. To enable structured
+geocoding, indices have to be imported from an existing Nominatim database.</p>
     </div>
     <div class="section level2">
     <h2 id="super-class">Super class<a class="anchor" aria-label="anchor" href="#super-class"></a></h2>
@@ -110,6 +100,8 @@ external process running photon.</p></dd>
 <li><p><a href="#method-photon_local-import"><code>photon_local$import()</code></a></p></li>
 <li><p><a href="#method-photon_local-start"><code>photon_local$start()</code></a></p></li>
 <li><p><a href="#method-photon_local-stop"><code>photon_local$stop()</code></a></p></li>
+<li><p><a href="#method-photon_local-download_data"><code>photon_local$download_data()</code></a></p></li>
+<li><p><a href="#method-photon_local-remove_data"><code>photon_local$remove_data()</code></a></p></li>
 <li><p><a href="#method-photon_local-is_running"><code>photon_local$is_running()</code></a></p></li>
 <li><p><a href="#method-photon_local-is_ready"><code>photon_local$is_ready()</code></a></p></li>
 <li><p><a href="#method-photon_local-get_url"><code>photon_local$get_url()</code></a></p></li>
@@ -126,6 +118,7 @@ executable, the search index, and Java.</p><div class="section">
 <span>  country <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  date <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>  exact <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  section <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  opensearch <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -168,6 +161,14 @@ Otherwise, a file will be selected that exactly matches the input to
 selects the date with lowest difference to the <code>date</code> parameter.</p></dd>
 
 
+<dt><code>section</code></dt>
+<dd><p>Subdirectory of the download server from which to select a
+search index. If <code>"experimental"</code>, selects a dump made for the master
+version of photon. If <code>"archived"</code>, selects a dump made for an older
+version of photon. If <code>NULL</code> (or any arbitrary string), selects a
+dump made for the current release. Defaults to <code>NULL</code>.</p></dd>
+
+
 <dt><code>opensearch</code></dt>
 <dd><p>If <code>TRUE</code>, looks for an OpenSearch version of
 photon in the specified path. Opensearch-based photon supports structured
@@ -208,6 +209,11 @@ as the country and creation date of the Eleasticsearch search index.</p><div cla
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">info</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+<div class="section">
+<h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
+<p>A list containing the java version, the photon version, and
+if applicable, the spatial and temporal coverage of the search index.</p>
+</div>
 
 </div><p></p><hr><a id="method-photon_local-purge"></a><div class="section">
 <h3 id="method-purge-">Method <code>purge()</code><a class="anchor" aria-label="anchor" href="#method-purge-"></a></h3>
@@ -225,6 +231,10 @@ instance.</p></dd>
 
 
 </dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
+<p><code>NULL</code>, invisibly.</p>
 </div>
 
 </div><p></p><hr><a id="method-photon_local-import"></a><div class="section">
@@ -404,6 +414,61 @@ be interrupted manually.</p>
 </div>
 
 
+</div><p></p><hr><a id="method-photon_local-download_data"></a><div class="section">
+<h3 id="method-download-data-">Method <code>download_data()</code><a class="anchor" aria-label="anchor" href="#method-download-data-"></a></h3>
+<p>Downloads a search index using <code><a href="download_searchindex.html">download_searchindex</a></code>.</p><div class="section">
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">download_data</span><span class="op">(</span></span>
+<span>  country <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  date <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>  exact <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  section <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>country</code></dt>
+<dd><p>Character string that can be identified by
+<code><a href="https://vincentarelbundock.github.io/countrycode/reference/countryname.html" class="external-link">countryname</a></code> as a country. An extract for this
+country will be downloaded. If <code>NULL</code>, downloads a global search index.</p></dd>
+
+
+<dt><code>date</code></dt>
+<dd><p>Character string or date-time object used to specify the creation
+date of the search index. If <code>"latest"</code>, will download the file tagged
+with "latest". If a character string, the value should be parseable by
+<code><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></code>. If <code>exact = FALSE</code>, the input value is
+compared to all available dates and the closest date will be selected.
+Otherwise, a file will be selected that exactly matches the input to
+<code>date</code>.</p></dd>
+
+
+<dt><code>exact</code></dt>
+<dd><p>If <code>TRUE</code>, exactly matches the <code>date</code>. Otherwise,
+selects the date with lowest difference to the <code>date</code> parameter.</p></dd>
+
+
+<dt><code>section</code></dt>
+<dd><p>Subdirectory of the download server from which to select a
+search index. If <code>"experimental"</code>, selects a dump made for the master
+version of photon. If <code>"archived"</code>, selects a dump made for an older
+version of photon. If <code>NULL</code> (or any arbitrary string), selects a
+dump made for the current release. Defaults to <code>NULL</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-photon_local-remove_data"></a><div class="section">
+<h3 id="method-remove-data-">Method <code>remove_data()</code><a class="anchor" aria-label="anchor" href="#method-remove-data-"></a></h3>
+<p>Removes the data currently used in the photon directory. This only
+affects the unpacked <code>photon_data</code> directory, not archived files.</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">remove_data</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-photon_local-is_running"></a><div class="section">
 <h3 id="method-is-running-">Method <code>is_running()</code><a class="anchor" aria-label="anchor" href="#method-is-running-"></a></h3>
 <p>Checks whether the photon instance is running and ready. The difference
@@ -414,10 +479,14 @@ if the running photon instance is managed by a process from its own
 return <code>TRUE</code>. This method is useful if you want to ensure that
 the <code>photon</code> object can control its photon server (mostly internal
 use).</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_running</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+<div class="section">
+<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
+<p>A logical of length 1.</p>
+</div>
 
 </div><p></p><hr><a id="method-photon_local-is_ready"></a><div class="section">
 <h3 id="method-is-ready-">Method <code>is_ready()</code><a class="anchor" aria-label="anchor" href="#method-is-ready-"></a></h3>
@@ -425,40 +494,51 @@ use).</p><div class="section">
 is the case if the photon server returns a HTTP 400 when sending a
 queryless request. This method is useful if you want to check whether
 you can send requests.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_ready</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+<div class="section">
+<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
+<p>A logical of length 1.</p>
+</div>
 
 </div><p></p><hr><a id="method-photon_local-get_url"></a><div class="section">
 <h3 id="method-get-url-">Method <code>get_url()</code><a class="anchor" aria-label="anchor" href="#method-get-url-"></a></h3>
 <p>Constructs the URL that geocoding requests should be sent to.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">get_url</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+<div class="section">
+<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
+<p>A URL to send requests to.</p>
+</div>
 
 </div><p></p><hr><a id="method-photon_local-get_logs"></a><div class="section">
 <h3 id="method-get-logs-">Method <code>get_logs()</code><a class="anchor" aria-label="anchor" href="#method-get-logs-"></a></h3>
-<p>Retrieve the logs of previous photon runs.
-Returns a dataframe containing the run ID (<code>rid</code>, the highest
-number is the most recent run), a timestamp (<code>ts</code>), the thread,
-the log type (INFO, WARN, or ERROR), the class trace and the
-error message.</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p>Retrieve the logs of previous photon runs.</p><div class="section">
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">get_logs</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+<div class="section">
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<p>Returns a dataframe containing the run ID (<code>rid</code>, the
+highest number is the most recent run), a timestamp (<code>ts</code>), the
+thread, the log type (INFO, WARN, or ERROR), the class trace and the
+error message.</p>
+</div>
 
 </div><p></p><hr><a id="method-photon_local-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
