@@ -140,7 +140,7 @@ structured(data.frame(city = "Apia"), layer = "house") # matches nothing
 # structured geocoding can discern small differences in places
 safune <- data.frame(
   city = c("Safune", "Safune"),
-  state = c("Gagaʻifomauga", "Tuamasaga")
+  state = c("Gaga'ifomauga", "Tuamasaga")
 )
 structured(safune, limit = 1)
 }

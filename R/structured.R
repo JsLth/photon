@@ -52,7 +52,7 @@
 #' # structured geocoding can discern small differences in places
 #' safune <- data.frame(
 #'   city = c("Safune", "Safune"),
-#'   state = c("Gagaʻifomauga", "Tuamasaga")
+#'   state = c("Gaga'ifomauga", "Tuamasaga")
 #' )
 #' structured(safune, limit = 1)
 #' }
@@ -65,8 +65,7 @@ structured <- function(.data,
                        locbias = NULL,
                        locbias_scale = NULL,
                        zoom = NULL,
-                       progress = interactive()
-) {
+                       progress = interactive()) {
   if (!has_structured_support()) {
     ph_stop("Structured geocoding is disabled for the mounted photon instance.")
   }
