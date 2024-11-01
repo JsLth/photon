@@ -25,6 +25,7 @@ test_that("java checks work", {
 })
 
 test_that("java can be purged", {
+  skip_on_cran()
   proc <- get_java_processes()
   message(capture.output(proc))
   expect_s3_class(proc, "data.frame")
