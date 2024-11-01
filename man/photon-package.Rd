@@ -4,7 +4,7 @@
 \name{photon-package}
 \alias{photon}
 \alias{photon-package}
-\title{photon: High-performance geocoding using 'photon'}
+\title{photon: High-performance Geocoding using 'photon'}
 \description{
 Features unstructured, structured and reverse geocoding using the 'photon' geocoding API. Facilitates the setup of local Photon instances to enable offline geocoding.
 }
