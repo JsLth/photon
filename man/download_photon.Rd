@@ -13,7 +13,7 @@ download_photon(
 )
 }
 \arguments{
-\item{path}{Path to a directory to store the exectutable.}
+\item{path}{Path to a directory to store the executable.}
 
 \item{version}{Version tag of the photon release. If \code{NULL},
 downloads the latest known version.}

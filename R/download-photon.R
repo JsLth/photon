@@ -2,7 +2,7 @@
 #' @description
 #' Download the photon executable from GitHub.
 #'
-#' @param path Path to a directory to store the exectutable.
+#' @param path Path to a directory to store the executable.
 #' @param version Version tag of the photon release. If \code{NULL},
 #' downloads the latest known version.
 #' @param opensearch If \code{TRUE}, downloads the OpenSearch version of

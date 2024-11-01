@@ -105,7 +105,7 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
  \item{Include places with tag: \code{key:value}}
  \item{Exclude places with tag: \code{!key:value}}
  \item{Include places with tag key: \code{key}}
- \item{Include places wih tag value: \code{:value}}
+ \item{Include places with tag value: \code{:value}}
  \item{Exclude places with tag key: \code{!key}}
  \item{Exclude places with tag value: \code{:!value}}
 }

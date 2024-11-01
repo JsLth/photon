@@ -6,7 +6,7 @@
 \description{
 This R6 class is used to initialize and manage local photon instances.
 It can download and setup the Java, the photon executable, and the necessary
-Elasticsearch search index. It can start, stop, and query the status of the
+ElasticSearch search index. It can start, stop, and query the status of the
 photon instance. It is also the basis for geocoding requests at it is used
 to retrieve the URL for geocoding.
 }

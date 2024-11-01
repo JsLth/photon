@@ -2,7 +2,7 @@
 #' @description
 #' This R6 class is used to initialize and manage local photon instances.
 #' It can download and setup the Java, the photon executable, and the necessary
-#' Elasticsearch search index. It can start, stop, and query the status of the
+#' ElasticSearch search index. It can start, stop, and query the status of the
 #' photon instance. It is also the basis for geocoding requests at it is used
 #' to retrieve the URL for geocoding.
 #'
@@ -557,7 +557,7 @@ untar_es_index <- function(archive_path, path) {
   untared <- utils::untar(archive_path, files = "photon_data", exdir = path)
 
   if (!identical(untared, 0L)) {
-    ph_stop("Failed to untar the Elasticsearch index.") # nocov
+    ph_stop("Failed to untar the ElasticSearch index.") # nocov
   }
 }
 
