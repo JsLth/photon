@@ -33,9 +33,9 @@ Arguments are formatted according to the following rules:
 }
 }
 \examples{
-# converts R parameters to CMD options
+\donttest{# converts R parameters to CMD options
 opts <- cmd_options(n = 1, w = 5, "127.0.0.1")
-run("ping", args = opts, error_on_status = FALSE, echo_cmd = TRUE)
+try(run("ping", args = opts, error_on_status = FALSE, echo_cmd = TRUE))
 
 if (nzchar(Sys.which("docker"))) {
 # sometimes, it is necessary to use double hyphens
@@ -49,5 +49,5 @@ if (FALSE) {
 dir <- file.path(tempdir(), "photon")
 photon <- new_photon(dir, country = "Samoa")
 photon$start(photon_opts = cmd_options(cors_any = TRUE))
-}
+}}
 }
