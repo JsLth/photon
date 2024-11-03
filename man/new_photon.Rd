@@ -25,7 +25,7 @@ the \code{url} parameter.}
 
 \item{url}{URL of a photon server to connect to. If \code{NULL} and
 \code{path} is also \code{NULL}, connects to the public API under
-\url{photon.komoot.io}.}
+\url{https://photon.komoot.io/}.}
 
 \item{photon_version}{Version of photon to be used. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.

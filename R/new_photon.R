@@ -14,7 +14,7 @@
 #' the \code{url} parameter.
 #' @param url URL of a photon server to connect to. If \code{NULL} and
 #' \code{path} is also \code{NULL}, connects to the public API under
-#' \url{photon.komoot.io}.
+#' \url{https://photon.komoot.io/}.
 #' @param photon_version Version of photon to be used. A list of all
 #' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 #' Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
