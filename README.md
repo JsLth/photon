@@ -15,8 +15,6 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![Codecov test
 coverage](https://codecov.io/gh/JsLth/photon/branch/main/graph/badge.svg)](https://app.codecov.io/gh/JsLth/photon?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/jslth/photon/badge/main)](https://www.codefactor.io/repository/github/jslth/photon/overview/main)
-[![Lifecycle:
-stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 `{photon}` is a simple interface and setup manager of the
@@ -109,8 +107,8 @@ photon$start()
 ## Related packages
 
 - The [`{photon}`](https://github.com/rCarto/photon) package by Timothée
-  Giraud interfaces photon but does not allow the setup of local setups
-  and was abandoned a while ago.
+  Giraud interfaces photon but does not allow the setup of local
+  instances and was abandoned a while ago.
 - The [`{revgeo}`](https://CRAN.R-project.org/package=revgeo) package by
   Michael Hudecheck implements reverse geocoding using (among others)
   photon.
