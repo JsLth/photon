@@ -1,8 +1,3 @@
-has_minimum_java <- function() {
-  if (!has_java()) return(FALSE)
-  minimum_version(get_java_version(), "11")
-}
-
 test_that("remote photons work", {
   clear_cache()
   expect_error(get_instance(), class = "instance_missing")
@@ -79,7 +74,7 @@ test_that("opensearch is denied when unsupported", {
 })
 
 skip_if_offline("github.com")
-skip_if_not(has_minimum_java())
+skip_if_not(has_java("11"))
 
 test_that("local setup works", {
   options(photon_setup_warn = FALSE)
@@ -106,6 +101,8 @@ test_that("local setup works", {
   photon$start(host = "127.0.0.1")
   expect_true(photon$is_running())
   expect_gt(nrow(geocode("Apai")), 0)
+  expect_error(photon$remove_data(), class = "photon_data_not_removed")
+
   photon$stop()
   expect_false(photon$is_running())
 

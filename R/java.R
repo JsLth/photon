@@ -30,16 +30,12 @@ has_java <- function(version = NULL) {
   assert_length(version, null = TRUE)
   has_tool <- file.exists(Sys.which("java"))
 
-  if (is.null(version)) {
+  if (is.null(version) || isFALSE(has_tool)) {
     return(has_tool)
   }
 
-  if (has_tool) {
-    sys_version <- get_java_version(quiet = TRUE)
-    minimum_version(sys_version, version)
-  } else {
-    FALSE
-  }
+  sys_version <- get_java_version(quiet = TRUE)
+  minimum_version(sys_version, version)
 }
 
 

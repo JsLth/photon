@@ -396,7 +396,7 @@ photon_local <- R6::R6Class(
         cli::cli_warn(c(
           "Photon data could not be removed.",
           "i" = "Is photon still running?"
-        ))
+        ), class = "photon_data_not_removed")
       }
 
       invisible(self)
