@@ -1,16 +1,43 @@
 check_jdk_version <- function(min_version, quiet = FALSE) {
-  version <- numeric_version(get_java_version(quiet))
-  min_version <- numeric_version(min_version)
+  version <- get_java_version(quiet)
 
-  if (version < min_version) {
+  if (minimum_version(version, min_version)) {
     msg <- c("!" = "JDK version {version} detected but version 17 required.", rje_link())
     ph_stop(msg, class = "java_version_error")
   }
 }
 
 
-has_java <- function() {
-  any(nzchar(Sys.which("java")))
+#' Is Java installed?
+#' @description
+#' Utility function to check if Java is installed and if it has the right
+#' version.
+#'
+#' @param version Character string specifying the minimum version of Java.
+#' If the installed Java version is lower than this, returns \code{FALSE}.
+#' If \code{NULL}, only checks if any kind of Java is installed on the
+#' system.
+#'
+#' @returns A logical vector of length 1.
+#'
+#' @examples
+#' has_java() # Is Java installed?
+#' has_java("11") # Is Java > 11 installed?
+has_java <- function(version = NULL) {
+  assert_vector(version, "character")
+  assert_length(version)
+  has_tool <- file.exists(Sys.which("java"))
+
+  if (is.null(version)) {
+    return(has_tool)
+  }
+
+  if (has_tool) {
+    sys_version <- get_java_version(quiet = TRUE)
+    minimum_version(sys_version, version)
+  } else {
+    FALSE
+  }
 }
 
 

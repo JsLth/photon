@@ -32,15 +32,15 @@
 #' # sometimes, it is necessary to use double hyphens
 #' opts <- cmd_options("ps", all = TRUE, format = "json", use_double_hyphens = TRUE)
 #' run("docker", args = opts, error_on_status = FALSE, echo_cmd = TRUE)
-#' }
+#' }}
 #'
-#' if (FALSE) {
+#' if (has_java("11")) {
 #' # particularly useful together with photon
 #' # here we start a photon server with cross-site resource sharing enabled
 #' dir <- file.path(tempdir(), "photon")
 #' photon <- new_photon(dir, country = "Samoa")
 #' photon$start(photon_opts = cmd_options(cors_any = TRUE))
-#' }}
+#' }
 cmd_options <- function(..., use_double_hyphens = FALSE) {
   args <- drop_null(list(...))
 

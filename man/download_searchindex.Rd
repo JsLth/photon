@@ -68,11 +68,10 @@ download_searchindex(path = tempdir(), country = "Samoa")
 download_searchindex(path = tempdir(), country = "Monaco", date = Sys.time() - 2629800)
 
 # if possible, download an extract from today
-try(download_searchindex(path = tempdir(), country = "Monaco", date = Sys.Date(), exact = TRUE))
+try(download_searchindex(path = tempdir(), country = "Monaco", date = Sys.Date(), exact = TRUE))}
 
 # get the latest global coverage
 # NOTE: the file to be downloaded is several tens of gigabytes of size!
-if (FALSE) {
-  download_searchindex(path = tempdir(), country = "planet")
-}}
+\dontrun{
+download_searchindex(path = tempdir(), country = "planet")}
 }

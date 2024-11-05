@@ -29,7 +29,7 @@ geocoding, indices have to be imported from an existing Nominatim database.
 }
 
 \examples{
-if (FALSE) {
+if (has_java("11")) {
 dir <- file.path(tempdir(), "photon")
 
 # start a new instance using a Monaco extract
@@ -89,7 +89,7 @@ Initialize a local photon instance. If necessary, downloads the photon
 executable, the search index, and Java.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$new(
-  path = "./photon",
+  path,
   photon_version = NULL,
   country = NULL,
   date = "latest",

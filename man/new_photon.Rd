@@ -84,8 +84,9 @@ photon <- new_photon()
 # connect to arbitrary server
 photon <- new_photon(url = "photonserver.org")
 
-if (FALSE) {
+\donttest{
+if (has_java("11")) {
 # set up a local instance in the current working directory
 photon <- new_photon("photon", country = "Ireland")
-}
+}}
 }

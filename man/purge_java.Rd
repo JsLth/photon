@@ -29,8 +29,8 @@ or \code{tasklist} (on Windows). Tasks are killed using \code{pkill}
 (on Linux and MacOS) or \code{Taskkill} (on Windows).
 }
 \examples{
-if (FALSE) {
-purge_java() # should do nothing
+\dontrun {
+purge_java() # does nothing if no java processes are running
 
 # start a new photon instance
 dir <- file.path(tempdir(), "photon")

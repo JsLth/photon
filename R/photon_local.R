@@ -26,7 +26,7 @@
 #' @import R6
 #'
 #' @examples
-#' if (FALSE) {
+#' if (has_java("11")) {
 #' dir <- file.path(tempdir(), "photon")
 #'
 #' # start a new instance using a Monaco extract
@@ -95,7 +95,7 @@ photon_local <- R6::R6Class(
     #' search indices when initializing a new instance. Defaults to
     #' \code{FALSE}.
     #' @param quiet If \code{TRUE}, suppresses all informative messages.
-    initialize = function(path = "./photon",
+    initialize = function(path,
                           photon_version = NULL,
                           country = NULL,
                           date = "latest",
