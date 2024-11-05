@@ -20,6 +20,8 @@ check_jdk_version <- function(min_version, quiet = FALSE) {
 #'
 #' @returns A logical vector of length 1.
 #'
+#' @export
+#'
 #' @examples
 #' has_java() # Is Java installed?
 #' has_java("11") # Is Java > 11 installed?
