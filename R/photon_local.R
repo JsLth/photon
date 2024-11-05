@@ -35,11 +35,12 @@
 #' # start a new instance with an older photon version
 #' photon <- new_photon(path = dir, photon_version = "0.4.1")
 #'
+#' \dontrun{
 #' # import a nominatim database using OpenSearch photon
 #' # this example requires the OpenSearch version of photon and a running
 #' # Nominatim server.
 #' photon <- new_photon(path = dir, opensearch = TRUE)
-#' photon$start(photon_options = cmd_options(port = 29146, password = "pgpass"))
+#' photon$start(photon_options = cmd_options(port = 29146, password = "pgpass"))}
 #' }
 photon_local <- R6::R6Class(
   inherit = photon,

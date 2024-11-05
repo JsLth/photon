@@ -33,21 +33,16 @@ Arguments are formatted according to the following rules:
 }
 }
 \examples{
-\donttest{# converts R parameters to CMD options
-opts <- cmd_options(n = 1, w = 5, "127.0.0.1")
-try(run("ping", args = opts, error_on_status = FALSE, echo_cmd = TRUE))
+# converts R parameters to CMD options
+# parameters for the ping command
+cmd_options(n = 1, w = 5, "127.0.0.1")
 
-if (nzchar(Sys.which("docker"))) {
 # sometimes, it is necessary to use double hyphens
-opts <- cmd_options("ps", all = TRUE, format = "json", use_double_hyphens = TRUE)
-run("docker", args = opts, error_on_status = FALSE, echo_cmd = TRUE)
-}}
+# options for the docker ps command
+cmd_options("ps", all = TRUE, format = "json", use_double_hyphens = TRUE)
 
-if (has_java("11")) {
 # particularly useful together with photon
-# here we start a photon server with cross-site resource sharing enabled
-dir <- file.path(tempdir(), "photon")
-photon <- new_photon(dir, country = "Samoa")
-photon$start(photon_opts = cmd_options(cors_any = TRUE))
-}
+# the following options can be used for the `photon_opts` argument
+# of photon$start()
+cmd_options(cors_any = TRUE, data_dir = "path/to/dir")
 }

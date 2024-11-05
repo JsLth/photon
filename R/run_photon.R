@@ -100,7 +100,6 @@ start_supervise <- function(self, private, proc, timeout, quiet) {
   start <- Sys.time()
   is_running <- self$is_running()
   while (!is_running) {
-    print(is_running)
     out <- proc$read_output()
     out <- strsplit(out, "\r\n")[[1]]
     lapply(out, stdout_callback, proc)
