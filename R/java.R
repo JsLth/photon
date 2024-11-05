@@ -1,7 +1,7 @@
 check_jdk_version <- function(min_version, quiet = FALSE) {
   version <- get_java_version(quiet)
 
-  if (minimum_version(version, min_version)) {
+  if (!minimum_version(version, min_version)) {
     msg <- c("!" = "JDK version {version} detected but version 17 required.", rje_link())
     ph_stop(msg, class = "java_version_error")
   }
