@@ -62,6 +62,14 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
   start_supervise(self, private, proc, timeout, quiet)
   versionize_logs(private)
   log_error <- assemble_log_error(private$logs)
+
+  if (!self$is_running() && !nzchar(log_error)) {
+    ph_stop(c( # nocov start
+      "Unknown error occured during setup.",
+      "i" = "Photon stopped unexpectedly."
+    )) # nocov end
+  }
+
   abort_log_error(log_error, quiet, class = "start_error")
   cli::cli_progress_done()
   invisible(proc)
@@ -90,8 +98,9 @@ start_supervise <- function(self, private, proc, timeout, quiet) {
   stdout_callback <- log_callback(private, quiet)
   stderr_callback <- log_callback(private, quiet = TRUE)
   start <- Sys.time()
-  is_ready <- self$is_ready()
-  while (!is_ready) {
+  is_running <- self$is_running()
+  while (!is_running) {
+    print(is_running)
     out <- proc$read_output()
     out <- strsplit(out, "\r\n")[[1]]
     lapply(out, stdout_callback, proc)
@@ -101,7 +110,7 @@ start_supervise <- function(self, private, proc, timeout, quiet) {
     if (nzchar(err)) next # skip alive check to collect full error message
 
     # if photon process is dead, break the loop and collect stderr afterwards
-    if (!is_ready && !proc$is_alive()) {
+    if (!is_running && !proc$is_alive()) {
       break
     }
 
@@ -112,7 +121,8 @@ start_supervise <- function(self, private, proc, timeout, quiet) {
       ph_stop("Photon setup timeout reached.") # nocov
     }
 
-    is_ready <- self$is_ready()
+    Sys.sleep(0.1) # debounce
+    is_running <- self$is_running()
   }
 }
 
@@ -146,7 +156,8 @@ handle_log_conditions <- function(out) {
     cli::cli_warn(log$msg)
   }
 
-  if (is.na(log$type) && grepl("exception", log$msg, ignore.case = TRUE)) {
+  throws_exception <- grepl("exception", log$msg, ignore.case = TRUE)
+  if ((is.na(log$type) || identical(log$class, "stderr")) && throws_exception) {
     log$type <- "ERROR"
   }
 
@@ -190,9 +201,11 @@ parse_log_line <- function(line) {
 
 
 versionize_logs <- function(private) {
+  logs <- private$logs
+  if (is.null(logs)) return()
+
   # add a "run id" to versionize log dataframe
   # this is necessary so that subsequent calls know what the current call is
-  logs <- private$logs
   if ("rid" %in% names(logs)) {
     rid <- max(logs$rid, na.rm = TRUE) + 1
     logs[is.na(logs$rid), "rid"] <- rid
