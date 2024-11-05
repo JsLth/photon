@@ -29,7 +29,9 @@ or \code{tasklist} (on Windows). Tasks are killed using \code{pkill}
 (on Linux and MacOS) or \code{Taskkill} (on Windows).
 }
 \examples{
-\dontrun {
+# NOTE: These examples should only be run interactively or when you are
+# sure that no other java processes are running simultaneously!
+\dontrun{
 purge_java() # does nothing if no java processes are running
 
 # start a new photon instance
@@ -46,6 +48,5 @@ photon$start()
 library(ps)
 p <- ps_handle(photon$proc$get_pid())
 pids <- sapply(ps_children(p), ps::ps_pid)
-purge_java(pids)
-}
+purge_java(pids)}
 }

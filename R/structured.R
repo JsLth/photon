@@ -23,7 +23,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #' # structured() requires an OpenSearch instance with structured support
 #' # the following code will not work off the shelf
 #' # refer to vignette("nominatim-import") for details

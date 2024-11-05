@@ -21,7 +21,9 @@
 #' @export
 #'
 #' @examples
-#' \dontrun {
+#' # NOTE: These examples should only be run interactively or when you are
+#' # sure that no other java processes are running simultaneously!
+#' \dontrun{
 #' purge_java() # does nothing if no java processes are running
 #'
 #' # start a new photon instance
@@ -38,8 +40,7 @@
 #' library(ps)
 #' p <- ps_handle(photon$proc$get_pid())
 #' pids <- sapply(ps_children(p), ps::ps_pid)
-#' purge_java(pids)
-#' }
+#' purge_java(pids)}
 purge_java <- function(pids = NULL, consent = FALSE) {
   assert_vector(pids, "integer", null = TRUE)
   assert_flag(consent)
