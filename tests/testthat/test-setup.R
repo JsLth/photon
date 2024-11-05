@@ -101,7 +101,12 @@ test_that("local setup works", {
   photon$start(host = "127.0.0.1")
   expect_true(photon$is_running())
   expect_gt(nrow(geocode("Apai")), 0)
-  expect_warning(photon$remove_data(), class = "photon_data_not_removed")
+
+  with_mocked_bindings(
+    unlink = \(...) 1L,
+    .package = "base",
+    expect_warning(photon$remove_data(), class = "photon_data_not_removed")
+  )
 
   photon$stop()
   expect_false(photon$is_running())
