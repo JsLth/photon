@@ -3,10 +3,12 @@ Type: Package
 Title: High-Performance Geocoding using 'photon'
 Version: 0.3.1
 Authors@R: 
-    person("Jonas", "Lieth", email = "jonas.lieth@gesis.org", role = c("aut", "cre", "cph"))
+    person("Jonas", "Lieth", , "jonas.lieth@gesis.org", role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0002-3451-3176"))
 Description: Features unstructured, structured and reverse geocoding using the
-    'photon' geocoding API. Facilitates the setup of local Photon instances to
-    enable offline geocoding.
+    'photon' geocoding API <[https://photon.komoot.io/]https://photon.komoot.io/>.
+    Facilitates the setup of local 'photon' instances to enable offline
+    geocoding.
 License: Apache License (>= 2)
 URL: https://github.com/jslth/photon/, https://jslth.github.io/photon/
 BugReports: https://github.com/jslth/photon/issues
