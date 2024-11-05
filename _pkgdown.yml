@@ -42,3 +42,4 @@ reference:
       - get_instance
       - cmd_options
       - purge_java
+      - has_java
