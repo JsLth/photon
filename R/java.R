@@ -25,7 +25,7 @@ check_jdk_version <- function(min_version, quiet = FALSE) {
 #' has_java("11") # Is Java > 11 installed?
 has_java <- function(version = NULL) {
   assert_vector(version, "character", null = TRUE)
-  assert_length(version)
+  assert_length(version, null = TRUE)
   has_tool <- file.exists(Sys.which("java"))
 
   if (is.null(version)) {
