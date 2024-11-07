@@ -29,14 +29,14 @@ geocoding, indices have to be imported from an existing Nominatim database.
 }
 
 \examples{
-if (has_java("11")) {
+\donttest{if (has_java("11")) {
 dir <- file.path(tempdir(), "photon")
 
 # start a new instance using a Monaco extract
 photon <- new_photon(path = dir, country = "Monaco")
 
 # start a new instance with an older photon version
-photon <- new_photon(path = dir, photon_version = "0.4.1")
+photon <- new_photon(path = dir, photon_version = "0.4.1")}
 
 \dontrun{
 # import a nominatim database using OpenSearch photon
