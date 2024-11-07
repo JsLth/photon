@@ -1,3 +1,3 @@
-# photon 0.3.0
+# photon 0.3.1
 
 * Initial CRAN submission.
