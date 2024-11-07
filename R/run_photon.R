@@ -63,7 +63,6 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
   start_supervise(self, private, proc, timeout, quiet)
   versionize_logs(private)
   log_error <- assemble_log_error(private$logs)
-  if (is_macos()) print(log_error)
   abort_log_error(log_error, quiet, class = "start_error")
 
   if (!self$is_running() && !nzchar(log_error)) {
@@ -142,7 +141,7 @@ log_callback <- function(private, quiet = FALSE) {
 
 
 handle_log_conditions <- function(out) {
-  if (startsWith(out, "Usage")) {
+  if (grepl("Usage: <main class> [options]", out, fixed = TRUE)) {
     log <- data.frame(
       type = "ERROR",
       msg = paste(
