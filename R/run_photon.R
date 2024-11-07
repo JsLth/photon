@@ -59,6 +59,7 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
     )
   }
 
+  self$proc <- proc
   start_supervise(self, private, proc, timeout, quiet)
   versionize_logs(private)
   log_error <- assemble_log_error(private$logs)

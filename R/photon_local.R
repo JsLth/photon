@@ -323,7 +323,7 @@ photon_local <- R6::R6Class(
 
       popts <- cmd_options(listen_ip = host, listen_port = port)
       cleanup <- function(e) self$stop()
-      self$proc <- withCallingHandlers(
+      withCallingHandlers(
         run_photon(
           self, private,
           mode = "start",
