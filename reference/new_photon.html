@@ -84,7 +84,7 @@ the <code>url</code> parameter.</p></dd>
 <dt id="arg-url">url<a class="anchor" aria-label="anchor" href="#arg-url"></a></dt>
 <dd><p>URL of a photon server to connect to. If <code>NULL</code> and
 <code>path</code> is also <code>NULL</code>, connects to the public API under
-<a href="photon.komoot.io">photon.komoot.io</a>.</p></dd>
+<a href="https://photon.komoot.io/" class="external-link">https://photon.komoot.io/</a>.</p></dd>
 
 
 <dt id="arg-photon-version">photon_version<a class="anchor" aria-label="anchor" href="#arg-photon-version"></a></dt>
@@ -154,10 +154,22 @@ search indices when initializing a new instance. Defaults to
 <span class="r-in"><span><span class="co"># connect to arbitrary server</span></span></span>
 <span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu">new_photon</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"photonserver.org"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="has_java.html">has_java</a></span><span class="op">(</span><span class="st">"11"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># set up a local instance in the current working directory</span></span></span>
-<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu">new_photon</span><span class="op">(</span><span class="st">"photon"</span>, country <span class="op">=</span> <span class="st">"Ireland"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu">new_photon</span><span class="op">(</span><span class="st">"photon"</span>, country <span class="op">=</span> <span class="st">"Monaco"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> openjdk version "11.0.25" 2024-10-15</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> OpenJDK Runtime Environment Temurin-11.0.25+9 (build 11.0.25+9)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> OpenJDK 64-Bit Server VM Temurin-11.0.25+9 (build 11.0.25+9, mixed mode)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching photon <span style="color: #00BB00;">0.6.0</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded photon <span style="color: #00BB00;">0.6.0</span>. <span style="color: #B2B2B2;">[229ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching search index for <span style="color: #00BB00;">Monaco</span>, created on <span style="color: #00BB00;">latest</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[814ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Version: 0.6.0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Coverage: Monaco</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Time: latest</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

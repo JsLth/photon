@@ -81,8 +81,10 @@ or <code>tasklist</code> (on Windows). Tasks are killed using <code>pkill</code>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="fu">purge_java</span><span class="op">(</span><span class="op">)</span> <span class="co"># should do nothing</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># NOTE: These examples should only be run interactively or when you are</span></span></span>
+<span class="r-in"><span><span class="co"># sure that no other java processes are running simultaneously!</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">purge_java</span><span class="op">(</span><span class="op">)</span> <span class="co"># does nothing if no java processes are running</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># start a new photon instance</span></span></span>
 <span class="r-in"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span></span>
@@ -98,8 +100,7 @@ or <code>tasklist</code> (on Windows). Tasks are killed using <code>pkill</code>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/ps" class="external-link">ps</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ps.r-lib.org/reference/ps_handle.html" class="external-link">ps_handle</a></span><span class="op">(</span><span class="va">photon</span><span class="op">$</span><span class="va">proc</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://ps.r-lib.org/reference/ps_children.html" class="external-link">ps_children</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, <span class="fu">ps</span><span class="fu">::</span><span class="va"><a href="https://ps.r-lib.org/reference/ps_pid.html" class="external-link">ps_pid</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">purge_java</span><span class="op">(</span><span class="va">pids</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu">purge_java</span><span class="op">(</span><span class="va">pids</span><span class="op">)</span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
