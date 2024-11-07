@@ -63,6 +63,8 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
   start_supervise(self, private, proc, timeout, quiet)
   versionize_logs(private)
   log_error <- assemble_log_error(private$logs)
+  if (is_macos()) print(log_error)
+  abort_log_error(log_error, quiet, class = "start_error")
 
   if (!self$is_running() && !nzchar(log_error)) {
     ph_stop(c( # nocov start
@@ -71,7 +73,7 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
     )) # nocov end
   }
 
-  abort_log_error(log_error, quiet, class = "start_error")
+
   cli::cli_progress_done()
   invisible(proc)
 }
