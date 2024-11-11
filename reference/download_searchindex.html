@@ -33,7 +33,7 @@ Photon locally."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Download search index</h1>
-      <small class="dont-index">Source: <a href="https://github.com/jslth/photon/blob/main/R/download-db.R" class="external-link"><code>R/download-db.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jslth/photon/blob/v0.3.1/R/download-db.R" class="external-link"><code>R/download-db.R</code></a></small>
       <div class="d-none name"><code>download_searchindex.Rd</code></div>
     </div>
 
@@ -119,16 +119,16 @@ when running this function.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># download the latest extract of Monaco</span></span></span>
 <span class="r-in"><span><span class="fu">download_searchindex</span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching search index for <span style="color: #00BB00;">Monaco</span>, created on <span style="color: #00BB00;">latest</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[1.6s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[1.4s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpAfTFvB/photon-db-mc-latest.tar.bz2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp6kO0WW/photon-db-mc-latest.tar.bz2"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># download the latest extract of American Samoa</span></span></span>
 <span class="r-in"><span><span class="fu">download_searchindex</span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, country <span class="op">=</span> <span class="st">"Samoa"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching search index for <span style="color: #00BB00;">Samoa</span>, created on <span style="color: #00BB00;">latest</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[155ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[153ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpAfTFvB/photon-db-ws-latest.tar.bz2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp6kO0WW/photon-db-ws-latest.tar.bz2"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># download an extract from a month ago</span></span></span>
 <span class="r-in"><span><span class="fu">download_searchindex</span><span class="op">(</span></span></span>
@@ -137,9 +137,9 @@ when running this function.</p>
 <span class="r-in"><span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2629800</span></span></span>
 <span class="r-in"><span> <span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching search index for <span style="color: #00BB00;">Monaco</span>, created on <span style="color: #00BB00;">2024-11-10</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[161ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[159ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpAfTFvB/photon-db-mc-241110.tar.bz2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp6kO0WW/photon-db-mc-241110.tar.bz2"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># if possible, download an extract from today</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">download_searchindex</span><span class="op">(</span></span></span>
