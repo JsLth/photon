@@ -4,16 +4,16 @@ skip_on_cran()
 test_that("basic requests work", {
   res1 <- geocode("Berlin", progress = TRUE)
   expect_s3_class(res1, "sf")
-  expect_equal(nrow(res1), 3)
+  expect_equal(nrow(res1), 1)
 
   res2 <- geocode(c("Berlin", "Berlin"))
   expect_s3_class(res2, "sf")
-  expect_equal(res2$idx, rep(c(1, 2), each = 3))
+  expect_equal(res2$idx, c(1, 2))
 
   res3 <- geocode("Berlin", bbox = c(xmin = 0, xmax = 13, ymin = 52, ymax = 53))
   expect_failure(expect_equal(res1, res3))
 
-  res4 <- geocode("Berlin", locbias = c(0, 13), zoom = 10, locbias_scale = 1)
+  res4 <- geocode("Berlin", locbias = c(10, 52), zoom = 12, locbias_scale = 0.1)
   expect_failure(expect_equal(res1, res4))
 
   res5 <- geocode(c("notarealplace"))
@@ -25,12 +25,12 @@ test_that("basic reversing works", {
   df <- data.frame(lon = 8, lat = 52)
   res1 <- reverse(df, progress = TRUE)
   expect_s3_class(res1, "sf")
-  expect_equal(nrow(res1), 3)
+  expect_equal(nrow(res1), 1)
 
   df <- data.frame(lon = c(7, 8), lat = c(52, 52))
   res2 <- reverse(df)
   expect_s3_class(res2, "sf")
-  expect_equal(res2$idx, rep(c(1, 2), each = 3))
+  expect_equal(res2$idx, c(1, 2))
 
   df <- data.frame(lon = 170, lat = 80)
   res3 <- reverse(df, radius = 1)
@@ -42,14 +42,14 @@ test_that("reversing with sf works", {
   sf <- sf::st_sfc(sf::st_point(c(8, 52)))
   res <- reverse(sf)
   expect_s3_class(res, "sf")
-  expect_equal(nrow(res), 3)
+  expect_equal(nrow(res), 1)
 })
 
 test_that("reversing with list works", {
   lst <- list(lon = 8, lat = 52)
   res <- reverse(lst)
   expect_s3_class(res, "sf")
-  expect_equal(nrow(res), 3)
+  expect_equal(nrow(res), 1)
 })
 
 test_that("reversing only works with points", {

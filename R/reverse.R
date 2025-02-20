@@ -53,16 +53,17 @@ reverse <- function(.data,
   assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
 
-  if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = nrow(.data))
-  }
-
   query <- format_points(.data)
   gids <- group_id(query)
   options <- list(env = environment())
-  .data$i <- seq_len(nrow(.data))
-  geocoded <- .mapply(.data, MoreArgs = options, FUN = reverse_impl)
-  as_sf(rbind_list(geocoded[gids]))
+
+  if (progress) {
+    cli::cli_progress_bar(name = "Geocoding", total = length(gids))
+  }
+
+  query$i <- seq_len(nrow(query))
+  geocoded <- .mapply(query, MoreArgs = options, FUN = reverse_impl)
+  as_sf(rbind_list(fit_original(geocoded[gids])))
 }
 
 reverse_impl <- function(i, ..., env) {
@@ -80,8 +81,6 @@ reverse_impl <- function(i, ..., env) {
     location_bias_scale = env$locbias_scale,
     zoom = env$zoom
   )
-
-  augment_response(res, i)
 }
 
 

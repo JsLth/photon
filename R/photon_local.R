@@ -233,14 +233,14 @@ photon_local <- R6::R6Class(
                       timeout = 60,
                       java_opts = NULL,
                       photon_opts = NULL) {
-      assert_vector(host, "character")
-      assert_vector(database, "character")
-      assert_vector(user, "character")
-      assert_vector(password, "character")
+      assert_vector(host, "character", size = 1)
+      assert_vector(database, "character", size = 1)
+      assert_vector(user, "character", size = 1)
+      assert_vector(password, "character", size = 1)
       assert_vector(languages, "character", null = TRUE)
       assert_vector(countries, "character", null = TRUE)
       assert_vector(extra_tags, "character", null = TRUE)
-      assert_vector(timeout, "double")
+      assert_vector(timeout, "numeric", size = 1)
       assert_vector(java_opts, "character", null = TRUE)
       assert_vector(photon_opts, "character", null = TRUE)
       assert_flag(structured)

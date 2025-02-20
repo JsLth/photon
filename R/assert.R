@@ -13,11 +13,12 @@ get_caller_name <- function(parent = sys.parent()) {
 
 assert_vector <- function(x, type = NULL, size = NULL, null = FALSE) {
   ignore_null()
-  cond <- is.atomic(x) && mode(x) %in% type
+  ttype <- mode(x)
+  cond <- is.atomic(x) && ttype %in% type
   if (!is.null(type) && !cond) {
     var <- deparse(substitute(x))
     ph_stop(
-      "{.code {var}} must be an atomic vector of type {.cls {type}}, not {.cls {typeof(x)}}.",
+      "{.code {var}} must be an atomic vector of type {.cls {type}}, not {.cls {ttype}}.",
       class = get_caller_name()
     )
   }
@@ -35,6 +36,7 @@ assert_vector <- function(x, type = NULL, size = NULL, null = FALSE) {
 
 assert_flag <- function(x, null = FALSE) {
   ignore_null()
+  assert_vector(x, size = 1)
   cond <- is.logical(x) && !is.na(x)
   if (!cond) {
     var <- deparse(substitute(x))

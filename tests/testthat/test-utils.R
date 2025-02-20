@@ -64,9 +64,9 @@ test_that("tibble dependency is soft", {
 
 test_that("assertions work", {
   assert_vector(1, size = 1)
-  assert_vector(c(1, 2), 2)
+  assert_vector(c(1, 2), size = 2)
   assert_vector(NULL, null = TRUE)
-  assert_vector(1, "double")
+  assert_vector(1, "numeric")
   assert_vector("a", "character")
   assert_vector(1, "numeric", size = 1)
   assert_flag(TRUE)

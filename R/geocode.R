@@ -120,24 +120,25 @@ geocode <- function(texts,
   assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
 
-  if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = length(texts))
-  }
-
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
   query <- unique(texts)
   gids <- match(texts, query)
   options <- list(env = environment())
+
+  if (progress) {
+    cli::cli_progress_bar(name = "Geocoding", total = length(gids))
+  }
+
   iter <- list(q = query, i = seq_len(length(query)))
   geocoded <- .mapply(iter, MoreArgs = options, FUN = geocode_impl)
-  as_sf(rbind_list(geocoded[gids]))
+  as_sf(rbind_list(fit_original(geocoded[gids])))
 }
 
 
 geocode_impl <- function(q, i, env, progress) {
   if (env$progress) cli::cli_progress_update(.envir = env)
-  res <- query_photon(
+  query_photon(
     endpoint = "api",
     q = q,
     limit = env$limit,
@@ -150,8 +151,6 @@ geocode_impl <- function(q, i, env, progress) {
     location_bias_scale = env$locbias_scale,
     zoom = env$zoom
   )
-
-  augment_response(res, i)
 }
 
 
@@ -173,9 +172,15 @@ format_locbias <- function(locbias) {
 }
 
 
-augment_response <- function(res, i) {
-  n <- nrow(res)
-  cbind(idx = rep(i, n + !n), if (n) res else res_proto())
+fit_original <- function(res) {
+  lapply(seq_along(res), augment_response, res)
+}
+
+
+augment_response <- function(i, res) {
+  x <- res[[i]]
+  n <- nrow(x)
+  cbind(idx = rep(i, n + !n), if (n) x else res_proto())
 }
 
 

@@ -42,7 +42,7 @@
 #' pids <- sapply(ps_children(p), ps::ps_pid)
 #' purge_java(pids)}
 purge_java <- function(pids = NULL, consent = FALSE) {
-  assert_vector(pids, "integer", null = TRUE)
+  assert_vector(pids, "numeric", null = TRUE)
   assert_flag(consent)
   procs <- get_java_processes()
 
