@@ -565,16 +565,18 @@ store_searchindex_metadata <- function(path, archive_path) {
     x = basename(archive_path),
     proto = data.frame(country = character(), date = character())
   )
-  meta$date <- ifelse(
-    identical(meta$date, "latest"),
-    meta$date,
-    as.POSIXct(meta$date, format = "%y%m%d")
-  )
+
+  # if a date is missing from the file name, set the current date
+  meta$date <- ifelse(identical(meta$date, "latest"), Sys.Date(), meta$date)
+  meta$date <- as.POSIXct(meta$date, format = "%y%m%d")
+
+  # if a country is missing from the file name, it is likely global
   meta$country <- ifelse(
     nzchar(meta$country),
     countrycode::countrycode(meta$country, "iso2c", "country.name"),
     "global"
   )
+
   saveRDS(meta, file.path(path, "photon_data", "rmeta.rds"))
 }
 
