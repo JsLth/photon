@@ -22,7 +22,8 @@ geocode(
 
 \item{limit}{Number of results to return. Defaults to 1.}
 
-\item{lang}{Language of the results.}
+\item{lang}{Language of the results. If \code{"default"}, returns the results
+in local language.}
 
 \item{bbox}{Any object that can be parsed by \code{\link[sf]{st_bbox}}.
 Results must lie within this bbox.}

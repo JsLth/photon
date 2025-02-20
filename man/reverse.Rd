@@ -27,7 +27,8 @@ that is used for searching.}
 
 \item{limit}{Number of results to return. Defaults to 1.}
 
-\item{lang}{Language of the results.}
+\item{lang}{Language of the results. If \code{"default"}, returns the results
+in local language.}
 
 \item{osm_tag}{Character string giving an
 \href{https://wiki.openstreetmap.org/wiki/Tags}{OSM tag} to filter the

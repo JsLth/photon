@@ -5,7 +5,8 @@
 #'
 #' @param texts Character vector of a texts to geocode.
 #' @param limit Number of results to return. Defaults to 1.
-#' @param lang Language of the results.
+#' @param lang Language of the results. If \code{"default"}, returns the results
+#' in local language.
 #' @param bbox Any object that can be parsed by \code{\link[sf]{st_bbox}}.
 #' Results must lie within this bbox.
 #' @param osm_tag Character string giving an
@@ -110,7 +111,7 @@ geocode <- function(texts,
                     progress = interactive()) {
   assert_vector(texts, "character")
   assert_vector(limit, "double", null = TRUE)
-  assert_vector(lang, "character", null = TRUE)
+  assert_vector(lang, "character")
   assert_vector(osm_tag, "character", null = TRUE)
   assert_vector(layer, "character", null = TRUE)
   assert_vector(locbias_scale, "double", null = TRUE)
