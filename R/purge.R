@@ -99,10 +99,7 @@ kill_process <- function(pids) {
 
 get_java_processes <- function() {
   if (is_linux()) {
-    args <- c( # nocov start
-      "-e", "-o", "%c,", "-o", "%p,", "-o",
-      "%y,", "-o", "%U,", "-o", "%mem"
-    )
+    args <- c("-eo", "pid,comm,tty,user,pmem") # nocov start
     procs <- run("ps", args = args)$stdout
     # to-do: is there a safer alternative? fill = TRUE is an interim hack
     procs <- utils::read.csv(text = procs, header = TRUE, fill = TRUE)
