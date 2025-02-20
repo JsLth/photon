@@ -7,7 +7,7 @@
 reverse(
   .data,
   radius = NULL,
-  limit = 3,
+  limit = 1,
   lang = "en",
   osm_tag = NULL,
   layer = NULL,
@@ -25,7 +25,7 @@ an \code{sfc} or \code{sf} object containing point geometries.}
 \item{radius}{Numeric specifying the range around the points in \code{.data}
 that is used for searching.}
 
-\item{limit}{Number of results to return. Defaults to 3.}
+\item{limit}{Number of results to return. Defaults to 1.}
 
 \item{lang}{Language of the results.}
 

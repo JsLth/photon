@@ -6,7 +6,7 @@
 \alias{photon-package}
 \title{photon: High-Performance Geocoding using 'photon'}
 \description{
-Features unstructured, structured and reverse geocoding using the 'photon' geocoding API <[https://photon.komoot.io/]https://photon.komoot.io/>. Facilitates the setup of local 'photon' instances to enable offline geocoding.
+Features unstructured, structured and reverse geocoding using the 'photon' geocoding API \url{https://photon.komoot.io/}. Facilitates the setup of local 'photon' instances to enable offline geocoding.
 }
 \section{Terms of use}{
 

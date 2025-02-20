@@ -57,7 +57,7 @@
 #' structured(safune, limit = 1)
 #' }
 structured <- function(.data,
-                       limit = 3,
+                       limit = 1,
                        lang = "en",
                        bbox = NULL,
                        osm_tag = NULL,

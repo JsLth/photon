@@ -7,7 +7,7 @@
 \usage{
 structured(
   .data,
-  limit = 3,
+  limit = 1,
   lang = "en",
   bbox = NULL,
   osm_tag = NULL,
@@ -27,7 +27,7 @@ to geocode. Can contain the columns \code{street}, \code{housenumber},
 and \code{countrycode}. At least one of these columns must be present in the
 dataframe. Note that countries must be passed as ISO-2 country codes.}
 
-\item{limit}{Number of results to return. Defaults to 3.}
+\item{limit}{Number of results to return. Defaults to 1.}
 
 \item{lang}{Language of the results.}
 

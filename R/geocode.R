@@ -4,7 +4,7 @@
 #' generally less accurate than \link[=structured]{structured geocoding}.
 #'
 #' @param texts Character vector of a texts to geocode.
-#' @param limit Number of results to return. Defaults to 3.
+#' @param limit Number of results to return. Defaults to 1.
 #' @param lang Language of the results.
 #' @param bbox Any object that can be parsed by \code{\link[sf]{st_bbox}}.
 #' Results must lie within this bbox.
@@ -99,7 +99,7 @@
 #' # use location biases to match Berlin, IL instead of Berlin, DE
 #' geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")}
 geocode <- function(texts,
-                    limit = 3,
+                    limit = 1,
                     lang = "en",
                     bbox = NULL,
                     osm_tag = NULL,

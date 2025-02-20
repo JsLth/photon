@@ -6,7 +6,7 @@
 \usage{
 geocode(
   texts,
-  limit = 3,
+  limit = 1,
   lang = "en",
   bbox = NULL,
   osm_tag = NULL,
@@ -20,7 +20,7 @@ geocode(
 \arguments{
 \item{texts}{Character vector of a texts to geocode.}
 
-\item{limit}{Number of results to return. Defaults to 3.}
+\item{limit}{Number of results to return. Defaults to 1.}
 
 \item{lang}{Language of the results.}
 

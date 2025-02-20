@@ -32,7 +32,7 @@
 #' reverse(df_data, radius = 10)}
 reverse <- function(.data,
                     radius = NULL,
-                    limit = 3,
+                    limit = 1,
                     lang = "en",
                     osm_tag = NULL,
                     layer = NULL,
