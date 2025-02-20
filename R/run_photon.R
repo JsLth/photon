@@ -62,7 +62,6 @@ run_start <- function(self, private, args, timeout = 60, quiet = FALSE) {
   self$proc <- proc
   start_supervise(self, private, proc, timeout, quiet)
   versionize_logs(private)
-  print(private$logs)
   log_error <- assemble_log_error(private$logs)
   abort_log_error(log_error, quiet, class = "start_error")
 
@@ -142,8 +141,6 @@ log_callback <- function(private, quiet = FALSE) {
 
 
 handle_log_conditions <- function(out) {
-  print(out)
-  print(grepl("Usage: <main class> [options]", out, fixed = TRUE))
   if (grepl("Usage: <main class> [options]", out, fixed = TRUE)) {
     log <- data.frame(
       type = "ERROR",
