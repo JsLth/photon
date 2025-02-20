@@ -141,6 +141,7 @@ log_callback <- function(private, quiet = FALSE) {
 
 
 handle_log_conditions <- function(out) {
+  print(out)
   if (grepl("Usage: <main class> [options]", out, fixed = TRUE)) {
     log <- data.frame(
       type = "ERROR",
