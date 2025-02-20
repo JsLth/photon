@@ -102,17 +102,17 @@ executable, the search index, and Java.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{path}}{Path to a directory where the photon executable and data
-should be stored. Defaults to a directory "photon" in the current
-working directory.}
+should be stored.}
 
 \item{\code{photon_version}}{Version of photon to be used. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
-version.}
+version (Currently: 0.6.2).}
 
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
-country will be downloaded. If \code{NULL}, downloads a global search index.}
+country will be downloaded. If \code{"planet"}, downloads a global search
+index.}
 
 \item{\code{date}}{Character string or date-time object used to specify the creation
 date of the search index. If \code{"latest"}, will download the file tagged

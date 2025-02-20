@@ -4,7 +4,10 @@
 #'
 #' @param path Path to a directory to store the executable.
 #' @param version Version tag of the photon release. If \code{NULL},
-#' downloads the latest known version.
+#' downloads the latest known version. A list of all
+#' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
+#' Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
+#' version (Currently: `r get_latest_photon()`).
 #' @param opensearch If \code{TRUE}, downloads the OpenSearch version of
 #' photon if available. OpenSearch versions are available for photon >= 0.6.0.
 #' @inheritParams download_searchindex

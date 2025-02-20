@@ -18,8 +18,8 @@ Utilities to manage photon instances. These functions operate on mounted
 photon instances which can be initialized using \code{\link{new_photon}}.
 
 \itemize{
- \item{\code{get_instance()} retrieves the active photon instance.}
- \item{\code{get_photon_url()} retrieves the photon URL to send requests.}
+\item{\code{get_instance()} retrieves the active photon instance.}
+\item{\code{get_photon_url()} retrieves the photon URL to send requests.}
 }
 }
 \examples{

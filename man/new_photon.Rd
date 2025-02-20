@@ -72,9 +72,9 @@ An R6 object of class \code{photon}.
 Initialize a photon instance by creating a new photon object. This object
 is stored in the R session and can be used to perform geocoding requests.
 
-Instances can either local or remote. Remote instances require nothing more
-than a URL that geocoding requests are sent to. Local instances require the
-setup of the photon executable, a search index, and Java. See
+Instances can either be local or remote. Remote instances require nothing
+more than a URL that geocoding requests are sent to. Local instances require
+the setup of the photon executable, a search index, and Java. See
 \code{\link{photon_local}} for details.
 }
 \examples{

@@ -36,8 +36,8 @@ selects the date with lowest difference to the \code{date} parameter.}
 \item{section}{Subdirectory of the download server from which to select a
 search index. If \code{"experimental"}, selects a dump made for the master
 version of photon. If \code{"archived"}, selects a dump made for an older
-version of photon. If \code{NULL}, selects a dump made for the current
-release. Defaults to \code{NULL}.}
+version of photon. If \code{NULL} (or any arbitrary string), selects a
+dump made for the current release. Defaults to \code{NULL}.}
 
 \item{only_url}{If \code{TRUE}, performs a download. Otherwise,
 only returns a link to the file.}
