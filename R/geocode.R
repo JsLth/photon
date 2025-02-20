@@ -120,17 +120,18 @@ geocode <- function(texts,
   assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
 
-  locbias <- format_locbias(locbias)
-  bbox <- format_bbox(bbox)
-
   if (progress) {
     cli::cli_progress_bar(name = "Geocoding", total = length(texts))
   }
 
+  locbias <- format_locbias(locbias)
+  bbox <- format_bbox(bbox)
+  query <- unique(texts)
+  gids <- match(texts, query)
   options <- list(env = environment())
-  iter <- list(q = texts, i = seq_len(length(texts)))
+  iter <- list(q = query, i = seq_len(length(query)))
   geocoded <- .mapply(iter, MoreArgs = options, FUN = geocode_impl)
-  as_sf(rbind_list(geocoded))
+  as_sf(rbind_list(geocoded[gids]))
 }
 
 
@@ -149,7 +150,8 @@ geocode_impl <- function(q, i, env, progress) {
     location_bias_scale = env$locbias_scale,
     zoom = env$zoom
   )
-  cbind(idx = rep(i, nrow(res)), res)
+
+  augment_response(res, i)
 }
 
 
@@ -168,4 +170,28 @@ format_locbias <- function(locbias) {
     locbias = list(lon = locbias[1], lat = locbias[2])
   }
   locbias
+}
+
+
+augment_response <- function(res, i) {
+  n <- nrow(res)
+  cbind(idx = rep(i, n + !n), if (n) res else res_proto())
+}
+
+
+res_proto <- function() {
+  extent <- list(
+    osm_type = NA_character_,
+    osm_id = NA_integer_,
+    country = NA_character_,
+    osm_key = NA_character_,
+    countrycode = NA_character_,
+    osm_value = NA_character_,
+    name = NA_character_,
+    type = NA_character_,
+    extent = list(rep(NA_real_, 4))
+  )
+  attr(extent, "row.names") <- 1L
+  attr(extent, "class") <- "data.frame"
+  sf::st_sf(extent, geometry = sf::st_sfc(sf::st_point(), crs = 4326))
 }

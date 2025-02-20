@@ -83,19 +83,19 @@ structured <- function(.data,
   assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
 
-  locbias <- format_locbias(locbias)
-  bbox <- format_bbox(bbox)
-  .data <- as.data.frame(.data)
-
   if (progress) {
     cli::cli_progress_bar(name = "Geocoding", total = nrow(.data))
-    env <- environment()
   }
 
+  locbias <- format_locbias(locbias)
+  bbox <- format_bbox(bbox)
+  cols <- intersect(cols, names(.data))
+  query <- as.data.frame(.data)[cols]
+  gids <- group_id(query)
   options <- list(env = environment())
   .data$i <- seq_len(nrow(.data))
   geocoded <- .mapply(.data, MoreArgs = options, FUN = structured_impl)
-  as_sf(rbind_list(geocoded))
+  as_sf(rbind_list(geocoded[gids]))
 }
 
 
@@ -114,7 +114,8 @@ structured_impl <- function(i, ..., env) {
     location_bias_scale = env$locbias_scale,
     zoom = env$zoom
   )
-  cbind(idx = rep(i, nrow(res)), res)
+
+  augment_response(res, i)
 }
 
 

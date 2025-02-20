@@ -137,3 +137,13 @@ minimum_version <- function(v1, v2) {
     numeric_version(v1) >= numeric_version(v2)
   }
 }
+
+
+group_id <- function(x, groups) {
+  if (is.data.frame(x)) {
+    ids <- do.call(paste, c(x, sep = "_"))
+    match(ids, unique(ids))
+  } else {
+    match(x, groups)
+  }
+}

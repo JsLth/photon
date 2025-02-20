@@ -16,7 +16,10 @@ download_photon(
 \item{path}{Path to a directory to store the executable.}
 
 \item{version}{Version tag of the photon release. If \code{NULL},
-downloads the latest known version.}
+downloads the latest known version. A list of all
+releases can be found here: \url{https://github.com/komoot/photon/releases/}.
+Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
+version (Currently: 0.6.2).}
 
 \item{opensearch}{If \code{TRUE}, downloads the OpenSearch version of
 photon if available. OpenSearch versions are available for photon >= 0.6.0.}
