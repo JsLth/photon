@@ -103,7 +103,8 @@ get_java_processes <- function() {
     procs <- run("ps", args = args)$stdout
     # to-do: is there a safer alternative? fill = TRUE is an interim hack
     procs <- utils::read.csv(text = procs, header = TRUE, fill = TRUE)
-    for (col in names(t)) t[, col] <- trimws(t[, col])
+    for (col in names(procs)) procs[, col] <- trimws(procs[, col])
+    print(procs)
     names(procs) <- c("cmd", "pid", "tty", "user", "memory")
   } else if (is_macos()) {
     args <- c(
