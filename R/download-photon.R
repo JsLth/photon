@@ -22,10 +22,9 @@ download_photon <- function(path = ".",
                             only_url = FALSE,
                             quiet = FALSE) {
   assert_dir(path)
-  assert_length(path, 1)
-  assert_vector(version, "character", null = TRUE)
-  assert_length(version, 1, null = TRUE)
+  assert_vector(version, "character", size = 1, null = TRUE)
   assert_flag(opensearch)
+  assert_flag(only_url)
   assert_flag(quiet)
   version <- version %||% get_latest_photon()
 

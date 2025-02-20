@@ -41,14 +41,14 @@ reverse <- function(.data,
                     zoom = NULL,
                     distance_sort = TRUE,
                     progress = interactive()) {
-  assert_vector(radius, "double", null = TRUE)
-  assert_vector(limit, "double", null = TRUE)
-  assert_vector(lang, "character", null = TRUE)
+  assert_vector(radius, "numeric", null = TRUE)
+  assert_vector(limit, "numeric", size = 1, null = TRUE)
+  assert_vector(lang, "character", size = 1)
   assert_vector(osm_tag, "character", null = TRUE)
   assert_vector(layer, "character", null = TRUE)
-  assert_vector(locbias_scale, "double", null = TRUE)
-  assert_vector(zoom, "double", null = TRUE)
-  assert_length(limit, null = TRUE)
+  assert_vector(locbias_scale, "numeric", size = 1, null = TRUE)
+  assert_vector(zoom, "numeric", size = 1, null = TRUE)
+  assert_range(locbias_scale, min = 0, max = 1, than = FALSE)
   assert_range(radius, 0, 5000)
   assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
@@ -57,7 +57,6 @@ reverse <- function(.data,
 
   if (progress) {
     cli::cli_progress_bar(name = "Geocoding", total = nrow(.data))
-    env <- environment()
   }
 
   options <- list(env = environment())

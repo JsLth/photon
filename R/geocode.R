@@ -24,7 +24,7 @@
 #' \code{location_bias_scale}.
 #' @param locbias_scale Numeric vector specifying the importance of prominence
 #' in \code{locbias}. A higher prominence scale gives more weight to important
-#' places. Defaults to 0.2.
+#' places. Possible values range from 0 to 1. Defaults to 0.2.
 #' @param zoom Numeric specifying the radius for which the \code{locbias} is
 #' effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
 #' to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
@@ -110,15 +110,12 @@ geocode <- function(texts,
                     zoom = NULL,
                     progress = interactive()) {
   assert_vector(texts, "character")
-  assert_vector(limit, "double", null = TRUE)
-  assert_vector(lang, "character")
+  assert_vector(limit, "numeric", size = 1, null = TRUE)
+  assert_vector(lang, "character", size = 1)
   assert_vector(osm_tag, "character", null = TRUE)
   assert_vector(layer, "character", null = TRUE)
-  assert_vector(locbias_scale, "double", null = TRUE)
-  assert_vector(zoom, "double", null = TRUE)
-  assert_length(limit, null = TRUE)
-  assert_length(lang, null = TRUE)
-  assert_length(layer, null = TRUE)
+  assert_vector(locbias_scale, "numeric", size = 1, null = TRUE)
+  assert_vector(zoom, "numeric", size = 1, null = TRUE)
   assert_range(locbias_scale, min = 0, max = 1, than = FALSE)
   assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")

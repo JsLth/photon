@@ -68,11 +68,10 @@ download_searchindex <- function(path = ".",
                                  section = NULL,
                                  only_url = FALSE,
                                  quiet = FALSE) {
-  assert_length(country, 1, null = TRUE)
-  assert_length(date, 1, null = TRUE)
-  assert_length(exact, 1)
-  assert_vector(country, "character")
+  assert_vector(country, "character", size = 1, null = TRUE)
+  assert_vector(date, size = 1, null = TRUE)
   assert_flag(exact)
+
   is_planet <- identical(country, "planet")
   req <- httr2::request("https://download1.graphhopper.com/public/")
   req <- httr2::req_url_path_append(req, switch(

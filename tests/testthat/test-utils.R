@@ -63,11 +63,12 @@ test_that("tibble dependency is soft", {
 })
 
 test_that("assertions work", {
-  assert_length(1, 1)
-  assert_length(c(1, 2), 2)
-  assert_length(NULL, null = TRUE)
+  assert_vector(1, size = 1)
+  assert_vector(c(1, 2), 2)
+  assert_vector(NULL, null = TRUE)
   assert_vector(1, "double")
   assert_vector("a", "character")
+  assert_vector(1, "numeric", size = 1)
   assert_flag(TRUE)
   assert_flag(FALSE)
   assert_dir(tempdir())
@@ -77,7 +78,7 @@ test_that("assertions work", {
   assert_named(list(a = 1), c("a", "b"))
   assert_range(5, min = 1, max = 6)
 
-  expect_error(assert_length(1, 2), class = "assert_length")
+  expect_error(assert_vector(1, size = 2), class = "assert_vector")
   expect_error(assert_vector(1, "logical"), class = "assert_vector")
   expect_error(assert_vector(list(), "logical"), class = "assert_vector")
   expect_error(assert_flag(NA), class = "assert_flag")

@@ -11,26 +11,22 @@ get_caller_name <- function(parent = sys.parent()) {
 }
 
 
-assert_length <- function(x, len = 1, null = FALSE) {
+assert_vector <- function(x, type = NULL, size = NULL, null = FALSE) {
   ignore_null()
-  cond <- length(x) == len
-  if (!cond) {
-    var <- deparse(substitute(x))
-    ph_stop(
-      "{.code {var}} must have length {.field {len}}, not {.field {length(x)}}.",
-      class = get_caller_name()
-    )
-  }
-}
-
-
-assert_vector <- function(x, type, null = FALSE) {
-  ignore_null()
-  cond <- is.atomic(x) && typeof(x) == type
-  if (!cond) {
+  cond <- is.atomic(x) && mode(x) %in% type
+  if (!is.null(type) && !cond) {
     var <- deparse(substitute(x))
     ph_stop(
       "{.code {var}} must be an atomic vector of type {.cls {type}}, not {.cls {typeof(x)}}.",
+      class = get_caller_name()
+    )
+  }
+
+  cond <- length(x) == size
+  if (!is.null(size) && !cond) {
+    var <- deparse(substitute(x))
+    ph_stop(
+      "{.code {var}} must be an atomic vector of size {size}, not {length(x)}.",
       class = get_caller_name()
     )
   }
@@ -52,6 +48,7 @@ assert_flag <- function(x, null = FALSE) {
 
 assert_dir <- function(x, null = FALSE) {
   ignore_null()
+  assert_vector(x, type = "character", size = 1)
   cond <- is.character(x) && file.exists(x) && file.info(x)$isdir
   if (!cond) {
     var <- deparse(substitute(x))
