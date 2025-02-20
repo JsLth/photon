@@ -114,7 +114,10 @@ assert_range <- function(x, min, max, than = TRUE) {
   if (!cond) {
     var <- deparse(substitute(x))
     ph_stop(
-      "{.code {var}} be greater than {min} and lower than {max}, got {.field {x}} instead.",
+      paste(
+        "{.code {var}} must be greater than {min} and lower than {max},",
+        "got {.field {x}} instead."
+      ),
       class = get_caller_name()
     )
   }
