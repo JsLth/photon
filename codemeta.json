@@ -2,19 +2,25 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "photon",
-  "description": "Features unstructured, structured and reverse geocoding using the 'photon' geocoding API <[https://photon.komoot.io/]https://photon.komoot.io/>. Facilitates the setup of local 'photon' instances to enable offline geocoding.",
+  "description": "Features unstructured, structured and reverse geocoding using the 'photon' geocoding API <https://photon.komoot.io/>. Facilitates the setup of local 'photon' instances to enable offline geocoding.",
   "name": "photon: High-Performance Geocoding using 'photon'",
-  "relatedLink": "https://jslth.github.io/photon/",
+  "relatedLink": ["https://jslth.github.io/photon/", "https://CRAN.R-project.org/package=photon"],
   "codeRepository": "https://github.com/jslth/photon/",
   "issueTracker": "https://github.com/jslth/photon/issues",
   "license": "Apache License 2",
-  "version": "0.3.1",
+  "version": "0.3.5",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
   "runtimePlatform": "R version 4.3.3 (2024-02-29 ucrt)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
   "author": [
     {
       "@type": "Person",
@@ -197,7 +203,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "175.584KB",
+  "fileSize": "184.972KB",
   "releaseNotes": "https://github.com/jslth/photon/blob/master/NEWS.md",
   "readme": "https://github.com/JsLth/photon/blob/main/README.md",
   "contIntegration": ["https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml", "https://github.com/jslth/photon/actions/workflows/rhub.yaml", "https://app.codecov.io/gh/JsLth/photon?branch=main"],
