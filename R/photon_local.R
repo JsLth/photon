@@ -321,6 +321,16 @@ photon_local <- R6::R6Class(
       private$port <- port
       private$ssl <- ssl
 
+      if (self$is_ready()) {
+        ph_stop(
+          c(
+            "A photon instance is already running on {.url {self$get_url()}}.",
+            "i" = "You can try to use a different port using `$start(port = ...)`."
+          ),
+          class = "photon_already_running"
+        )
+      }
+
       popts <- cmd_options(listen_ip = host, listen_port = port)
       cleanup <- function(e) self$stop()
       withCallingHandlers(
