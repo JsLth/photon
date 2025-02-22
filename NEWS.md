@@ -13,6 +13,7 @@
 * Fix broken `ps` command on newer Linux versions
 * Made setups more stable by splitting logs (#11, #12)
 * Handle `NA` as argument input more elegantly
+* Added optional latinization
 
 # photon 0.3.1
 

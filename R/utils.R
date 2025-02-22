@@ -147,3 +147,51 @@ group_id <- function(x, groups) {
     match(x, groups)
   }
 }
+
+
+get_encoding <- function(x) {
+  enc <- Encoding(x)
+  switch(enc, unknown = "", enc)
+}
+
+
+#' Latinization
+#' @description
+#' Helper tool to transliterate various encodings to latin. Attempts to
+#' convert a character vector from its current encoding to \code{"latin1"} and -
+#' if it fails - defaults back to the original term. This can be useful
+#' for \code{\link{geocode}} and \code{\link{structured}} when attempting to
+#' geocode terms containing symbols that photon does not support. Generally,
+#' photon supports
+#'
+#' @param x A character vector.
+#' @param encoding Encoding that the strings in \code{x} should be
+#' converted to. If the conversion fails, defaults back to the original
+#' encoding. Defaults to \code{"latin1"}.
+#'
+#' @returns The transliterated vector of the same length as \code{x}. \code{NA}s
+#' are avoided.
+#'
+#' @export
+#'
+#' @examples
+#' # converts fancy apostrophes to normal ones
+#' latinize("Luatuanu\u2019u")
+#'
+#' # does nothing
+#' latinize("Berlin")
+#'
+#' # also does nothing, although it would fail with `iconv`
+#' latinize("\u0391\u03b8\u03ae\u03bd\u03b1")
+latinize <- function(x, encoding = "latin1") {
+  assert_vector(x, type = "character")
+  enc <- lapply(x, get_encoding)
+  ltn <- .mapply(
+    iconv,
+    dots = list(x = x, from = enc),
+    MoreArgs = list(to = encoding)
+  )
+  conv <- !is.na(ltn)
+  x[conv] <- unlist(ltn[conv])
+  x
+}

@@ -14,6 +14,7 @@ geocode(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
+  latinize = TRUE,
   progress = interactive()
 )
 }
@@ -55,6 +56,13 @@ places. Possible values range from 0 to 1. Defaults to 0.2.}
 effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
 to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
 Defaults to 16.}
+
+\item{latinize}{If \code{TRUE} sanitizes search terms in \code{texts} by
+converting their encoding to \code{"latin1"} using \code{\link{latinize}}.
+This can be helpful if the search terms contain certain symbols (e.g. fancy
+quotes) that photon cannot handle properly. Defaults to \code{TRUE} as
+\code{latinize} is very conservative and should usually not cause any
+problems.}
 
 \item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
 }
@@ -128,5 +136,9 @@ geocode("Berlin", osm_tag = "tourism")
 geocode("Berlin", osm_tag = "!tourism")
 
 # use location biases to match Berlin, IL instead of Berlin, DE
-geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")}
+geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")
+
+# latinization can help normalize search terms
+geocode("Luatuanu\u2019u", latinize = FALSE) # fails
+geocode("Luatuanu\u2019u", latinize = TRUE)  # works}
 }

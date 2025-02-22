@@ -32,6 +32,12 @@
 #' effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
 #' to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
 #' Defaults to 16.
+#' @param latinize If \code{TRUE} sanitizes search terms in \code{texts} by
+#' converting their encoding to \code{"latin1"} using \code{\link{latinize}}.
+#' This can be helpful if the search terms contain certain symbols (e.g. fancy
+#' quotes) that photon cannot handle properly. Defaults to \code{TRUE} as
+#' \code{latinize} is very conservative and should usually not cause any
+#' problems.
 #' @param progress If \code{TRUE}, shows a progress bar for longer queries.
 #'
 #' @returns An sf dataframe or tibble containing the following columns:
@@ -101,7 +107,11 @@
 #' geocode("Berlin", osm_tag = "!tourism")
 #'
 #' # use location biases to match Berlin, IL instead of Berlin, DE
-#' geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")}
+#' geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag = "place")
+#'
+#' # latinization can help normalize search terms
+#' geocode("Luatuanu\u2019u", latinize = FALSE) # fails
+#' geocode("Luatuanu\u2019u", latinize = TRUE)  # works}
 geocode <- function(texts,
                     limit = 1,
                     lang = "en",
@@ -111,6 +121,7 @@ geocode <- function(texts,
                     locbias = NULL,
                     locbias_scale = NULL,
                     zoom = NULL,
+                    latinize = TRUE,
                     progress = interactive()) {
   assert_vector(texts, "character")
   assert_vector(limit, "numeric", size = 1, null = TRUE)
@@ -121,12 +132,14 @@ geocode <- function(texts,
   assert_vector(zoom, "numeric", size = 1, null = TRUE)
   assert_range(locbias_scale, min = 0, max = 1, than = FALSE)
   assert_flag(progress)
+  assert_flag(latinize)
   progress <- progress && globally_enabled("photon_movers")
 
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
   query <- unique(texts)
   gids <- group_id(texts, query)
+  if (latinize) query <- latinize(query)
   options <- list(env = environment())
 
   if (progress) {
