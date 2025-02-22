@@ -16,7 +16,7 @@ test_that("basic requests work", {
   res4 <- geocode("Berlin", locbias = c(10, 52), zoom = 12, locbias_scale = 0.1)
   expect_failure(expect_equal(res1, res4))
 
-  res5 <- geocode(c("notarealplace"))
+  res5 <- geocode("notarealplace")
   expect_equal(nrow(res5), 1)
   expect_named(res5, c("idx", names(res_proto())))
 })
