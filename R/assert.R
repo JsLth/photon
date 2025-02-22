@@ -45,7 +45,7 @@ assert_vector <- function(x,
 
 assert_flag <- function(x, null = FALSE, name = varname(x)) {
   ignore_null()
-  assert_vector(x, size = 1, name = name)
+  assert_vector(x, size = 1, na = TRUE, name = name)
   cond <- is.logical(x) && !is.na(x)
   if (!cond) {
     ph_stop(
