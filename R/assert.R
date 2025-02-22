@@ -122,7 +122,7 @@ assert_range <- function(x, min, max, than = TRUE, name = varname(x)) {
   if (!cond) {
     ph_stop(
       paste(
-        "{.code {var}} must be greater than {min} and lower than {max},",
+        "{.code {name}} must be greater than {min} and lower than {max},",
         "got {.field {x}} instead."
       ),
       class = get_caller_name()
