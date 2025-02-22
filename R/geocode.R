@@ -127,7 +127,7 @@ geocode <- function(texts,
   options <- list(env = environment())
 
   if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = length(gids))
+    cli::cli_progress_bar(name = "Geocoding", total = length(query))
   }
 
   iter <- list(q = query, i = seq_len(length(query)))

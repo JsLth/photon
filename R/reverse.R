@@ -58,7 +58,7 @@ reverse <- function(.data,
   options <- list(env = environment())
 
   if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = length(gids))
+    cli::cli_progress_bar(name = "Geocoding", total = length(query))
   }
 
   query$i <- seq_len(nrow(query))
