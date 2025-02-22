@@ -21,6 +21,10 @@ test_that("basic requests work", {
   expect_named(res5, c("idx", names(res_proto())))
 })
 
+test_that("error messages are displayed", {
+  expect_error(geocode("Berlin", lang = "test"), "supported")
+})
+
 test_that("basic reversing works", {
   df <- data.frame(lon = 8, lat = 52)
   res1 <- reverse(df, progress = TRUE)

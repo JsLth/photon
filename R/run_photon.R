@@ -216,7 +216,7 @@ parse_log_line <- function(line) {
 
 versionize_logs <- function(private) {
   logs <- private$logs
-  if (is.null(logs)) return()
+  if (is.null(logs)) return() # nocov
 
   # add a "run id" to versionize log dataframe
   # this is necessary so that subsequent calls know what the current call is

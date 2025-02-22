@@ -126,7 +126,7 @@ geocode <- function(texts,
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
   query <- unique(texts)
-  gids <- match(texts, query)
+  gids <- group_id(texts, query)
   options <- list(env = environment())
 
   if (progress) {

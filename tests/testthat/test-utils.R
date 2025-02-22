@@ -63,6 +63,7 @@ test_that("tibble dependency is soft", {
 })
 
 test_that("assertions work", {
+  assert_na(1)
   assert_vector(1, size = 1)
   assert_vector(c(1, 2), size = 2)
   assert_vector(NULL, null = TRUE)
@@ -78,6 +79,7 @@ test_that("assertions work", {
   assert_named(list(a = 1), c("a", "b"))
   assert_range(5, min = 1, max = 6)
 
+  expect_error(assert_na(NA), class = "assert_na")
   expect_error(assert_vector(1, size = 2), class = "assert_vector")
   expect_error(assert_vector(1, "logical"), class = "assert_vector")
   expect_error(assert_vector(list(), "logical"), class = "assert_vector")
