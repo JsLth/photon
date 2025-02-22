@@ -1,4 +1,4 @@
-# photon 0.3.2
+# photon 0.3.5
 
 * Set `limit = 1` as default (#2)
 * Increment photon version number
@@ -14,6 +14,7 @@
 * Made setups more stable by splitting logs (#11, #12)
 * Handle `NA` as argument input more elegantly
 * Added optional latinization
+* Renamed `consent` argument of `purge_java()` to `ask`
 
 # photon 0.3.1
 
