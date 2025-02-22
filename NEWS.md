@@ -11,6 +11,8 @@
 * Improve performance by querying duplicates only once (#10)
 * Always keep number of rows from original dataset (#3)
 * Fix broken `ps` command on newer Linux versions
+* Made setups more stable by splitting logs (#11, #12)
+* Handle `NA` as argument input more elegantly
 
 # photon 0.3.1
 
