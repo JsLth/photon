@@ -141,28 +141,41 @@ log_callback <- function(private, quiet = FALSE) {
 
 
 handle_log_conditions <- function(out) {
-  if (grepl("Usage: <main class> [options]", out, fixed = TRUE)) {
-    log <- data.frame(
-      type = "ERROR",
-      msg = paste(
+  out <- split_by_logs_entry(out)
+  log <- parse_log_line(out)
+  is_usage_error <- grepl("Usage: <main class> [options]", out, fixed = TRUE)
+  is_warning <- log$type %in% "WARN"
+  is_exception <- (grepl("exception", log$msg, ignore.case = TRUE) &&
+                     log$class %in% "stderr") || is.na(log$type)
+
+  if (any(is_warning) && globally_enabled("photon_setup_warn")) {
+    for (msg in log$msg[is_warning]) cli::cli_warn(msg)
+  }
+
+  if (any(is_exception)) {
+    log$type[is_exception] <- rep("ERROR", sum(is_exception))
+  }
+
+  if (any(is_usage_error)) {
+    n_err <- sum(is_usage_error)
+    log$type[is_usage_error] <- rep("ERROR", n_err)
+    log$msg[is_usage_error] <- rep(
+      paste(
         "Process returned a usage error.",
         "Verify that you passed valid command line options."
-      )
+      ),
+      n_err
     )
-    return(log)
-  }
-
-  log <- parse_log_line(out)
-  if (identical(log$type, "WARN") && globally_enabled("photon_setup_warn")) {
-    cli::cli_warn(log$msg)
-  }
-
-  throws_exception <- grepl("exception", log$msg, ignore.case = TRUE)
-  if ((is.na(log$type) || identical(log$class, "stderr")) && throws_exception) {
-    log$type <- "ERROR"
   }
 
   log
+}
+
+
+split_by_logs_entry <- function(logs) {
+  rgx <- "(?<=\n)(?=Usage|[0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"
+  logs <- strsplit(logs, rgx, perl = TRUE)[[1]]
+  unlist(logs)
 }
 
 
@@ -266,7 +279,12 @@ photon_ready <- function(self, private) {
     return(FALSE)
   }
 
-  req <- httr2::request(self$get_url())
+  can_access_photon(self$get_url())
+}
+
+
+can_access_photon <- function(url) {
+  req <- httr2::request(url)
   req <- httr2::req_template(req, "GET api")
   req <- httr2::req_error(req, is_error = function(r) FALSE)
 
