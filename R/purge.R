@@ -7,8 +7,8 @@
 #'
 #' @param pids PIDs to kill. The PIDs should be Java processes. If \code{NULL},
 #' tries to kill all Java processes.
-#' @param consent If \code{FALSE}, asks for consent before killing the
-#' processes. Defaults to \code{FALSE}.
+#' @param ask If \code{TRUE}, asks for consent before killing the
+#' processes. Defaults to \code{TRUE}.
 #'
 #' @returns An integer vector of the \code{pkill} / \code{Taskkill} status
 #' codes or \code{NULL} if not running Java processes are found.
@@ -41,9 +41,9 @@
 #' p <- ps_handle(photon$proc$get_pid())
 #' pids <- sapply(ps_children(p), ps::ps_pid)
 #' purge_java(pids)}
-purge_java <- function(pids = NULL, consent = FALSE) {
+purge_java <- function(pids = NULL, ask = TRUE) {
   assert_vector(pids, "numeric", null = TRUE)
-  assert_flag(consent)
+  assert_flag(ask)
   procs <- get_java_processes()
 
   if (!nrow(procs)) {
@@ -55,7 +55,7 @@ purge_java <- function(pids = NULL, consent = FALSE) {
   cli::cli_inform("The following Java instances have been found:\f") # nocov start
   cli::cli_verbatim(utils::capture.output(procs))
 
-  if (interactive() && !consent) {
+  if (interactive() && ask) {
     if (is.null(pids)) {
       cli::cli_inform("\fThis action will force all Java instances to close.")
     } else {
