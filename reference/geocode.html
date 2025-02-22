@@ -67,7 +67,10 @@ generally less accurate than <a href="structured.html">structured geocoding</a>.
 
 
 <dt id="arg-limit">limit<a class="anchor" aria-label="anchor" href="#arg-limit"></a></dt>
-<dd><p>Number of results to return. Defaults to 1.</p></dd>
+<dd><p>Number of results to return. A maximum of 50 results can be
+returned for a single search term. Defaults to 1. When more than a single
+text is provided but limit is greater than 1, the results can be uniquely
+linked to the input texts using the <code>idx</code> column in the output.</p></dd>
 
 
 <dt id="arg-lang">lang<a class="anchor" aria-label="anchor" href="#arg-lang"></a></dt>
