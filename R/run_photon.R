@@ -145,8 +145,8 @@ handle_log_conditions <- function(out) {
   log <- parse_log_line(out)
   is_usage_error <- grepl("Usage: <main class> [options]", out, fixed = TRUE)
   is_warning <- log$type %in% "WARN"
-  is_exception <- (grepl("exception", log$msg, ignore.case = TRUE) &&
-                     log$class %in% "stderr") || is.na(log$type)
+  is_exception <- grepl("exception", log$msg, ignore.case = TRUE) &
+                     log$class %in% "stderr" | is.na(log$type)
 
   if (any(is_warning) && globally_enabled("photon_setup_warn")) {
     for (msg in log$msg[is_warning]) cli::cli_warn(msg)
