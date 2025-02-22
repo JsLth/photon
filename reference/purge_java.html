@@ -13,7 +13,7 @@ kill Java processes other than the photon application using this function!"></he
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@ kill Java processes other than the photon application using this function!</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">purge_java</span><span class="op">(</span>pids <span class="op">=</span> <span class="cn">NULL</span>, consent <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">purge_java</span><span class="op">(</span>pids <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,9 +62,9 @@ kill Java processes other than the photon application using this function!</p>
 tries to kill all Java processes.</p></dd>
 
 
-<dt id="arg-consent">consent<a class="anchor" aria-label="anchor" href="#arg-consent"></a></dt>
-<dd><p>If <code>FALSE</code>, asks for consent before killing the
-processes. Defaults to <code>FALSE</code>.</p></dd>
+<dt id="arg-ask">ask<a class="anchor" aria-label="anchor" href="#arg-ask"></a></dt>
+<dd><p>If <code>TRUE</code>, asks for consent before killing the
+processes. Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
