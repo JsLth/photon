@@ -4,7 +4,10 @@
 #' generally less accurate than \link[=structured]{structured geocoding}.
 #'
 #' @param texts Character vector of a texts to geocode.
-#' @param limit Number of results to return. Defaults to 1.
+#' @param limit Number of results to return. A maximum of 50 results can be
+#' returned for a single search term. Defaults to 1. When more than a single
+#' text is provided but limit is greater than 1, the results can be uniquely
+#' linked to the input texts using the \code{idx} column in the output.
 #' @param lang Language of the results. If \code{"default"}, returns the results
 #' in local language.
 #' @param bbox Any object that can be parsed by \code{\link[sf]{st_bbox}}.

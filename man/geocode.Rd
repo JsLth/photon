@@ -20,7 +20,10 @@ geocode(
 \arguments{
 \item{texts}{Character vector of a texts to geocode.}
 
-\item{limit}{Number of results to return. Defaults to 1.}
+\item{limit}{Number of results to return. A maximum of 50 results can be
+returned for a single search term. Defaults to 1. When more than a single
+text is provided but limit is greater than 1, the results can be uniquely
+linked to the input texts using the \code{idx} column in the output.}
 
 \item{lang}{Language of the results. If \code{"default"}, returns the results
 in local language.}
