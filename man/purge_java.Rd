@@ -4,14 +4,14 @@
 \alias{purge_java}
 \title{Purge Java processes}
 \usage{
-purge_java(pids = NULL, consent = FALSE)
+purge_java(pids = NULL, ask = TRUE)
 }
 \arguments{
 \item{pids}{PIDs to kill. The PIDs should be Java processes. If \code{NULL},
 tries to kill all Java processes.}
 
-\item{consent}{If \code{FALSE}, asks for consent before killing the
-processes. Defaults to \code{FALSE}.}
+\item{ask}{If \code{TRUE}, asks for consent before killing the
+processes. Defaults to \code{TRUE}.}
 }
 \value{
 An integer vector of the \code{pkill} / \code{Taskkill} status

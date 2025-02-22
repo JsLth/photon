@@ -26,12 +26,12 @@ test_that("java can be purged", {
   expect_s3_class(proc, "data.frame")
   with_mocked_bindings(
     get_java_processes = function() data.frame(pids = 1),
-    expect_error(purge_java(-1L, consent = TRUE), class = "pid_not_java")
+    expect_error(purge_java(-1L, ask = FALSE), class = "pid_not_java")
   )
   expect_vector(kill_process(rep(-1, 2)), integer(), size = 2)
 
   skip_if(nrow(get_java_processes()) > 0)
-  expect_message(purge_java(consent = TRUE), regexp = "No java processes running.")
+  expect_message(purge_java(ask = FALSE), regexp = "No java processes running.")
 })
 
 test_that("logs can be parsed", {
