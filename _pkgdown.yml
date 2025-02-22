@@ -32,6 +32,7 @@ reference:
       - geocode
       - structured
       - reverse
+      - latinize
 
   - title: Photon setup
     contents:
