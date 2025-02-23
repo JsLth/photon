@@ -1,8 +1,15 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-## This is a re-submission, after review on 2024-11-05
+# photon 0.3.5
+
+This is a re-submission
+
+
+# photon 0.3.1
+
+This is a re-submission, after review on 2024-11-05
 
 ### Comments by Benjamin Altmann
 
