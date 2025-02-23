@@ -51,14 +51,14 @@ When loading `{photon}`, the package assumes that you want send geocoding reques
 library(photon)
 places <- c("Paris", "Beijing", "Sao Paolo", "Kinshasa")
 
-cities1 <- geocode(places, limit = 1, layer = "city")
+cities1 <- geocode(places, layer = "city")
 cities1
 ```
 
 Reverse geocoding means taking point geometries and returning their addresses or place names.
 
 ```{r reverse}
-cities2 <- reverse(cities1$geometry, limit = 1, layer = "city")
+cities2 <- reverse(cities1$geometry, layer = "city")
 cities2
 ```
 

@@ -50,7 +50,7 @@ directly start geocoding.
 library(photon)
 places <- c("Paris", "Beijing", "Sao Paolo", "Kinshasa")
 
-cities1 <- geocode(places, limit = 1, layer = "city")
+cities1 <- geocode(places, layer = "city")
 cities1
 #> Simple feature collection with 4 features and 12 fields
 #> Geometry type: POINT
@@ -71,7 +71,7 @@ Reverse geocoding means taking point geometries and returning their
 addresses or place names.
 
 ``` r
-cities2 <- reverse(cities1$geometry, limit = 1, layer = "city")
+cities2 <- reverse(cities1$geometry, layer = "city")
 cities2
 #> Simple feature collection with 4 features and 12 fields
 #> Geometry type: POINT

@@ -161,8 +161,7 @@ get_encoding <- function(x) {
 #' convert a character vector from its current encoding to \code{"latin1"} and -
 #' if it fails - defaults back to the original term. This can be useful
 #' for \code{\link{geocode}} and \code{\link{structured}} when attempting to
-#' geocode terms containing symbols that photon does not support. Generally,
-#' photon supports
+#' geocode terms containing symbols that photon does not support.
 #'
 #' @param x A character vector.
 #' @param encoding Encoding that the strings in \code{x} should be
