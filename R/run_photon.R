@@ -279,13 +279,13 @@ photon_ready <- function(self, private) {
     return(FALSE)
   }
 
-  can_access_photon(self$get_url())
+  can_access_photon(self$get_url(), "api")
 }
 
 
-can_access_photon <- function(url) {
+can_access_photon <- function(url, path) {
   req <- httr2::request(url)
-  req <- httr2::req_template(req, "GET api")
+  req <- httr2::req_template(req, sprintf("GET %s", path))
   req <- httr2::req_error(req, is_error = function(r) FALSE)
 
   status <- tryCatch(

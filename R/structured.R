@@ -129,9 +129,5 @@ has_structured_support <- function() {
   url <- get_photon_url()
   if (is_komoot(url)) return(FALSE)
 
-  req <- httr2::request(url)
-  req <- httr2::req_template(req, "GET structured")
-  req <- httr2::req_error(req, function(r) FALSE)
-  resp <- httr2::req_perform(req)
-  resp$status_code == 400
+  can_access_photon(url, "structured")
 }
