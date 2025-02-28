@@ -3,7 +3,7 @@
 #' This R6 class is used to initialize and manage local photon instances.
 #' It can download and setup the Java, the photon executable, and the necessary
 #' ElasticSearch search index. It can start, stop, and query the status of the
-#' photon instance. It is also the basis for geocoding requests at it is used
+#' photon instance. It is also the basis for geocoding requests as it is used
 #' to retrieve the URL for geocoding.
 #'
 #' @section ElasticSearch / OpenSearch:
@@ -11,8 +11,10 @@
 #' These search indices can be self-provided by importing an existing
 #' Nominatim database or they can be downloaded from the
 #' \href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
-#' Use \code{nominatim = TRUE} to indicate that no ElasticSearch indices
-#' should be downloaded. See
+#' If you want to download pre-built search indices, simply provide a
+#' \code{country} string during initialization or use the
+#' \code{$download_data} method. If you want to build from Nominatim, do not
+#' provide a country string and use the \code{$import} method. See
 #' \code{vignette("nominatim-import", package = "photon")} for details on how
 #' to import from Nominatim.
 #'
@@ -82,12 +84,13 @@ photon_local <- R6::R6Class(
     #' version of photon. If \code{"archived"}, selects a dump made for an older
     #' version of photon. If \code{NULL} (or any arbitrary string), selects a
     #' dump made for the current release. Defaults to \code{NULL}.
-    #' @param opensearch If \code{TRUE}, looks for an OpenSearch version of
-    #' photon in the specified path. Opensearch-based photon supports structured
-    #' geocoding queries but has to be built manually using gradle. Hence,
-    #' it cannot be downloaded directly. If no OpenSearch executable is found
-    #' in the search path, then this parameter is set to \code{FALSE}. Defaults
-    #' to \code{FALSE}.
+    #' @param opensearch If \code{TRUE}, attempts to download the OpenSearch
+    #' version of photon. OpenSearch-based photon supports structrued geocoding.
+    #' Readily available OpenSearch photon executables are only offered since
+    #' photon version 0.6.0. For earlier versions, you need to build it from
+    #' source using gradle. In this case, if \code{TRUE}, will look for an
+    #' OpenSearch version of photon in the specified path. Defaults to
+    #' \code{FALSE}.
     #' @param overwrite If \code{TRUE}, overwrites existing jar files and
     #' search indices when initializing a new instance. Defaults to
     #' \code{FALSE}.
