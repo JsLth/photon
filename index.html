@@ -76,7 +76,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jslth/photon/" class="external-link">photon</a></span><span class="op">)</span></span>
 <span><span class="va">places</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Paris"</span>, <span class="st">"Beijing"</span>, <span class="st">"Sao Paolo"</span>, <span class="st">"Kinshasa"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">cities1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/geocode.html">geocode</a></span><span class="op">(</span><span class="va">places</span>, limit <span class="op">=</span> <span class="fl">1</span>, layer <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
+<span><span class="va">cities1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/geocode.html">geocode</a></span><span class="op">(</span><span class="va">places</span>, layer <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">cities1</span></span>
 <span><span class="co">#&gt; Simple feature collection with 4 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
@@ -93,7 +93,7 @@
 <span><span class="co">#&gt; # ℹ 3 more variables: extent &lt;list&gt;, county &lt;chr&gt;, geometry &lt;POINT [°]&gt;</span></span></code></pre></div>
 <p>Reverse geocoding means taking point geometries and returning their addresses or place names.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cities2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reverse.html">reverse</a></span><span class="op">(</span><span class="va">cities1</span><span class="op">$</span><span class="va">geometry</span>, limit <span class="op">=</span> <span class="fl">1</span>, layer <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cities2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reverse.html">reverse</a></span><span class="op">(</span><span class="va">cities1</span><span class="op">$</span><span class="va">geometry</span>, layer <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">cities2</span></span>
 <span><span class="co">#&gt; Simple feature collection with 4 features and 12 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>

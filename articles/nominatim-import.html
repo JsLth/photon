@@ -133,9 +133,9 @@ given photon directory.</p>
 <span><span class="co">#&gt; ℹ java version "22" 2024-03-19</span></span>
 <span><span class="co">#&gt; ℹ Java(TM) SE Runtime Environment (build 22+36-2370)</span></span>
 <span><span class="co">#&gt; ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)</span></span>
-<span><span class="co">#&gt; ✔ Successfully downloaded photon 0.5.0. [8.2s]        </span></span>
+<span><span class="co">#&gt; ✔ Successfully downloaded photon 0.6.2. [8.2s]        </span></span>
 <span><span class="co">#&gt; ℹ No search index downloaded! Download one or import from a Nominatim database.</span></span>
-<span><span class="co">#&gt; • Version: 0.5.0</span></span>
+<span><span class="co">#&gt; • Version: 0.6.2</span></span>
 <span></span>
 <span><span class="va">photon</span><span class="op">$</span><span class="fu">import</span><span class="op">(</span>host <span class="op">=</span> <span class="st">"localhost"</span>, password <span class="op">=</span> <span class="st">"MNdtC2*pP#aMbe"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 2024-10-24 23:07:35,904 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
@@ -152,7 +152,7 @@ given photon directory.</p>
 <span><span class="co">#&gt; 2024-10-24 23:26:46,360 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
 <span><span class="co">#&gt; ✔ Photon is now running. [11.1s]</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apia"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apia"</span>, limit <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Simple feature collection with 3 features and 13 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
@@ -202,7 +202,7 @@ detailed data structure we provide.</p>
 <span>  state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tuamasaga"</span>, <span class="st">"Tuamasaga"</span>, <span class="st">"Atua"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/structured.html">structured</a></span><span class="op">(</span><span class="va">place_data</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/structured.html">structured</a></span><span class="op">(</span><span class="va">place_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Simple feature collection with 3 features and 14 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
