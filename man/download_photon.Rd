@@ -7,7 +7,7 @@
 download_photon(
   path = ".",
   version = NULL,
-  opensearch = FALSE,
+  opensearch = TRUE,
   only_url = FALSE,
   quiet = FALSE
 )
@@ -19,10 +19,12 @@ download_photon(
 downloads the latest known version. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
-version (Currently: 0.6.2).}
+version (Currently: 0.7.0).}
 
 \item{opensearch}{If \code{TRUE}, downloads the OpenSearch version of
-photon if available. OpenSearch versions are available for photon >= 0.6.0.}
+photon if available. OpenSearch versions are available for photon >= 0.6.0.
+Since photon >= 0.7.0, OpenSearch versions are recommended. Defaults to
+\code{TRUE}.}
 
 \item{only_url}{If \code{TRUE}, performs a download. Otherwise,
 only returns a link to the file.}

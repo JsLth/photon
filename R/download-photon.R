@@ -10,6 +10,8 @@
 #' version (Currently: `r get_latest_photon()`).
 #' @param opensearch If \code{TRUE}, downloads the OpenSearch version of
 #' photon if available. OpenSearch versions are available for photon >= 0.6.0.
+#' Since photon >= 0.7.0, OpenSearch versions are recommended. Defaults to
+#' \code{TRUE}.
 #' @inheritParams download_searchindex
 #'
 #' @returns If \code{only_url = FALSE}, returns a character string giving the
@@ -21,7 +23,7 @@
 #' \donttest{download_photon(tempdir(), version = "0.4.1")}
 download_photon <- function(path = ".",
                             version = NULL,
-                            opensearch = FALSE,
+                            opensearch = TRUE,
                             only_url = FALSE,
                             quiet = FALSE) {
   assert_dir(path)

@@ -94,7 +94,7 @@ executable, the search index, and Java.
   date = "latest",
   exact = FALSE,
   section = NULL,
-  opensearch = FALSE,
+  opensearch = TRUE,
   overwrite = FALSE,
   quiet = FALSE
 )}\if{html}{\out{</div>}}
@@ -109,7 +109,7 @@ should be stored.}
 \item{\code{photon_version}}{Version of photon to be used. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
-version (Currently: 0.6.2).}
+version (Currently: 0.7.0).}
 
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
@@ -138,8 +138,8 @@ version of photon. OpenSearch-based photon supports structrued geocoding.
 Readily available OpenSearch photon executables are only offered since
 photon version 0.6.0. For earlier versions, you need to build it from
 source using gradle. In this case, if \code{TRUE}, will look for an
-OpenSearch version of photon in the specified path. Defaults to
-\code{FALSE}.}
+OpenSearch version of photon in the specified path. Since photon version
+0.7.0, OpenSearch is the recommended option. Defaults to \code{TRUE}.}
 
 \item{\code{overwrite}}{If \code{TRUE}, overwrites existing jar files and
 search indices when initializing a new instance. Defaults to

@@ -89,8 +89,8 @@ photon_local <- R6::R6Class(
     #' Readily available OpenSearch photon executables are only offered since
     #' photon version 0.6.0. For earlier versions, you need to build it from
     #' source using gradle. In this case, if \code{TRUE}, will look for an
-    #' OpenSearch version of photon in the specified path. Defaults to
-    #' \code{FALSE}.
+    #' OpenSearch version of photon in the specified path. Since photon version
+    #' 0.7.0, OpenSearch is the recommended option. Defaults to \code{TRUE}.
     #' @param overwrite If \code{TRUE}, overwrites existing jar files and
     #' search indices when initializing a new instance. Defaults to
     #' \code{FALSE}.
@@ -101,7 +101,7 @@ photon_local <- R6::R6Class(
                           date = "latest",
                           exact = FALSE,
                           section = NULL,
-                          opensearch = FALSE,
+                          opensearch = TRUE,
                           overwrite = FALSE,
                           quiet = FALSE) {
       assert_flag(quiet)
