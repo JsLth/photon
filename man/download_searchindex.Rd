@@ -9,7 +9,7 @@ download_searchindex(
   country = "Monaco",
   date = "latest",
   exact = FALSE,
-  section = NULL,
+  section = "experimental",
   only_url = FALSE,
   quiet = FALSE
 )

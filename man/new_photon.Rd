@@ -12,7 +12,7 @@ new_photon(
   date = "latest",
   exact = FALSE,
   section = NULL,
-  opensearch = FALSE,
+  opensearch = TRUE,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -53,11 +53,13 @@ version of photon. If \code{"archived"}, selects a dump made for an older
 version of photon. If \code{NULL} (or any arbitrary string), selects a
 dump made for the current release. Defaults to \code{NULL}.}
 
-\item{opensearch}{If \code{TRUE}, looks for an OpenSearch version of
-photon in the specified path. Opensearch-based photon supports structured
-geocoding queries but is currently only experimental. Defaults to
-\code{FALSE}. See \code{vignette("nominatim-import", package = "photon")}
-for details.}
+\item{opensearch}{If \code{TRUE}, attempts to download the OpenSearch
+version of photon. OpenSearch-based photon supports structrued geocoding.
+Readily available OpenSearch photon executables are only offered since
+photon version 0.6.0. For earlier versions, you need to build it from
+source using gradle. In this case, if \code{TRUE}, will look for an
+OpenSearch version of photon in the specified path. Since photon version
+0.7.0, OpenSearch is the recommended option. Defaults to \code{TRUE}.}
 
 \item{overwrite}{If \code{TRUE}, overwrites existing jar files and
 search indices when initializing a new instance. Defaults to

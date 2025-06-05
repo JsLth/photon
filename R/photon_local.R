@@ -7,8 +7,11 @@
 #' to retrieve the URL for geocoding.
 #'
 #' @section ElasticSearch / OpenSearch:
-#' The standard version of photon uses ElasticSearch indices to geocode.
-#' These search indices can be self-provided by importing an existing
+#' Photon executables and search indices support both ElasticSearch and
+#' OpenSearch. Until photon 0.7.0, ElasticSearch was the standard. Since
+#' photon 0.7.0, ElasticSearch is superseded.
+#'
+#' Search indices can be self-provided by importing an existing
 #' Nominatim database or they can be downloaded from the
 #' \href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
 #' If you want to download pre-built search indices, simply provide a
@@ -20,9 +23,7 @@
 #'
 #' To enable structured geocoding, the photon geocoder needs to be built to
 #' support OpenSearch. Since photon 0.6.0, OpenSearch jar files are included
-#' in the photon releases. OpenSearch indices can also be downloaded, but
-#' do not support structured geocoding as of yet. To enable structured
-#' geocoding, indices have to be imported from an existing Nominatim database.
+#' in the photon releases.
 #'
 #' @export
 #' @import R6
@@ -108,6 +109,7 @@ photon_local <- R6::R6Class(
       assert_flag(opensearch)
       check_jdk_version("11", quiet = quiet)
       photon_version <- photon_version %||% get_latest_photon()
+      check_opensearch(opensearch, photon_version)
 
       path <- normalizePath(path, "/", mustWork = FALSE)
       if (!dir.exists(path)) {
@@ -629,6 +631,17 @@ construct_jar <- function(version = NULL, opensearch = FALSE) {
   version <- version %||% get_latest_photon()
   opensearch <- ifelse(opensearch, "-opensearch", "")
   sprintf("photon%s-%s.jar", opensearch, version)
+}
+
+
+check_opensearch <- function(opensearch, version) {
+  version <- numeric_version(version)
+  if (version >= "0.7.0" && !opensearch) {
+    cli::cli_warn(c(
+      "!" = "ElasticSearch versions are superseded for photon 0.7.0 or higher.",
+      "i" = "You can set opensearch = TRUE, to use OpenSearch photon instead."
+    ))
+  }
 }
 
 

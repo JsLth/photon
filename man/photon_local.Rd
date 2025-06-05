@@ -93,7 +93,7 @@ executable, the search index, and Java.
   country = NULL,
   date = "latest",
   exact = FALSE,
-  section = NULL,
+  section = "experimental",
   opensearch = TRUE,
   overwrite = FALSE,
   quiet = FALSE

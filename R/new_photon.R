@@ -29,11 +29,13 @@
 #' compared to all available dates and the closest date will be selected.
 #' Otherwise, a file will be selected that exactly matches the input to
 #' \code{date}.
-#' @param opensearch If \code{TRUE}, looks for an OpenSearch version of
-#' photon in the specified path. Opensearch-based photon supports structured
-#' geocoding queries but is currently only experimental. Defaults to
-#' \code{FALSE}. See \code{vignette("nominatim-import", package = "photon")}
-#' for details.
+#' @param opensearch If \code{TRUE}, attempts to download the OpenSearch
+#' version of photon. OpenSearch-based photon supports structrued geocoding.
+#' Readily available OpenSearch photon executables are only offered since
+#' photon version 0.6.0. For earlier versions, you need to build it from
+#' source using gradle. In this case, if \code{TRUE}, will look for an
+#' OpenSearch version of photon in the specified path. Since photon version
+#' 0.7.0, OpenSearch is the recommended option. Defaults to \code{TRUE}.
 #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
 #' selects the date with lowest difference to the \code{date} parameter.
 #' @param section Subdirectory of the download server from which to select a
@@ -68,7 +70,7 @@ new_photon <- function(path = NULL,
                        date = "latest",
                        exact = FALSE,
                        section = NULL,
-                       opensearch = FALSE,
+                       opensearch = TRUE,
                        overwrite = FALSE,
                        quiet = FALSE) {
   if (is.null(path) && is.null(url)) {
