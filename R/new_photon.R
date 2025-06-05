@@ -99,6 +99,39 @@ photon_cache <- function() {
 }
 
 
+#' Local photon instances
+#' @description
+#' Evaluate R code with a photon instance without changing the active photon
+#' mount.
+#'
+#' @param photon An object of class \code{\link[=new_photon]{photon}} that is
+#' temporarily mounted to the session.
+#' @param code Code to execute in the temporary environment.
+#'
+#' @returns The results of the evaluation of the \code{code} argument.
+#'
+#' @export
+#'
+#' @examples
+#' # Get a public instance
+#' pub_photon <- new_photon()
+#'
+#' # Mount a custom instance
+#' new_photon(url = "https://localhost:8001/")
+#'
+#' # Geocode with the public instance only once
+#' with_photon(pub_photon, geocode("Rutland"))
+#'
+#' # The custom instance is still mounted
+#' get_instance()
+with_photon <- function(photon, code) {
+  old <- get0("instance", envir = photon_cache())
+  on.exit(assign("instance", old, envir = photon_cache()))
+  photon$mount()
+  force(code)
+}
+
+
 #' Photon utilities
 #' @description
 #' Utilities to manage photon instances. These functions operate on mounted
