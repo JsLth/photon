@@ -100,7 +100,7 @@ photon_local <- R6::R6Class(
                           country = NULL,
                           date = "latest",
                           exact = FALSE,
-                          section = NULL,
+                          section = "experimental",
                           opensearch = TRUE,
                           overwrite = FALSE,
                           quiet = FALSE) {

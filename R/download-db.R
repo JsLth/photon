@@ -65,7 +65,7 @@ download_searchindex <- function(path = ".",
                                  country = "Monaco",
                                  date = "latest",
                                  exact = FALSE,
-                                 section = NULL,
+                                 section = "experimental",
                                  only_url = FALSE,
                                  quiet = FALSE) {
   assert_vector(country, "character", size = 1, null = TRUE)
