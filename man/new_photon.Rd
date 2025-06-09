@@ -13,6 +13,7 @@ new_photon(
   exact = FALSE,
   section = NULL,
   opensearch = TRUE,
+  mount = TRUE,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -60,6 +61,11 @@ photon version 0.6.0. For earlier versions, you need to build it from
 source using gradle. In this case, if \code{TRUE}, will look for an
 OpenSearch version of photon in the specified path. Since photon version
 0.7.0, OpenSearch is the recommended option. Defaults to \code{TRUE}.}
+
+\item{mount}{If \code{TRUE}, mounts the object to the session so that
+functions like \code{\link{geocode}} automatically detect the new
+instance. If \code{FALSE}, initializies the instance but doesn't mount
+it to the session. Defaults to \code{TRUE}.}
 
 \item{overwrite}{If \code{TRUE}, overwrites existing jar files and
 search indices when initializing a new instance. Defaults to

@@ -43,6 +43,10 @@
 #' version of photon. If \code{"archived"}, selects a dump made for an older
 #' version of photon. If \code{NULL} (or any arbitrary string), selects a
 #' dump made for the current release. Defaults to \code{NULL}.
+#' @param mount If \code{TRUE}, mounts the object to the session so that
+#' functions like \code{\link{geocode}} automatically detect the new
+#' instance. If \code{FALSE}, initializies the instance but doesn't mount
+#' it to the session. Defaults to \code{TRUE}.
 #' @param overwrite If \code{TRUE}, overwrites existing jar files and
 #' search indices when initializing a new instance. Defaults to
 #' \code{FALSE}.
@@ -71,12 +75,13 @@ new_photon <- function(path = NULL,
                        exact = FALSE,
                        section = NULL,
                        opensearch = TRUE,
+                       mount = TRUE,
                        overwrite = FALSE,
                        quiet = FALSE) {
   if (is.null(path) && is.null(url)) {
-    photon_remote$new(url = "https://photon.komoot.io/")
+    photon_remote$new(url = "https://photon.komoot.io/", mount = mount)
   } else if (is.null(path)) {
-    photon_remote$new(url = url)
+    photon_remote$new(url = url, mount = mount)
   } else if (is.null(url)) {
     photon_local$new(
       path = path,
@@ -86,6 +91,7 @@ new_photon <- function(path = NULL,
       exact = exact,
       section = section,
       opensearch = opensearch,
+      mount = mount,
       overwrite = overwrite,
       quiet = quiet
     )

@@ -2,10 +2,10 @@ photon_remote <- R6::R6Class(
   classname = "photon_remote",
   inherit = photon,
   public = list(
-    initialize = function(url) {
+    initialize = function(url, mount = TRUE) {
       assert_url(url)
       private$url <- url
-      self$mount()
+      if (mount) self$mount()
       invisible(self)
     },
 
