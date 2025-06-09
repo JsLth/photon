@@ -21,7 +21,6 @@ run_photon <- function(self,
 
 
 run_import <- function(self, private, args, timeout = 60, quiet = FALSE) {
-  logs <- list()
   stderr <- run(
     "java",
     args = args,
@@ -36,7 +35,8 @@ run_import <- function(self, private, args, timeout = 60, quiet = FALSE) {
   )$stderr
 
   versionize_logs(private)
-  abort_log_error(stderr, quiet, class = "import_error")
+  log_error <- assemble_log_error(private$logs)
+  abort_log_error(log_error, quiet, class = "import_error")
 }
 
 
@@ -173,7 +173,7 @@ handle_log_conditions <- function(out) {
 
 
 split_by_logs_entry <- function(logs) {
-  rgx <- "(?<=\n)(?=Usage|[0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"
+  rgx <- "(?<=\n)(?=Usage|\\[?[0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"
   logs <- strsplit(logs, rgx, perl = TRUE)[[1]]
   unlist(logs)
 }
@@ -243,7 +243,7 @@ abort_log_error <- function(logerr, quiet, ...) {
     if (!quiet) cli::cli_verbatim(logerr)
     ph_stop(c(
       strsplit(logerr, "\n")[[1]][1],
-      "i" = "See logs for details."
+      "i" = cli::style_bold("See logs for details.")
     ), ..., call = NULL)
   }
 }
