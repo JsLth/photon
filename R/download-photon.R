@@ -41,10 +41,11 @@ download_photon <- function(path = ".",
   }
 
   if (!quiet) {
+    type <- ifelse(opensearch, "OpenSearch", "ElasticSearch")
     cli::cli_progress_step(
-      msg = "Fetching photon {.field {version}}.",
-      msg_done = "Successfully downloaded photon {.field {version}}.",
-      msg_failed = "Failed to download photon."
+      msg = "Fetching {type} photon {.field {version}}.",
+      msg_done = "Successfully downloaded {type} photon {.field {version}}.",
+      msg_failed = "Failed to download {type} photon."
     )
   }
 
