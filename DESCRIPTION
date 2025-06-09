@@ -1,7 +1,7 @@
 Package: photon
 Type: Package
 Title: High-Performance Geocoding using 'photon'
-Version: 0.3.5
+Version: 0.7.0
 Authors@R: 
     person("Jonas", "Lieth", , "jonas.lieth@gesis.org", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-3451-3176"))
