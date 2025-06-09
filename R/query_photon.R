@@ -11,7 +11,7 @@ query_photon <- function(endpoint, ...) {
   req <- httr2::req_error(req, body = function(resp) {
     ctype <- httr2::resp_content_type(resp)
     if (grepl("json", ctype, fixed = TRUE)) {
-      httr2::resp_body_json(resp)$message
+      httr2::resp_body_json(resp)[[1]][[1]]$message
     }
   })
 
