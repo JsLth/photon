@@ -162,6 +162,12 @@ download_searchindex <- function(path = ".",
     )
   }
 
+  req <- httr2::req_error(req, body = function(resp) {
+    status <- httr2::resp_status(resp)
+    if (identical(status, 404L)) {
+      sprintf("This usually means that country %s is not available.", country)
+    }
+  })
 
   httr2::req_perform(req, path = path)
   normalizePath(path, "/")
