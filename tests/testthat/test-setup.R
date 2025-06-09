@@ -89,7 +89,7 @@ test_that("local setup works", {
   expect_no_message(new_photon(path = dir, quiet = TRUE))
   expect_error(photon$get_url(), class = "no_url_yet")
   expect_error(
-    get_photon_executable(photon$path, get_latest_photon(), TRUE),
+    get_photon_executable(photon$path, "0.1.0", FALSE),
     regexp = "could not be found"
   )
   expect_false(photon$is_ready())
@@ -113,14 +113,16 @@ test_that("local setup works", {
   # test error handling
   fail_dir <- file.path(tempdir(), "photon_fail")
   photon <- new_photon(path = fail_dir)
-  expect_error(photon$import(), class = "import_error")
+
+  # test start error
+  expect_error(photon$start(), class = "start_error")
   logs <- photon$get_logs()
   expect_s3_class(logs, "data.frame")
   expect_contains(logs$type, "ERROR")
   expect_contains(names(logs), "rid")
 
-  expect_error(photon$start(), class = "start_error")
-  logs <- photon$get_logs()
+  # test import error
+  expect_error(photon$import(), class = "import_error")
   expect_equal(unique(logs$rid), c(1, 2))
 
   options(photon_setup_warn = TRUE)
