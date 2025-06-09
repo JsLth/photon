@@ -21,7 +21,9 @@
 #' version.
 #' @param country Character string that can be identified by
 #' \code{\link[countrycode]{countryname}} as a country. An extract for this
-#' country will be downloaded. If \code{NULL}, downloads a global search index.
+#' country will be downloaded. If \code{"planet"}, downloads a global search
+#' index. If \code{NULL}, downloads no index and leaves download or import to
+#' the user.
 #' @param date Character string or date-time object used to specify the creation
 #' date of the search index. If \code{"latest"}, will download the file tagged
 #' with "latest". If a character string, the value should be parseable by
