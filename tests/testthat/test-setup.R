@@ -78,16 +78,14 @@ skip_if_not(has_java("11"))
 
 test_that("local setup works", {
   options(photon_setup_warn = FALSE)
+  on.exit(options(photon_setup_warn = NULL), add = TRUE)
   dir <- file.path(tempdir(), "photon")
-  photon <- new_photon(path = dir, country = "samoa")
-  on.exit({
-    options(photon_setup_warn = NULL)
-    photon$purge(ask = FALSE)
-  })
+  photon <- new_photon(path = dir, country = "monaco")
+  on.exit(photon$purge(ask = FALSE), add = TRUE)
 
   # test pre-setup
   expect_no_error(print(photon))
-  photon <- new_photon(path = dir, country = "samoa")
+  photon <- new_photon(path = dir, country = "monaco")
   expect_no_message(new_photon(path = dir, quiet = TRUE))
   expect_error(photon$get_url(), class = "no_url_yet")
   expect_error(

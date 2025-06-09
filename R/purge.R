@@ -28,7 +28,7 @@
 #'
 #' # start a new photon instance
 #' dir <- file.path(tempdir(), "photon")
-#' photon <- new_photon(dir, country = "Samoa")
+#' photon <- new_photon(dir, country = "Monaco")
 #' photon$start()
 #'
 #' # kill photon using a sledgehammer

@@ -40,7 +40,7 @@
 #' download_searchindex(path = tempdir())
 #'
 #' # download the latest extract of American Samoa
-#' download_searchindex(path = tempdir(), country = "Samoa")
+#' download_searchindex(path = tempdir(), section = NULL, country = "Samoa")
 #'
 #' # download an extract from a month ago
 #' download_searchindex(
