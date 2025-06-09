@@ -12,8 +12,11 @@ to retrieve the URL for geocoding.
 }
 \section{ElasticSearch / OpenSearch}{
 
-The standard version of photon uses ElasticSearch indices to geocode.
-These search indices can be self-provided by importing an existing
+Photon executables and search indices support both ElasticSearch and
+OpenSearch. Until photon 0.7.0, ElasticSearch was the standard. Since
+photon 0.7.0, ElasticSearch is superseded.
+
+Search indices can be self-provided by importing an existing
 Nominatim database or they can be downloaded from the
 \href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
 If you want to download pre-built search indices, simply provide a
@@ -25,9 +28,7 @@ to import from Nominatim.
 
 To enable structured geocoding, the photon geocoder needs to be built to
 support OpenSearch. Since photon 0.6.0, OpenSearch jar files are included
-in the photon releases. OpenSearch indices can also be downloaded, but
-do not support structured geocoding as of yet. To enable structured
-geocoding, indices have to be imported from an existing Nominatim database.
+in the photon releases.
 }
 
 \examples{
@@ -167,7 +168,7 @@ is useful if you want to switch between multiple photon instances.
 \if{latex}{\out{\hypertarget{method-photon_local-info}{}}}
 \subsection{Method \code{info()}}{
 Retrieve metadata about the java and photon version used as well
-as the country and creation date of the Eleasticsearch search index.
+as the country and creation date of the search index.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$info()}\if{html}{\out{</div>}}
 }

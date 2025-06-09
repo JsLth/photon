@@ -150,7 +150,7 @@ photon_local <- R6::R6Class(
 
     #' @description
     #' Retrieve metadata about the java and photon version used as well
-    #' as the country and creation date of the Eleasticsearch search index.
+    #' as the country and creation date of the search index.
     #' @return A list containing the java version, the photon version, and
     #' if applicable, the spatial and temporal coverage of the search index.
     info = function() {
