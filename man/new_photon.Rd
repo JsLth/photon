@@ -98,4 +98,6 @@ if (has_java("11")) {
 # set up a local instance in the current working directory
 photon <- new_photon(tempdir(), country = "Monaco")
 }
+
+photon$purge(ask = FALSE)
 }

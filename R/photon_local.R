@@ -45,6 +45,8 @@
 #' photon <- new_photon(path = dir, opensearch = TRUE)
 #' photon$start(photon_options = cmd_options(port = 29146, password = "pgpass"))}
 #' }
+#'
+#' photon$purge(ask = FALSE)
 photon_local <- R6::R6Class(
   inherit = photon,
   classname = "photon_local",
@@ -170,7 +172,7 @@ photon_local <- R6::R6Class(
     #' instance.
     #' @return \code{NULL}, invisibly.
     purge = function(ask = TRUE) {
-      if (interactive() || !ask) {
+      if (interactive() || ask) {
         cli::cli_inform(c("i" = paste( # nocov start
           "Purging an instance kills the photon process",
           "and removes the photon directory."

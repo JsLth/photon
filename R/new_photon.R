@@ -69,6 +69,8 @@
 #' # set up a local instance in the current working directory
 #' photon <- new_photon(tempdir(), country = "Monaco")
 #' }
+#'
+#' photon$purge(ask = FALSE)
 new_photon <- function(path = NULL,
                        url = NULL,
                        photon_version = NULL,
