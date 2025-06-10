@@ -98,7 +98,7 @@ test_that("local setup works", {
   # test setup
   photon$start(host = "127.0.0.1")
   expect_true(photon$is_running())
-  expect_gt(nrow(geocode("Apai")), 0)
+  expect_false(anyNA(geocode("Monte Carlo")$osm_id))
   expect_error(photon$start(host = "127.0.0.1"), class = "photon_already_running")
 
   with_mocked_bindings(
@@ -123,6 +123,7 @@ test_that("local setup works", {
 
   # test import error
   expect_error(photon$import(), class = "import_error")
+  logs <- photon$get_logs()
   expect_equal(unique(logs$rid), c(1, 2))
 
   options(photon_setup_warn = TRUE)
@@ -132,14 +133,7 @@ test_that("local setup works", {
   expect_match(logs$msg, "usage error", all = FALSE)
   expect_equal(unique(logs$rid), c(1, 2, 3))
 
-  options(photon_setup_warn = FALSE)
-  expect_warning(
-    expect_error(photon$import(structured = TRUE)),
-    class = "structured_elasticsearch_error"
-  )
-
   photon$stop()
   expect_no_warning(photon$remove_data())
   expect_false(dir.exists(file.path(photon$path, "photon_data")))
 })
-

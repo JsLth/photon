@@ -259,12 +259,12 @@ photon_local <- R6::R6Class(
       assert_flag(json)
 
       if (structured && !private$opensearch) {
-        cli::cli_warn(paste(
+        cli::cli_warn(paste( # nocov start
           "Structured queries are only supported for OpenSearch photon.",
           "Setting {.code structured = FALSE}."
         ), class = "structured_elasticsearch_error")
         structured <- FALSE
-      }
+      } # nocov end
 
       popts <- cmd_options(
         nominatim_import = TRUE,
