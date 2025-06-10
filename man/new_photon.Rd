@@ -96,6 +96,6 @@ photon <- new_photon(url = "photonserver.org")
 
 if (has_java("11")) {
 # set up a local instance in the current working directory
-photon <- new_photon("photon", country = "Monaco")
+photon <- new_photon(tempdir(), country = "Monaco")
 }
 }

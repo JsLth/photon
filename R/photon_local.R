@@ -36,7 +36,7 @@
 #' photon <- new_photon(path = dir, country = "Monaco")
 #'
 #' # start a new instance with an older photon version
-#' photon <- new_photon(path = dir, photon_version = "0.4.1")}
+#' photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)}
 #'
 #' \dontrun{
 #' # import a nominatim database using OpenSearch photon
