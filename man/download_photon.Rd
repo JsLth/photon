@@ -39,5 +39,5 @@ path to the downloaded file. Otherwise, returns the URL to be downloaded.
 Download the photon executable from GitHub.
 }
 \examples{
-\donttest{download_photon(tempdir(), version = "0.4.1")}
+\donttest{download_photon(tempdir(), version = "0.4.1", opensearch = FALSE)}
 }

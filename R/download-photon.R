@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{download_photon(tempdir(), version = "0.4.1")}
+#' \donttest{download_photon(tempdir(), version = "0.4.1", opensearch = FALSE)}
 download_photon <- function(path = ".",
                             version = NULL,
                             opensearch = TRUE,
