@@ -36,17 +36,17 @@
 #' photon <- new_photon(path = dir, country = "Monaco")
 #'
 #' # start a new instance with an older photon version
-#' photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)}
+#' photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)
+#' }
 #'
 #' \dontrun{
 #' # import a nominatim database using OpenSearch photon
 #' # this example requires the OpenSearch version of photon and a running
 #' # Nominatim server.
 #' photon <- new_photon(path = dir, opensearch = TRUE)
-#' photon$start(photon_options = cmd_options(port = 29146, password = "pgpass"))}
-#' }
+#' photon$import(photon_options = cmd_options(port = 29146, password = "pgpass"))}
 #'
-#' photon$purge(ask = FALSE)
+#' photon$purge(ask = FALSE)}
 photon_local <- R6::R6Class(
   inherit = photon,
   classname = "photon_local",
@@ -172,7 +172,7 @@ photon_local <- R6::R6Class(
     #' instance.
     #' @return \code{NULL}, invisibly.
     purge = function(ask = TRUE) {
-      if (interactive() || ask) {
+      if (interactive() && ask) {
         cli::cli_inform(c("i" = paste( # nocov start
           "Purging an instance kills the photon process",
           "and removes the photon directory."
@@ -564,7 +564,7 @@ setup_photon_directory <- function(path,
       archive_path <- files[has_archive] # nocov
     }
 
-    untar_es_index(archive_path, path)
+    untar_index(archive_path, path)
     store_searchindex_metadata(path, archive_path)
   } else if (!quiet) {
     inform_index_exists()
@@ -572,11 +572,11 @@ setup_photon_directory <- function(path,
 }
 
 
-untar_es_index <- function(archive_path, path) {
+untar_index <- function(archive_path, path) {
   untared <- utils::untar(archive_path, files = "photon_data", exdir = path)
 
   if (!identical(untared, 0L)) {
-    ph_stop("Failed to untar the ElasticSearch index.") # nocov
+    ph_stop("Failed to untar search index.") # nocov
   }
 }
 

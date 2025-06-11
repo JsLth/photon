@@ -95,8 +95,9 @@ photon <- new_photon()
 photon <- new_photon(url = "photonserver.org")
 
 if (has_java("11")) {
-# set up a local instance in the current working directory
-photon <- new_photon(tempdir(), country = "Monaco")
+# set up a local instance in a temporary directory
+dir <- file.path(tempdir(), "photon")
+photon <- new_photon(dir, country = "Monaco")
 }
 
 photon$purge(ask = FALSE)

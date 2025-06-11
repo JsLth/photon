@@ -39,17 +39,17 @@ dir <- file.path(tempdir(), "photon")
 photon <- new_photon(path = dir, country = "Monaco")
 
 # start a new instance with an older photon version
-photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)}
+photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)
+}
 
 \dontrun{
 # import a nominatim database using OpenSearch photon
 # this example requires the OpenSearch version of photon and a running
 # Nominatim server.
 photon <- new_photon(path = dir, opensearch = TRUE)
-photon$start(photon_options = cmd_options(port = 29146, password = "pgpass"))}
-}
+photon$import(photon_options = cmd_options(port = 29146, password = "pgpass"))}
 
-photon$purge(ask = FALSE)
+photon$purge(ask = FALSE)}
 }
 \section{Super class}{
 \code{\link[photon:photon]{photon::photon}} -> \code{photon_local}
