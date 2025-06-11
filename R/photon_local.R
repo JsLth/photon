@@ -565,7 +565,7 @@ setup_photon_directory <- function(path,
     }
 
     untar_index(archive_path, path)
-    store_searchindex_metadata(path, archive_path)
+    store_index_metadata(path, archive_path)
   } else if (!quiet) {
     inform_index_exists()
   }
@@ -573,6 +573,7 @@ setup_photon_directory <- function(path,
 
 
 untar_index <- function(archive_path, path) {
+  print(archive_path)
   untared <- utils::untar(archive_path, files = "photon_data", exdir = path)
 
   if (!identical(untared, 0L)) {
@@ -581,7 +582,7 @@ untar_index <- function(archive_path, path) {
 }
 
 
-store_searchindex_metadata <- function(path, archive_path) {
+store_index_metadata <- function(path, archive_path) {
   meta <- utils::strcapture(
     pattern = "photon-db-?([a-z]{2})?-([0-9]+|latest)\\.tar\\.bz2",
     x = basename(archive_path),
