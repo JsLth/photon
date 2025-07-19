@@ -173,7 +173,8 @@ handle_log_conditions <- function(out) {
 
 
 split_by_logs_entry <- function(logs) {
-  rgx <- "(?<=\n)(?=Usage|\\[?[0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"
+  logs <- gsub("\r\n", "\n", logs, fixed = TRUE) # normalize new lines
+  rgx <- "(?<=\n)(?=Usage|Exception|\\[?[0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"
   logs <- strsplit(logs, rgx, perl = TRUE)[[1]]
   unlist(logs)
 }
@@ -190,22 +191,27 @@ parse_log_line <- function(line) {
     proto = list(ts = "", thread = "", type = "", class = "", msg = "")
   )
 
-  if (all(is.na(parsed))) {
-    parsed <- utils::strcapture(
+  missing <- is.na(parsed$msg)
+  if (any(missing)) {
+    parsed[missing, ] <- utils::strcapture(
       "\\[(.+)\\]\\[(.+)\\]\\[([a-zA-Z.]+) *?\\](.+)",
-      line,
+      line[missing],
       proto = list(ts = "", type = "", class = "", msg = "")
     )
   }
 
-  if (all(is.na(parsed))) {
-    parsed <- data.frame(
+  missing <- is.na(parsed$msg)
+  if (any(missing)) {
+    fallback <- data.frame(
       ts = NA_character_,
       thread = NA_character_,
       type = NA_character_,
       class = NA_character_,
-      msg = line
+      msg = line[missing]
     )
+    fallback <- fallback[rep(1, sum(missing)), ]
+    row.names(fallback) <- NULL
+    parsed[missing, ] <- fallback
   }
 
   parsed$type <- trimws(parsed$type)
