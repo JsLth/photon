@@ -371,7 +371,8 @@ photon_local <- R6::R6Class(
     #' Downloads a search index using \code{\link{download_searchindex}}.
     #' @param country Character string that can be identified by
     #' \code{\link[countrycode]{countryname}} as a country. An extract for this
-    #' country will be downloaded. If \code{NULL}, downloads a global search index.
+    #' country will be downloaded. If \code{"planet"}, downloads a global search
+    #' index.
     #' @param date Character string or date-time object used to specify the creation
     #' date of the search index. If \code{"latest"}, will download the file tagged
     #' with "latest". If a character string, the value should be parseable by
@@ -386,7 +387,7 @@ photon_local <- R6::R6Class(
     #' version of photon. If \code{"archived"}, selects a dump made for an older
     #' version of photon. If \code{NULL} (or any arbitrary string), selects a
     #' dump made for the current release. Defaults to \code{NULL}.
-    download_data = function(country = NULL,
+    download_data = function(country,
                              date = "latest",
                              exact = FALSE,
                              section = NULL) {

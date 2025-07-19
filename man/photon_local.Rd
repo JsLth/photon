@@ -113,7 +113,7 @@ should be stored.}
 \item{\code{photon_version}}{Version of photon to be used. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
-version (Currently: 0.7.0).}
+version (Currently: 0.7.2).}
 
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
@@ -357,7 +357,7 @@ Kills the running photon process.
 Downloads a search index using \code{\link{download_searchindex}}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$download_data(
-  country = NULL,
+  country,
   date = "latest",
   exact = FALSE,
   section = NULL
@@ -369,7 +369,8 @@ Downloads a search index using \code{\link{download_searchindex}}.
 \describe{
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
-country will be downloaded. If \code{NULL}, downloads a global search index.}
+country will be downloaded. If \code{"planet"}, downloads a global search
+index.}
 
 \item{\code{date}}{Character string or date-time object used to specify the creation
 date of the search index. If \code{"latest"}, will download the file tagged

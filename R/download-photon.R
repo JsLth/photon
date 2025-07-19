@@ -2,12 +2,12 @@
 #' @description
 #' Download the photon executable from GitHub.
 #'
-#' @param path Path to a directory to store the executable.
+#' @param path Path to a directory to store the executable. Defaults to
+#' \code{tempdir()}.
 #' @param version Version tag of the photon release. If \code{NULL},
-#' downloads the latest known version. A list of all
+#' downloads the latest known version (`r PHOTON_VERSION`). A list of all
 #' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
-#' Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
-#' version (Currently: `r get_latest_photon()`).
+#' Ignored if \code{jar} is given.
 #' @param opensearch If \code{TRUE}, downloads the OpenSearch version of
 #' photon if available. OpenSearch versions are available for photon >= 0.6.0.
 #' Since photon >= 0.7.0, OpenSearch versions are recommended. Defaults to
@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \donttest{download_photon(tempdir(), version = "0.4.1", opensearch = FALSE)}
-download_photon <- function(path = ".",
+download_photon <- function(path = tempdir(),
                             version = NULL,
                             opensearch = TRUE,
                             only_url = FALSE,

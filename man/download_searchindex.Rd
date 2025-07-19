@@ -5,22 +5,23 @@
 \title{Download search index}
 \usage{
 download_searchindex(
-  path = ".",
-  country = "Monaco",
+  country,
+  path = tempdir(),
   date = "latest",
   exact = FALSE,
-  section = "experimental",
+  section = NULL,
   only_url = FALSE,
   quiet = FALSE
 )
 }
 \arguments{
-\item{path}{Path to a directory where the identified file should be stored.}
-
 \item{country}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
 country will be downloaded. If \code{"planet"}, downloads a global search
 index.}
+
+\item{path}{Path to a directory where the identified file should be stored.
+Defaults to \code{tempdir()}.}
 
 \item{date}{Character string or date-time object used to specify the creation
 date of the search index. If \code{"latest"}, will download the file tagged
@@ -57,6 +58,23 @@ Depending on the country, search index databases tend to be very large.
 The global search index is about 75 GB of size (10/2024). Keep that in mind
 when running this function.
 }
+\section{Limitations}{
+
+The index download depends on a public repository
+(\url{https://download1.graphhopper.com/public/}). This repository only
+hosts search indices for the latest stable and experimental versions and
+is thus not suitable for reproducibility. If you wish to make a project
+reproducible, consider storing the search index somewhere persistent.
+Photon is generally not backwards-compatible and newer versions of Photon
+are not guaranteed to work with older search indices (based on personal
+experience).
+
+Additionally, this function can only download pre-built search indices
+from country extracts. If you need a more fine-grained scope or a combination
+of multiple countries, you need to build your own search index. See
+\code{vignette("nominatim-import", package = "photon")}.
+}
+
 \examples{
 \donttest{# download the latest extract of Monaco
 download_searchindex(path = tempdir())
