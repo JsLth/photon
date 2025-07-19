@@ -15,7 +15,21 @@ run_photon <- function(self,
   switch(
     mode,
     import = run_import(self, private, args, timeout, quiet),
-    start = run_start(self, private, args, timeout, quiet)
+    start = run_start(self, private, args, timeout, quiet),
+    help = run_help(self, private, args)
+  )
+}
+
+
+run_help <- function(self, private, args) {
+  run(
+    "java",
+    args = args,
+    stdout = "|",
+    stderr = "|",
+    echo_cmd = globally_enabled("photon_debug"),
+    wd = self$path,
+    error_on_status = FALSE
   )
 }
 

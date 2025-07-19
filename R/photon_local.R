@@ -166,6 +166,15 @@ photon_local <- R6::R6Class(
     },
 
     #' @description
+    #' Print the default arguments to the R console. This can be helpful to
+    #' get a list of additional photon arguments for \code{$start()} or
+    #' \code{$import()}.
+    #' @return Nothing, but prints to the console.
+    help = function() {
+      cat(run_photon(self, private, mode = "help", photon_opts = "-h")$stdout)
+    },
+
+    #' @description
     #' Kill the photon process and remove the directory. Useful to get rid
     #' of an instance entirely.
     #' @param ask If \code{TRUE}, asks for confirmation before purging the

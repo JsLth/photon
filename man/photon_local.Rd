@@ -70,6 +70,7 @@ external process running photon.}
 \item \href{#method-photon_local-new}{\code{photon_local$new()}}
 \item \href{#method-photon_local-mount}{\code{photon_local$mount()}}
 \item \href{#method-photon_local-info}{\code{photon_local$info()}}
+\item \href{#method-photon_local-help}{\code{photon_local$help()}}
 \item \href{#method-photon_local-purge}{\code{photon_local$purge()}}
 \item \href{#method-photon_local-import}{\code{photon_local$import()}}
 \item \href{#method-photon_local-start}{\code{photon_local$start()}}
@@ -184,6 +185,21 @@ as the country and creation date of the search index.
 \subsection{Returns}{
 A list containing the java version, the photon version, and
 if applicable, the spatial and temporal coverage of the search index.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-help"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-help}{}}}
+\subsection{Method \code{help()}}{
+Print the default arguments to the R console. This can be helpful to
+get a list of additional photon arguments for \code{$start()} or
+\code{$import()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$help()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Nothing, but prints to the console.
 }
 }
 \if{html}{\out{<hr>}}
