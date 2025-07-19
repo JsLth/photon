@@ -297,12 +297,12 @@ a JSON file and returns the path to the output file. Defaults to
 \item{\code{timeout}}{Time in seconds before the java process aborts. Defaults
 to 60 seconds.}
 
-\item{\code{java_opts}}{List of further flags passed on to the \code{java}
-command.}
+\item{\code{java_opts}}{Character vector of further flags passed on to the
+\code{java} command.}
 
-\item{\code{photon_opts}}{List of further flags passed on to the photon
-jar in the java command. See \code{\link{cmd_options}} for a helper
-function to import external Nominatim databases.}
+\item{\code{photon_opts}}{Character vector of further flags passed on to the
+photon jar in the java command. See \code{\link{cmd_options}} for a
+helper function.}
 }
 \if{html}{\out{</div>}}
 }
@@ -338,21 +338,20 @@ Defaults to \code{FALSE}.}
 \item{\code{timeout}}{Time in seconds before the java process aborts. Defaults
 to 60 seconds.}
 
-\item{\code{java_opts}}{List of further flags passed on to the \code{java}
-command.}
+\item{\code{java_opts}}{Character vector of further flags passed on to the
+\code{java} command.}
 
-\item{\code{photon_opts}}{List of further flags passed on to the photon
-jar in the java command. See \code{\link{cmd_options}} for a helper
-function to import external Nominatim databases.}
+\item{\code{photon_opts}}{Character vector of further flags passed on to the
+photon jar in the java command. See \code{\link{cmd_options}} for a
+helper function.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Details}{
 While there is a certain way to determine if a photon instance is
 ready, there is no clear way as of yet to determine if a photon setup
-has failed. Due to this, a failing setup is mostly indicated by the
-setup hanging after emitting a warning. In this case, the setup has to
-be interrupted manually.
+has failed. Due to this, a failing setup may sometimes hang instead of
+emitting an error. In this case, please open a bug report.
 }
 
 }

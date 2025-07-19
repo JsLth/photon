@@ -234,11 +234,11 @@ photon_local <- R6::R6Class(
     #' \code{FALSE}.
     #' @param timeout Time in seconds before the java process aborts. Defaults
     #' to 60 seconds.
-    #' @param java_opts List of further flags passed on to the \code{java}
-    #' command.
-    #' @param photon_opts List of further flags passed on to the photon
-    #' jar in the java command. See \code{\link{cmd_options}} for a helper
-    #' function to import external Nominatim databases.
+    #' @param java_opts Character vector of further flags passed on to the
+    #' \code{java} command.
+    #' @param photon_opts Character vector of further flags passed on to the
+    #' photon jar in the java command. See \code{\link{cmd_options}} for a
+    #' helper function.
     import = function(host = "127.0.0.1",
                       port = 5432,
                       database = "nominatim",
@@ -315,18 +315,17 @@ photon_local <- R6::R6Class(
     #' Defaults to \code{FALSE}.
     #' @param timeout Time in seconds before the java process aborts. Defaults
     #' to 60 seconds.
-    #' @param java_opts List of further flags passed on to the \code{java}
-    #' command.
-    #' @param photon_opts List of further flags passed on to the photon
-    #' jar in the java command. See \code{\link{cmd_options}} for a helper
-    #' function to import external Nominatim databases.
+    #' @param java_opts Character vector of further flags passed on to the
+    #' \code{java} command.
+    #' @param photon_opts Character vector of further flags passed on to the
+    #' photon jar in the java command. See \code{\link{cmd_options}} for a
+    #' helper function.
     #'
     #' @details
     #' While there is a certain way to determine if a photon instance is
     #' ready, there is no clear way as of yet to determine if a photon setup
-    #' has failed. Due to this, a failing setup is mostly indicated by the
-    #' setup hanging after emitting a warning. In this case, the setup has to
-    #' be interrupted manually.
+    #' has failed. Due to this, a failing setup may sometimes hang instead of
+    #' emitting an error. In this case, please open a bug report.
     start = function(host = "0.0.0.0",
                      port = "2322",
                      ssl = FALSE,
@@ -400,7 +399,7 @@ photon_local <- R6::R6Class(
                              date = "latest",
                              exact = FALSE,
                              section = NULL) {
-      download_searchindex( # nocov start
+      archive_path <- download_searchindex( # nocov start
         path = self$path,
         quiet = private$quiet,
         country = country,
@@ -408,6 +407,8 @@ photon_local <- R6::R6Class(
         exact = exact,
         section = section
       )
+      untar_index(archive_path, self$path)
+      store_index_metadata(self$path, archive_path)
       invisible(self) # nocov end
     },
 
