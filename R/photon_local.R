@@ -584,7 +584,6 @@ setup_photon_directory <- function(path,
 
 
 untar_index <- function(archive_path, path) {
-  print(archive_path)
   untared <- utils::untar(archive_path, files = "photon_data", exdir = path)
 
   if (!identical(untared, 0L)) {
