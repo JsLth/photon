@@ -169,7 +169,7 @@ describe("photon_local", {
   it("can download data manually", {
     photon$remove_data()
     photon$download_data("monaco")
-    photon$start()
+    photon$start(host = "127.0.0.1")
     photon$stop()
   })
 })
