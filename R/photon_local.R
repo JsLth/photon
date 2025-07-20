@@ -398,8 +398,8 @@ photon_local <- R6::R6Class(
     download_data = function(country,
                              date = "latest",
                              exact = FALSE,
-                             section = NULL) {
-      archive_path <- download_searchindex( # nocov start
+                             section = "experimental") {
+      archive_path <- download_searchindex(
         path = self$path,
         quiet = private$quiet,
         country = country,
@@ -409,7 +409,7 @@ photon_local <- R6::R6Class(
       )
       untar_index(archive_path, self$path)
       store_index_metadata(self$path, archive_path)
-      invisible(self) # nocov end
+      invisible(self)
     },
 
     #' @description
@@ -656,10 +656,10 @@ construct_jar <- function(version = NULL, opensearch = FALSE) {
 check_opensearch <- function(opensearch, version) {
   version <- numeric_version(version)
   if (version >= "0.7.0" && !opensearch) {
-    cli::cli_warn(c(
+    cli::cli_warn(c( # nocov start
       "!" = "ElasticSearch versions are superseded for photon 0.7.0 or higher.",
       "i" = "You can set opensearch = TRUE, to use OpenSearch photon instead."
-    ))
+    )) # nocov end
   }
 }
 

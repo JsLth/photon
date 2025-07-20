@@ -9,10 +9,10 @@ test_that("%||% works", {
 })
 
 test_that("url tools work", {
-  url1 <- "localhost:8080"
-  url2 <- "127.0.0.1:8080"
+  url1 <- "https://localhost:8080"
+  url2 <- "https://127.0.0.1:8080"
   url3 <- "https://localhost:8080/path/to/sth"
-  url4 <- "google.com"
+  url4 <- "https://google.com"
   url5 <- "localhost"
 
   expect_true(is_url(url1))
@@ -73,8 +73,8 @@ test_that("assertions work", {
   assert_flag(TRUE)
   assert_flag(FALSE)
   assert_dir(tempdir())
-  assert_url("google.com")
-  assert_url("localhost:8082")
+  assert_url("https://google.com")
+  assert_url("https://localhost:8082")
   assert_class(data.frame(), "data.frame")
   assert_named(list(a = 1), c("a", "b"))
   assert_range(5, min = 1, max = 6)
