@@ -46,11 +46,10 @@ get_latest_photon <- function() {
 
 
 is_url <- function(url) {
-  grepl(
-    "^(https?:\\/\\/)?[[:alnum:]\\.]+(\\.[[:lower:]]+)|(:[[:digit:]])\\/?",
-    url,
-    perl = TRUE
-  )
+  tryCatch({
+    httr2::url_parse(url)
+    TRUE
+  }, error = function(e) FALSE)
 }
 
 
