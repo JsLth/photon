@@ -152,7 +152,7 @@ geocode <- function(texts,
 }
 
 
-geocode_impl <- function(q, i, env, progress) {
+geocode_impl <- function(q, i, env) {
   if (env$progress) cli::cli_progress_update(.envir = env)
   query_photon(
     endpoint = "api",

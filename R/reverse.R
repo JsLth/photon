@@ -58,7 +58,7 @@ reverse <- function(.data,
   options <- list(env = environment())
 
   if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = length(query))
+    cli::cli_progress_bar(name = "Geocoding", total = nrow(query))
   }
 
   query$i <- seq_len(nrow(query))
@@ -87,6 +87,7 @@ reverse_impl <- function(i, ..., env) {
 format_points <- function(.data) {
   if (inherits(.data, c("sf", "sfc"))) {
     check_geometry(.data, type = "POINT")
+    .data <- sf::st_transform(.data, 4326)
     .data <- sf::st_coordinates(.data)
     .data <- data.frame(lon = .data[, "X"], lat = .data[, "Y"])
   } else {
