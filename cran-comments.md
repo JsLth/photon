@@ -1,6 +1,12 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+
+# photon 0.7.3
+
+This is a re-submission
+
 
 # photon 0.3.5
 
