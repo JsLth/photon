@@ -1,10 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   nominatim-import: nominatim-import.html
   photon: photon.html
-last_built: 2025-02-28T09:06Z
+last_built: 2025-09-17T16:55Z
 urls:
   reference: https://jslth.github.io/photon/reference
   article: https://jslth.github.io/photon/articles

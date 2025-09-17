@@ -6,14 +6,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Introduction to {photon} • photon</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.9/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.9/font.css" rel="stylesheet">
-<link href="../deps/Roboto_Slab-0.4.9/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/Roboto_Slab-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="../deps/MathJax-3.2.2/tex-chtml.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to {photon}">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to {photon}">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,10 +102,10 @@ does not have to be stored manually. Now you can geocode.</p>
 <span><span class="co">#&gt; Bounding box:  xmin: -66.9146 ymin: 10.50609 xmax: 44.20588 ymax: 15.35386</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 13</span></span>
-<span><span class="co">#&gt;     idx osm_type   osm_id country osm_key countrycode osm_value name  county state type  extent            geometry</span></span>
-<span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;list&gt;         &lt;POINT [°]&gt;</span></span>
-<span><span class="co">#&gt; 1     1 N          2.58e8 Yemen   place   YE          city      Sana… At Ta… Aman… dist… &lt;lgl&gt;  (44.20588 15.35386)</span></span>
-<span><span class="co">#&gt; 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  &lt;dbl&gt;  (-66.9146 10.50609)</span></span></code></pre></div>
+<span><span class="co">#&gt;     idx osm_type    osm_id osm_key osm_value type   countrycode name  country state county extent            geometry</span></span>
+<span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;list&gt;         &lt;POINT [°]&gt;</span></span>
+<span><span class="co">#&gt; 1     1 N        258013552 place   city      distr… YE          Sana… Yemen   Aman… At Ta… &lt;lgl&gt;  (44.20588 15.35386)</span></span>
+<span><span class="co">#&gt; 2     2 R         11219583 place   city      city   VE          Cara… Venezu… Capi… Munic… &lt;dbl&gt;  (-66.9146 10.50609)</span></span></code></pre></div>
 <p>Similarly, you can also reverse geocode. <a href="https://github.com/jslth/photon/" class="external-link">photon</a> fully
 supports <code>sf</code> objects so that all geocoding functions return
 <code>sf</code> dataframes and <code><a href="../reference/reverse.html">reverse()</a></code> accepts
@@ -113,10 +119,10 @@ supports <code>sf</code> objects so that all geocoding functions return
 <span><span class="co">#&gt; Bounding box:  xmin: -66.9146 ymin: 10.50609 xmax: 44.20588 ymax: 15.35386</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 13</span></span>
-<span><span class="co">#&gt;     idx osm_type   osm_id country osm_key countrycode osm_value name  county state type  extent            geometry</span></span>
-<span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;list&gt;         &lt;POINT [°]&gt;</span></span>
-<span><span class="co">#&gt; 1     1 N          2.58e8 Yemen   place   YE          city      Sana… At Ta… Aman… dist… &lt;lgl&gt;  (44.20588 15.35386)</span></span>
-<span><span class="co">#&gt; 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  &lt;dbl&gt;  (-66.9146 10.50609)</span></span></code></pre></div>
+<span><span class="co">#&gt;    idx osm_type    osm_id osm_key osm_value type   countrycode name  country state county extent            geometry</span></span>
+<span><span class="co">#&gt;  &lt;int&gt; &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;list&gt;         &lt;POINT [°]&gt;</span></span>
+<span><span class="co">#&gt;1     1 N        258013552 place   city      distr… YE          Sana… Yemen   Aman… At Ta… &lt;lgl&gt;  (44.20588 15.35386)</span></span>
+<span><span class="co">#&gt;2     2 R         11219583 place   city      city   VE          Cara… Venezu… Capi… Munic… &lt;dbl&gt;  (-66.9146 10.50609) </span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">cities1</span>, <span class="va">cities2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -135,40 +141,120 @@ potentially sensitive data around the internet. In a lot of cases,
 offline geocoding is absolutely imperative, yet usually, setting up an
 offline geocoder can be quite cumbersome. <a href="https://github.com/jslth/photon/" class="external-link">photon</a> takes
 over this task!</p>
-<p>To run photon, you need Java 11 or higher. Setting up local photon
-also works through <code><a href="../reference/new_photon.html">new_photon()</a></code>. This time, we pass a path
-where the necessary files should be stored and a country for which a
-search index should be downloaded. While global coverage is also
-possible, the global search index is extremely large (around 80 GB). By
-default, <code><a href="../reference/new_photon.html">new_photon()</a></code> downloads a search index tagged with
-<code>latest</code> but it is also possible to query a search index
-created at a specific date.</p>
+<p>To run photon, you need the Java Development Kit (JDK) version 11 or
+higher. To do that, you can use the <a href="https://cran.r-project.org/package=rJavaEnv" class="external-link"><code>{rJavaEnv}</code></a>
+package by Egor Kotov. It allows you to easily set up a JDK environment
+for a local project.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># pak::pkg_install("rJavaEnv")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/e-kotov/rJavaEnv" class="external-link">rJavaEnv</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Consent to downloading Java</span></span>
+<span><span class="fu">rje_consent</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Consent for using rJavaEnv has already been provided.</span></span>
+<span></span>
+<span><span class="co"># Install and use Corretto JDK 24</span></span>
+<span><span class="fu">use_java</span><span class="op">(</span><span class="fl">24</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check if installation was successful</span></span>
+<span><span class="fu">java_check_version_cmd</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; JAVA_HOME: /root/.cache/R/rJavaEnv/installed/linux/x64/24</span></span>
+<span><span class="co">#&gt; Java path: /root/.cache/R/rJavaEnv/installed/linux/x64/24/bin/java</span></span>
+<span><span class="co">#&gt; Java version: "openjdk version \"24.0.1\" 2025-04-15 OpenJDK Runtime Environment Corretto-24.0.1.9.1 (build</span></span>
+<span><span class="co">#&gt; 24.0.1+9-FR) OpenJDK 64-Bit Server VM Corretto-24.0.1.9.1 (build 24.0.1+9-FR, mixed mode, sharing)"</span></span>
+<span><span class="co">#&gt; [1] "24"</span></span></code></pre></div>
+<p>Setting up local photon also works through <code><a href="../reference/new_photon.html">new_photon()</a></code>.
+This time, we pass a path where the necessary files should be stored and
+a country for which a search index should be downloaded. While global
+coverage is also possible, the global search index is extremely large
+(around 80 GB). By default, <code><a href="../reference/new_photon.html">new_photon()</a></code> downloads a search
+index tagged with <code>latest</code> but it is also possible to query a
+search index created at a specific date.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span>
-<span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">path</span>, country <span class="op">=</span> <span class="st">"Samoa"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ java version "22" 2024-03-19</span></span>
-<span><span class="co">#&gt; ℹ Java(TM) SE Runtime Environment (build 22+36-2370)</span></span>
-<span><span class="co">#&gt; ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)</span></span>
-<span><span class="co">#&gt; ✔ Successfully downloaded photon 0.6.2. [7s]          </span></span>
-<span><span class="co">#&gt; ✔ Successfully downloaded search index. [590ms]  </span></span>
-<span><span class="co">#&gt; • Version: 0.6.2</span></span>
-<span><span class="co">#&gt; • Coverage: Samoa</span></span>
-<span><span class="co">#&gt; • Time: 2025-02-23</span></span></code></pre></div>
+<span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">path</span>, country <span class="op">=</span> <span class="st">"Monaco"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ openjdk version "24.0.1" 2025-04-15</span></span>
+<span><span class="co">#&gt; ℹ OpenJDK Runtime Environment Corretto-24.0.1.9.1 (build 24.0.1+9-FR)</span></span>
+<span><span class="co">#&gt; ℹ OpenJDK 64-Bit Server VM Corretto-24.0.1.9.1 (build 24.0.1+9-FR, mixed mode, sharing)</span></span>
+<span><span class="co">#&gt; ✔ Successfully downloaded OpenSearch photon 0.7.0. [17.9s]</span></span>
+<span><span class="co">#&gt; ✔ Successfully downloaded search index. [854ms]</span></span>
+<span><span class="co">#&gt; • Version: 0.7.3</span></span>
+<span><span class="co">#&gt; • Coverage: Monaco</span></span>
+<span><span class="co">#&gt; • Time: 2025-09-17</span></span></code></pre></div>
 <p>The resulting object is an R6 class with a few methods to control the
 instance. To start photon, run <code>$start()</code>. This starts an
 external java process which can be accessed using the <code>$proc</code>
 attribute.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running java -jar photon-0.6.2.jar -listen-ip 0.0.0.0 -listen-port 2322</span></span>
-<span><span class="co">#&gt; 2024-10-25 17:04:26,912 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production</span></span>
-<span><span class="co">#&gt; ✔ Photon is now running. [11s]</span></span>
+<span><span class="co">#&gt; Cluster Name: photon</span></span>
+<span><span class="co">#&gt; Base Path:    /tmp/RtmpLQIqmy/photon/./photon_data</span></span>
+<span><span class="co">#&gt; Num Of Node:  1</span></span>
+<span><span class="co">#&gt; Node Name:      Node 1</span></span>
+<span><span class="co">#&gt; HTTP Port:      9201</span></span>
+<span><span class="co">#&gt; Data Directory: /tmp/RtmpLQIqmy/photon/./photon_data/node_1/data</span></span>
+<span><span class="co">#&gt; Log Directory:  /tmp/RtmpLQIqmy/photon/./photon_data/node_1/logs</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:26,879][INFO ][o.o.n.Node               ] version[2.19.1], pid[1896], build[unknown/unknown/unknown], OS[Linux/6.6.87.1-microsoft-standard-WSL2/amd64], JVM[Amazon.com Inc./OpenJDK 64-Bit Server VM/24.0.1/24.0.1+9-FR]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:26,887][INFO ][o.o.n.Node               ] JVM home [/root/.cache/R/rJavaEnv/installed/linux/x64/24]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:26,899][INFO ][o.o.n.Node               ] JVM arguments []</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:26,932][INFO ][o.o.p.PluginsService     ] no modules loaded</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.analysis.common.CommonAnalysisPlugin]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.geo.GeoModulePlugin]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.transport.Netty4Plugin]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:27,174][INFO ][o.a.l.s.MemorySegmentIndexInputProvider] Using MemorySegmentIndexInput and native madvise support with Java 21 or later; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:27,184][INFO ][o.o.e.NodeEnvironment    ] using [1] data paths, mounts [[/ (/dev/sdd)]], net usable_space [222.3gb], net total_space [250.9gb], types [ext4]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:27,190][INFO ][o.o.e.NodeEnvironment    ] heap size [2.4gb], compressed ordinary object pointers [true]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:27,384][WARN ][o.a.l.i.v.VectorizationProvider] You are running with Java 23 or later. To make full use of the Vector API, please update Apache Lucene.</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:27,603][INFO ][o.o.n.Node               ] node name [Node 1], node ID [IFRXmNbwTYi4SLrEQXOn3A], cluster name [photon], roles [data, cluster_manager]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:27,708][INFO ][o.o.e.ExtensionsManager  ] ExtensionsManager initialized</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:29,302][INFO ][o.o.t.NettyAllocator     ] creating NettyAllocator with the following configs: [name=opensearch_configured, chunk_size=512kb, suggested_max_allocation_size=512kb, factors={opensearch.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=2mb}]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:29,499][INFO ][o.o.d.DiscoveryModule    ] using discovery type [single-node] and seed hosts providers [settings]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:30,082][WARN ][o.o.g.DanglingIndicesState] gateway.auto_import_dangling_indices is disabled, dangling indices will not be automatically detected or imported and must be managed manually</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:30,572][INFO ][o.o.n.Node               ] initialized</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:30,572][INFO ][o.o.n.Node               ] starting ...</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:30,723][INFO ][o.o.t.TransportService   ] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,016][INFO ][o.o.c.c.Coordinator      ] cluster UUID [wbcIe8ZCQw-oX0uvwZgysw]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,199][INFO ][o.o.c.s.MasterService    ] Tasks batched with key: org.opensearch.cluster.coordination.JoinHelper, count:3 and sample tasks: elected-as-cluster-manager ([1] nodes joined)[{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true} elect leader, _BECOME_CLUSTER_MANAGER_TASK_, _FINISH_ELECTION_], term: 2, version: 11, delta: cluster-manager node changed {previous [], current [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,289][INFO ][o.o.c.s.ClusterApplierService] cluster-manager node changed {previous [], current [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}, term: 2, version: 11, reason: Publication{term=2, version=11}</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,316][INFO ][o.o.d.PeerFinder         ] setting findPeersInterval to [1s] as node commission status = [true] for local node [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,321][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,329][INFO ][o.o.h.AbstractHttpServerTransport] publish_address {127.0.0.1:9201}, bound_addresses {[::1]:9201}, {127.0.0.1:9201}</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,330][INFO ][o.o.n.Node               ] started</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,345][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,402][INFO ][o.o.g.GatewayService     ] recovered [1] indices into cluster_state</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,403][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:31,599][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:32,346][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:32,519][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][2]]]).</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:32,623][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:33,179][INFO ][d.k.p.App                ] Make sure that the ES cluster is ready, this might take some time.</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:33,447][INFO ][d.k.p.App                ] ES cluster is now ready.</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:33,637][INFO ][o.o.c.m.MetadataIndexStateService] closing indices [photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:33,732][INFO ][o.o.c.m.MetadataIndexStateService] completed closing of indices [photon]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:33,733][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:33,837][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:33,936][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,245][INFO ][o.o.c.m.MetadataIndexStateService] opening indices [[photon/3te8gZq4Q-u1LwWbZGtxPA]]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,252][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,281][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,369][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,452][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,741][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,880][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][2]]]).</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:34,970][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:35,038][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
+<span><span class="co">#&gt; [2025-06-09T23:54:35,165][INFO ][d.k.p.App                ] Starting API with the following settings:</span></span>
+<span><span class="co">#&gt;  Languages: [en, de, fr]</span></span>
+<span><span class="co">#&gt;  Import Date: 2025-06-01T03:00:01.000+0200</span></span>
+<span><span class="co">#&gt;  Support Structured Queries: false</span></span>
+<span><span class="co">#&gt;  Support Geometries: false</span></span>
+<span><span class="co">#&gt; ✔ Photon is now running. [12.8s]</span></span>
 <span></span>
 <span><span class="va">photon</span><span class="op">$</span><span class="va">proc</span></span>
-<span><span class="co">#&gt; PROCESS 'java', running, pid 22744.</span></span></code></pre></div>
+<span><span class="co">#&gt; PROCESS 'java', running, pid 1896.</span></span></code></pre></div>
 <p>To check if the service is up and running, you can use
 <code>$is_ready()</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">is_ready</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Finally, to properly stop photon after you used it, you can run
@@ -176,24 +262,24 @@ attribute.</p>
 manually, because it is (implicitly) executed on two occasions: 1. on
 garbage collection and 2. when the R session ends and external processes
 are killed.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="kw">stop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>To compare offline and online geocoding, let’s benchmark them by
 geocoding the Samoan capital Apia:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># offline geocoding</span></span>
-<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">$</span><span class="va">median</span></span>
-<span><span class="co">#&gt; [1] 17.1ms</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># offline geocoding</span></span>
+<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/with_photon.html">with_photon</a></span><span class="op">(</span><span class="va">photon</span>, <span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Monte Carlo"</span><span class="op">)</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">$</span><span class="va">median</span></span>
+<span><span class="co">#&gt; [1] 17.1ms</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># online geocoding</span></span>
-<span><span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Apai"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">$</span><span class="va">median</span></span>
-<span><span class="co">#&gt; [1] 1.05s</span></span></code></pre></div>
+<span><span class="va">photon_pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span>mount <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/with_photon.html">with_photon</a></span><span class="op">(</span><span class="va">photon_pub</span>, <span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Monte Carlo"</span><span class="op">)</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">$</span><span class="va">median</span></span>
+<span><span class="co">#&gt; [1] 1.04s</span></span></code></pre></div>
 <p>That is a speed increase by a factor of almost 60 (and possibly more
 on faster machines)!</p>
 <p>Finally, to clean up photon, i.e. stop the instance and delete the
 photon directory, run <code>$purge()</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">purge</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Purging an instance kills the photon process and removes the photon directory.</span></span>
 <span><span class="co">#&gt; Continue? (y/N/Cancel) y</span></span></code></pre></div>
@@ -208,7 +294,7 @@ photon directory, run <code>$purge()</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
