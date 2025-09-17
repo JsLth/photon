@@ -110,7 +110,7 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
 photon <- new_photon()
 
 # works with sf objects
-sf_data <- sf::st_sfc(sf::st_point(c(8, 52)), sf::st_point(c(7, 52)))
+sf_data <- sf::st_sfc(sf::st_point(c(8, 52)), sf::st_point(c(7, 52)), crs = 4326)
 reverse(sf_data)
 
 # ... but also with simple dataframes

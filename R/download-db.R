@@ -1,6 +1,6 @@
 #' Download search index
 #' @description
-#' Finds and downloads the Elasticsearch index database necessary to set up
+#' Finds and downloads the OpenSearch index database necessary to set up
 #' Photon locally.
 #'
 #' @param country Character string that can be identified by
@@ -54,7 +54,7 @@
 #'
 #' @examples
 #' \donttest{# download the latest extract of Monaco
-#' download_searchindex(path = tempdir())
+#' download_searchindex("Monaco", path = tempdir())
 #'
 #' # download the latest extract of American Samoa
 #' download_searchindex(path = tempdir(), section = NULL, country = "Samoa")
@@ -64,7 +64,7 @@
 #'   path = tempdir(),
 #'   country = "Monaco",
 #'   date = Sys.time() - 2629800
-#' )
+#' ))
 #'
 #' # if possible, download an extract from today
 #' try(download_searchindex(

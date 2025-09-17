@@ -50,7 +50,7 @@ If \code{only_url = FALSE}, returns the local path to the downloaded
 file. Otherwise, returns the URL to the remote file.
 }
 \description{
-Finds and downloads the Elasticsearch index database necessary to set up
+Finds and downloads the OpenSearch index database necessary to set up
 Photon locally.
 }
 \note{
@@ -77,7 +77,7 @@ of multiple countries, you need to build your own search index. See
 
 \examples{
 \donttest{# download the latest extract of Monaco
-download_searchindex(path = tempdir())
+download_searchindex("Monaco", path = tempdir())
 
 # download the latest extract of American Samoa
 download_searchindex(path = tempdir(), section = NULL, country = "Samoa")
@@ -87,7 +87,7 @@ try(download_searchindex(
   path = tempdir(),
   country = "Monaco",
   date = Sys.time() - 2629800
-)
+))
 
 # if possible, download an extract from today
 try(download_searchindex(

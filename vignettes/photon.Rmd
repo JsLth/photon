@@ -41,10 +41,10 @@ cities1
 #> Bounding box:  xmin: -66.9146 ymin: 10.50609 xmax: 44.20588 ymax: 15.35386
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 2 × 13
-#>     idx osm_type   osm_id country osm_key countrycode osm_value name  county state type  extent            geometry
-#>   <int> <chr>       <int> <chr>   <chr>   <chr>       <chr>     <chr> <chr>  <chr> <chr> <list>         <POINT [°]>
-#> 1     1 N          2.58e8 Yemen   place   YE          city      Sana… At Ta… Aman… dist… <lgl>  (44.20588 15.35386)
-#> 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  <dbl>  (-66.9146 10.50609)
+#>     idx osm_type    osm_id osm_key osm_value type   countrycode name  country state county extent            geometry
+#>   <int> <chr>        <int> <chr>   <chr>     <chr>  <chr>       <chr> <chr>   <chr> <chr>  <list>         <POINT [°]>
+#> 1     1 N        258013552 place   city      distr… YE          Sana… Yemen   Aman… At Ta… <lgl>  (44.20588 15.35386)
+#> 2     2 R         11219583 place   city      city   VE          Cara… Venezu… Capi… Munic… <dbl>  (-66.9146 10.50609)
 ```
 
 Similarly, you can also reverse geocode. `{photon}` fully supports `sf` objects so that all geocoding functions return `sf` dataframes and `reverse()` accepts `sf` and `sfc` objects as input.
@@ -58,10 +58,10 @@ cities2
 #> Bounding box:  xmin: -66.9146 ymin: 10.50609 xmax: 44.20588 ymax: 15.35386
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 2 × 13
-#>     idx osm_type   osm_id country osm_key countrycode osm_value name  county state type  extent            geometry
-#>   <int> <chr>       <int> <chr>   <chr>   <chr>       <chr>     <chr> <chr>  <chr> <chr> <list>         <POINT [°]>
-#> 1     1 N          2.58e8 Yemen   place   YE          city      Sana… At Ta… Aman… dist… <lgl>  (44.20588 15.35386)
-#> 2     2 R          1.12e7 Venezu… place   VE          city      Cara… Munic… Capi… city  <dbl>  (-66.9146 10.50609)
+#>    idx osm_type    osm_id osm_key osm_value type   countrycode name  country state county extent            geometry
+#>  <int> <chr>        <int> <chr>   <chr>     <chr>  <chr>       <chr> <chr>   <chr> <chr>  <list>         <POINT [°]>
+#>1     1 N        258013552 place   city      distr… YE          Sana… Yemen   Aman… At Ta… <lgl>  (44.20588 15.35386)
+#>2     2 R         11219583 place   city      city   VE          Cara… Venezu… Capi… Munic… <dbl>  (-66.9146 10.50609) 
 ```
 
 ```{r compare, eval=FALSE}
@@ -110,10 +110,10 @@ photon <- new_photon(path, country = "Monaco")
 #> ℹ OpenJDK Runtime Environment Corretto-24.0.1.9.1 (build 24.0.1+9-FR)
 #> ℹ OpenJDK 64-Bit Server VM Corretto-24.0.1.9.1 (build 24.0.1+9-FR, mixed mode, sharing)
 #> ✔ Successfully downloaded OpenSearch photon 0.7.0. [17.9s]
-#> ✔ Successfully downloaded search index. [1.4s]
-#> • Version: 0.7.0
+#> ✔ Successfully downloaded search index. [854ms]
+#> • Version: 0.7.3
 #> • Coverage: Monaco
-#> • Time: 2025-06-09
+#> • Time: 2025-09-17
 ```
 
 The resulting object is an R6 class with a few methods to control the instance. To start photon, run `$start()`. This starts an external java process which can be accessed using the `$proc` attribute.

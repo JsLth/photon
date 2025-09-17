@@ -207,7 +207,7 @@ parse_log_line <- function(line) {
 
   missing <- is.na(parsed$msg)
   if (any(missing)) {
-    parsed[missing, ] <- utils::strcapture(
+    parsed[missing, c("ts", "type", "class", "msg")] <- utils::strcapture(
       "\\[(.+)\\]\\[(.+)\\]\\[([a-zA-Z.]+) *?\\](.+)",
       line[missing],
       proto = list(ts = "", type = "", class = "", msg = "")

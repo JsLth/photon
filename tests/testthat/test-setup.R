@@ -43,7 +43,7 @@ test_that("logs can be parsed", {
   logs <- readLines(test_path("fixtures/log_opensearch.txt"))
   logs <- rbind_list(lapply(logs, handle_log_conditions))
   expect_named(logs, c("ts", "thread", "type", "class", "msg"))
-  expect_true(sum(vapply(logs, FUN.VALUE = logical(1), \(x) all(is.na(x)))) == 0)
+  expect_true(sum(vapply(logs, FUN.VALUE = logical(1), \(x) all(is.na(x)))) == 1)
 })
 
 test_that("search indices are matched", {
@@ -147,8 +147,9 @@ describe("photon_local", {
     expect_equal(unique(logs$rid), c(1, 2))
   })
 
-  it("intercepts usage errors correclty", {
+  it("intercepts usage errors correctly", {
     options(photon_setup_warn = TRUE)
+    on.exit(options(photon_setup_warn = NULL), add = TRUE)
     expect_warning(expect_error(photon$start(photon_opts = "-notanoption"), class = "start_error"))
     logs <- photon$get_logs()
     expect_contains(logs$type, c("WARN", "ERROR"))

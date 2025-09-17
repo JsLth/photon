@@ -63,7 +63,7 @@
 #' photon <- new_photon()
 #'
 #' # connect to arbitrary server
-#' photon <- new_photon(url = "photonserver.org")
+#' photon <- new_photon(url = "https://photonserver.org")
 #'
 #' if (has_java("11")) {
 #' # set up a local instance in a temporary directory
