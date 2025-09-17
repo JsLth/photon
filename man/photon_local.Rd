@@ -114,7 +114,7 @@ should be stored.}
 \item{\code{photon_version}}{Version of photon to be used. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
-version (Currently: 0.7.2).}
+version (Currently: 0.7.3).}
 
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
@@ -375,7 +375,7 @@ Downloads a search index using \code{\link{download_searchindex}}.
   country,
   date = "latest",
   exact = FALSE,
-  section = NULL
+  section = "experimental"
 )}\if{html}{\out{</div>}}
 }
 

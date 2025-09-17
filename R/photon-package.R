@@ -41,4 +41,4 @@
 ## usethis namespace: end
 NULL
 
-PHOTON_VERSION <- "0.7.2"
+PHOTON_VERSION <- "0.7.3"

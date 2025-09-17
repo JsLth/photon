@@ -6,7 +6,7 @@
 #' @param country Character string that can be identified by
 #' \code{\link[countrycode]{countryname}} as a country. An extract for this
 #' country will be downloaded. If \code{"planet"}, downloads a global search
-#' index.
+#' index (see note).
 #' @param path Path to a directory where the identified file should be stored.
 #' Defaults to \code{tempdir()}.
 #' @param date Character string or date-time object used to specify the creation
@@ -60,11 +60,11 @@
 #' download_searchindex(path = tempdir(), section = NULL, country = "Samoa")
 #'
 #' # download an extract from a month ago
-#' download_searchindex(
+#' try(download_searchindex(
 #'   path = tempdir(),
 #'   country = "Monaco",
 #'   date = Sys.time() - 2629800
-#'  )
+#' )
 #'
 #' # if possible, download an extract from today
 #' try(download_searchindex(
