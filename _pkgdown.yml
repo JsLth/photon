@@ -37,6 +37,7 @@ reference:
   - title: Photon setup
     contents:
       - new_photon
+      - with_photon
       - photon_local
       - download_searchindex
       - download_photon
