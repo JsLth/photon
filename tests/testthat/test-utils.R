@@ -58,7 +58,7 @@ test_that("rbind_list works", {
 test_that("tibble dependency is soft", {
   with_mocked_bindings(
     loadable = function(x) FALSE,
-    expect_failure(expect_in("tbl", class(as_data_frame(data.frame()))))
+    expect_equal(class(as_data_frame(data.frame())), "data.frame")
   )
 })
 
