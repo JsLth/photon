@@ -4,7 +4,7 @@
   "identifier": "photon",
   "description": "Features unstructured, structured and reverse geocoding using the 'photon' geocoding API <https://photon.komoot.io/>. Facilitates the setup of local 'photon' instances to enable offline geocoding.",
   "name": "photon: High-Performance Geocoding using 'photon'",
-  "relatedLink": ["https://jslth.github.io/photon/", "https://CRAN.R-project.org/package=photon"],
+  "relatedLink": "https://jslth.github.io/photon/",
   "codeRepository": "https://github.com/jslth/photon/",
   "issueTracker": "https://github.com/jslth/photon/issues",
   "license": "Apache License 2",
@@ -203,10 +203,5 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "205.04KB",
-  "releaseNotes": "https://github.com/jslth/photon/blob/master/NEWS.md",
-  "readme": "https://github.com/JsLth/photon/blob/main/README.md",
-  "contIntegration": ["https://github.com/JsLth/photon/actions/workflows/R-CMD-check.yaml", "https://github.com/jslth/photon/actions/workflows/rhub.yaml", "https://app.codecov.io/gh/JsLth/photon?branch=main"],
-  "developmentStatus": "https://www.repostatus.org/#active",
-  "keywords": ["r", "r-package", "rstats"]
+  "fileSize": "205.04KB"
 }
