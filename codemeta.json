@@ -8,7 +8,7 @@
   "codeRepository": "https://github.com/jslth/photon/",
   "issueTracker": "https://github.com/jslth/photon/issues",
   "license": "Apache License 2",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",

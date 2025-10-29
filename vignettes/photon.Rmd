@@ -111,7 +111,7 @@ photon <- new_photon(path, country = "Monaco")
 #> ℹ OpenJDK 64-Bit Server VM Corretto-24.0.1.9.1 (build 24.0.1+9-FR, mixed mode, sharing)
 #> ✔ Successfully downloaded OpenSearch photon 0.7.0. [17.9s]
 #> ✔ Successfully downloaded search index. [854ms]
-#> • Version: 0.7.3
+#> • Version: 0.7.4
 #> • Coverage: Monaco
 #> • Time: 2025-09-17
 ```

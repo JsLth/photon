@@ -1,9 +1,9 @@
-# photon 0.7.3
+# photon 0.7.4
 
-* Increment photon version to 0.7.3
+* Increment photon version to 0.7.4
 * Match package version to photon version
-* Update examples to work in photon 0.7.3
-* Set photon 0.7.3 as default and add a supersede warning if version < 0.7.0
+* Update examples to work in photon 0.7.4
+* Set photon 0.7.4 as default and add a supersede warning if version < 0.7.0
 * Add photon type (OpenSearch/ElasticSearch) to error message
 * Adjust geocoding error detection to OpenSearch
 * Update vignettes to OpenSearch

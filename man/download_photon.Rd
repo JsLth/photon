@@ -17,7 +17,7 @@ download_photon(
 \code{tempdir()}.}
 
 \item{version}{Version tag of the photon release. If \code{NULL},
-downloads the latest known version (0.7.3). A list of all
+downloads the latest known version (0.7.4). A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given.}
 
