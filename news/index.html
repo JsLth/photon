@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,11 +41,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.7.2" id="photon-072">photon 0.7.2<a class="anchor" aria-label="anchor" href="#photon-072"></a></h2>
-<ul><li>Increment photon version to 0.7.2</li>
+<h2 class="pkg-version" data-toc-text="0.7.4" id="photon-074">photon 0.7.4<a class="anchor" aria-label="anchor" href="#photon-074"></a></h2><p class="text-muted">CRAN release: 2025-10-29</p>
+<ul><li>Increment photon version to 0.7.4</li>
 <li>Match package version to photon version</li>
-<li>Update examples to work in photon 0.7.2</li>
-<li>Set photon 0.7.2 as default and add a supersede warning if version &lt; 0.7.0</li>
+<li>Update examples to work in photon 0.7.4</li>
+<li>Set photon 0.7.4 as default and add a supersede warning if version &lt; 0.7.0</li>
 <li>Add photon type (OpenSearch/ElasticSearch) to error message</li>
 <li>Adjust geocoding error detection to OpenSearch</li>
 <li>Update vignettes to OpenSearch</li>
@@ -53,14 +53,19 @@
 <li>Add <code>mount</code> argument to <code><a href="../reference/new_photon.html">new_photon()</a></code>. If <code>FALSE</code>, instance is created but not mounted.</li>
 <li>Add function <code><a href="../reference/with_photon.html">with_photon()</a></code> to execute code using a local photon instance</li>
 <li>Add extra info to HTTP404 when search index download does not yield a result</li>
-<li>Fix <code>$download_data()</code> method not untaring archive and storing metadata</li>
 <li>Add <code>$help()</code> method to show raw argument information from jar file</li>
+<li>Add CRS checks and transformations when an sf geometry is provided to <code><a href="../reference/reverse.html">reverse()</a></code>
+</li>
 <li>Improve URL checker by relying on <code><a href="https://httr2.r-lib.org/reference/url_parse.html" class="external-link">httr2::url_parse()</a></code>
 </li>
+<li>Fix <code>$download_data()</code> method not untaring archive and storing metadata</li>
 <li>Fix error detection during setup when encountering an exception without a timestamp</li>
+<li>Fix error detection not recognizing OpenSearch import errors</li>
 <li>Fix path arguments defaulting to <code>"."</code>
 </li>
 <li>Fix an example in <code><a href="../reference/new_photon.html">new_photon()</a></code>
+</li>
+<li>Fix progress bar in <code><a href="../reference/reverse.html">reverse()</a></code>
 </li>
 <li>Purge photon instances after examples</li>
 </ul></div>
