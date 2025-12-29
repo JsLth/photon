@@ -58,7 +58,7 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examplesIf getFromNamespace("is_online", "photon")("graphhopper.com")
 #' # connect to public API
 #' photon <- new_photon()
 #'
@@ -66,12 +66,11 @@
 #' photon <- new_photon(url = "https://photonserver.org")
 #'
 #' if (has_java("11")) {
-#' # set up a local instance in a temporary directory
-#' dir <- file.path(tempdir(), "photon")
-#' photon <- new_photon(dir, country = "Monaco")
+#'   # set up a local instance in a temporary directory
+#'   dir <- file.path(tempdir(), "photon")
+#'   photon <- new_photon(dir, country = "Monaco")
+#'   photon$purge(ask = FALSE)
 #' }
-#'
-#' photon$purge(ask = FALSE)
 new_photon <- function(path = NULL,
                        url = NULL,
                        photon_version = NULL,

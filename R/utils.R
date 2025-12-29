@@ -193,3 +193,14 @@ latinize <- function(x, encoding = "latin1") {
   x[conv] <- unlist(ltn[conv])
   x
 }
+
+
+is_online <- function(host) { # nocov start
+  req <- httr2::request(host)
+  req <- httr2::req_method(req, "HEAD")
+  req <- httr2::req_timeout(req, 5)
+  tryCatch({
+    resp <- httr2::req_perform(req)
+    httr2::resp_status(resp) == 200
+  }, error = function(e) FALSE)
+} # nocov end

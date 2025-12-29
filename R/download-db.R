@@ -52,7 +52,7 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examplesIf getFromNamespace("is_online", "photon")("graphhopper.com")
 #' \donttest{# download the latest extract of Monaco
 #' download_searchindex("Monaco", path = tempdir())
 #'

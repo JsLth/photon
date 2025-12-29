@@ -16,7 +16,7 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examplesIf getFromNamespace("is_online", "photon")("photon.komoot.io")
 #' \donttest{# an instance must be mounted first
 #' photon <- new_photon()
 #'

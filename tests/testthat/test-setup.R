@@ -47,6 +47,7 @@ test_that("logs can be parsed", {
 })
 
 test_that("search indices are matched", {
+  skip_if_offline("graphhopper.com")
   de_latest <- download_searchindex(only_url = TRUE, country = "Germany")
   expect_equal(basename(de_latest), "photon-db-de-latest.tar.bz2")
   global_latest <- download_searchindex(only_url = TRUE, country = "planet")
