@@ -270,8 +270,9 @@ abort_log_error <- function(logerr, quiet, ...) {
 
 
 build_photon_name <- function(version, opensearch) {
+
   ifelse(
-    opensearch,
+    opensearch && numeric_version(version) < "1.0.0",
     sprintf("photon-opensearch-%s.jar", version),
     sprintf("photon-%s.jar", version)
   )
