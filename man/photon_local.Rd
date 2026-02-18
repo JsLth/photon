@@ -113,7 +113,7 @@ should be stored.}
 \item{\code{photon_version}}{Version of photon to be used. A list of all
 releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
-version (Currently: 0.7.4).}
+version (Currently: 1.0.0).}
 
 \item{\code{country}}{Character string that can be identified by
 \code{\link[countrycode]{countryname}} as a country. An extract for this
@@ -369,40 +369,24 @@ Kills the running photon process.
 \if{html}{\out{<a id="method-photon_local-download_data"></a>}}
 \if{latex}{\out{\hypertarget{method-photon_local-download_data}{}}}
 \subsection{Method \code{download_data()}}{
-Downloads a search index using \code{\link{download_searchindex}}.
+Downloads a search index using \code{\link{download_database}}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{photon_local$download_data(
-  country,
-  date = "latest",
-  exact = FALSE,
-  section = "experimental"
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$download_data(region)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{country}}{Character string that can be identified by
-\code{\link[countrycode]{countryname}} as a country. An extract for this
-country will be downloaded. If \code{"planet"}, downloads a global search
-index.}
+\item{\code{region}}{Character string that identifies a region or country. An
+extract for this region will be downloaded. If \code{"planet"}, downloads
+a global extract (see note). Run \code{list_regions()} to get an overview
+of available regions. You can specify countries using any code that can
+be translated by \code{\link[countrycode]{countrycode}}.}
 
-\item{\code{date}}{Character string or date-time object used to specify the creation
-date of the search index. If \code{"latest"}, will download the file tagged
-with "latest". If a character string, the value should be parseable by
-\code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
-compared to all available dates and the closest date will be selected.
-Otherwise, a file will be selected that exactly matches the input to
-\code{date}.}
-
-\item{\code{exact}}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-selects the date with lowest difference to the \code{date} parameter.}
-
-\item{\code{section}}{Subdirectory of the download server from which to select a
-search index. If \code{"experimental"}, selects a dump made for the master
-version of photon. If \code{"archived"}, selects a dump made for an older
-version of photon. If \code{NULL} (or any arbitrary string), selects a
-dump made for the current release. Defaults to \code{NULL}.}
+\item{\code{json}}{Extracts come in two forms: JSON dumps and pre-build databases.
+Pre-built databases are more convenient but less flexible and are not available
+for all regions. If you wish or need to build your own database, set
+\code{json = TRUE} and use the \code{$import()} method.}
 }
 \if{html}{\out{</div>}}
 }

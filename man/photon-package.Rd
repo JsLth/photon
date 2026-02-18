@@ -57,7 +57,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jonas Lieth \email{jonas.lieth@gesis.org} (\href{https://orcid.org/0000-0002-3451-3176}{ORCID}) [copyright holder]
+\strong{Maintainer}: Jonas Lieth \email{jslth@outlook.com} (\href{https://orcid.org/0000-0002-3451-3176}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}

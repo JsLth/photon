@@ -88,6 +88,7 @@ the setup of the photon executable, a search index, and Java. See
 \code{\link{photon_local}} for details.
 }
 \examples{
+\dontshow{if (getFromNamespace("is_online", "photon")("graphhopper.com")) withAutoprint(\{ # examplesIf}
 # connect to public API
 photon <- new_photon()
 
@@ -95,10 +96,10 @@ photon <- new_photon()
 photon <- new_photon(url = "https://photonserver.org")
 
 if (has_java("11")) {
-# set up a local instance in a temporary directory
-dir <- file.path(tempdir(), "photon")
-photon <- new_photon(dir, country = "Monaco")
+  # set up a local instance in a temporary directory
+  dir <- file.path(tempdir(), "photon")
+  photon <- new_photon(dir, country = "Monaco")
+  photon$purge(ask = FALSE)
 }
-
-photon$purge(ask = FALSE)
+\dontshow{\}) # examplesIf}
 }

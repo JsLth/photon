@@ -96,7 +96,7 @@ more information than \link[=geocode]{unstructured geocoding}.
 
 Note that structured geocoding must be specifically enabled when building a
 Nominatim database. It is generally not available on komoot's public API and
-on pre-built search indices through \code{\link{download_searchindex}}. See
+on pre-built search indices through \code{\link{download_database}}. See
 \code{vignette("nominatim-import", package = "photon")} for details. You can
 use the helper function \code{has_structured_support()} to check if the
 current API supports structured geocoding.

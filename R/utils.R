@@ -204,3 +204,8 @@ is_online <- function(host) { # nocov start
     httr2::resp_status(resp) == 200
   }, error = function(e) FALSE)
 } # nocov end
+
+
+photon_run_examples <- function() {
+  isTRUE(as.logical(Sys.getenv("PHOTON_RUN_EXAMPLES", FALSE)))
+}

@@ -108,6 +108,7 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
 }
 }
 \examples{
+\dontshow{if (getFromNamespace("is_online", "photon")("photon.komoot.io")) withAutoprint(\{ # examplesIf}
 \donttest{# an instance must be mounted first
 photon <- new_photon()
 
@@ -141,4 +142,5 @@ geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag 
 # latinization can help normalize search terms
 geocode("Luatuanu\u2019u", latinize = FALSE) # fails
 geocode("Luatuanu\u2019u", latinize = TRUE)  # works}
+\dontshow{\}) # examplesIf}
 }

@@ -39,7 +39,7 @@ reference:
       - new_photon
       - with_photon
       - photon_local
-      - download_searchindex
+      - download_database
       - download_photon
       - get_instance
       - cmd_options

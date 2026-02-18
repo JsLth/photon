@@ -3,26 +3,25 @@
 #' Finds and downloads the OpenSearch index database necessary to set up
 #' Photon locally.
 #'
-#' @param country Character string that can be identified by
-#' \code{\link[countrycode]{countryname}} as a country. An extract for this
-#' country will be downloaded. If \code{"planet"}, downloads a global search
-#' index (see note).
+#' \code{list_regions} returns an overview of regions and countries that
+#' are valid to pass to the \code{region} argument.
+#'
+#' @param region Character string that identifies a region or country. An
+#' extract for this region will be downloaded. If \code{"planet"}, downloads
+#' a global extract (see note). Run \code{list_regions()} to get an overview
+#' of available regions. You can specify countries using any code that can
+#' be translated by \code{\link[countrycode]{countrycode}}.
 #' @param path Path to a directory where the identified file should be stored.
 #' Defaults to \code{tempdir()}.
-#' @param date Character string or date-time object used to specify the creation
-#' date of the search index. If \code{"latest"}, will download the file tagged
-#' with "latest". If a character string, the value should be parseable by
-#' \code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
-#' compared to all available dates and the closest date will be selected.
-#' Otherwise, a file will be selected that exactly matches the input to
-#' \code{date}.
-#' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-#' selects the date with lowest difference to the \code{date} parameter.
-#' @param section Subdirectory of the download server from which to select a
-#' search index. If \code{"experimental"}, selects a dump made for the master
-#' version of photon. If \code{"archived"}, selects a dump made for an older
-#' version of photon. If \code{NULL} (or any arbitrary string), selects a
-#' dump made for the current release. Defaults to \code{NULL}.
+#' @param version Photon version that the database should be used with. Defaults
+#' to the latest version known to the package (`r get_latest_photon()`). Can
+#' also be \code{"master"}, which is probably based on the master branch of
+#' photon.
+#' @param json Extracts come in two forms: JSON dumps and pre-build databases.
+#' Pre-built databases are more convenient but less flexible and are not available
+#' for all regions. If you wish or need to build your own database, set
+#' \code{json = TRUE} and use the \code{$import()} method (see
+#' \code{\link{photon_local}}).
 #' @param only_url If \code{TRUE}, performs a download. Otherwise,
 #' only returns a link to the file.
 #' @param quiet If \code{TRUE}, suppresses all informative messages.
@@ -40,120 +39,110 @@
 #' experience).
 #'
 #' Additionally, this function can only download pre-built search indices
-#' from country extracts. If you need a more fine-grained scope or a combination
+#' from region extracts. If you need a more fine-grained scope or a combination
 #' of multiple countries, you need to build your own search index. See
 #' \code{vignette("nominatim-import", package = "photon")}.
 #'
 #'
 #' @note
-#' Depending on the country, search index databases tend to be very large.
+#' Depending on the region, search index databases tend to be very large.
 #' The global search index is about 75 GB of size (10/2024). Keep that in mind
 #' when running this function.
 #'
 #' @export
 #'
-#' @examplesIf getFromNamespace("is_online", "photon")("graphhopper.com")
-#' \donttest{# download the latest extract of Monaco
-#' download_searchindex("Monaco", path = tempdir())
+#' @examplesIf getFromNamespace("is_online", "photon")("graphhopper.com") && getFromNamespace("photon_run_examples", "photon")()
+#' # check available regions in Europe first
+#' list_regions("europe")
 #'
-#' # download the latest extract of American Samoa
-#' download_searchindex(path = tempdir(), section = NULL, country = "Samoa")
+#' # download the latest database of Andorra
+#' download_database("Andorra")
 #'
-#' # download an extract from a month ago
-#' try(download_searchindex(
-#'   path = tempdir(),
-#'   country = "Monaco",
-#'   date = Sys.time() - 2629800
-#' ))
-#'
-#' # if possible, download an extract from today
-#' try(download_searchindex(
-#'   path = tempdir(),
-#'   country = "Monaco",
-#'   date = Sys.Date(),
-#'   exact = TRUE
-#' ))}
+#' # if you need to build your own search index, you can download a JSON dump
+#' # this might also be necessary if no pre-built database dump exists
+#' download_database("Andorra", json = TRUE)
 #'
 #' # get the latest global coverage
 #' # NOTE: the file to be downloaded is several tens of gigabytes of size!
 #' \dontrun{
-#' download_searchindex(path = tempdir(), country = "planet")}
-download_searchindex <- function(country,
-                                 path = tempdir(),
-                                 date = "latest",
-                                 exact = FALSE,
-                                 section = NULL,
-                                 only_url = FALSE,
-                                 quiet = FALSE) {
-  assert_vector(country, "character", size = 1, null = TRUE)
-  assert_vector(date, size = 1, null = TRUE)
-  assert_flag(exact)
+#' download_database("planet")}
+download_database <- function(region,
+                              path = tempdir(),
+                              version = get_latest_photon(),
+                              json = FALSE,
+                              only_url = FALSE,
+                              quiet = FALSE) {
+  assert_vector(region, "character", size = 1, null = TRUE)
 
-  is_planet <- identical(country, "planet")
   req <- httr2::request("https://download1.graphhopper.com/public/")
-  req <- httr2::req_url_path_append(req, switch(
-    section %||% "",
-    experimental = "experimental",
-    archived = "archived/0.3",
-    ""
-  ))
+  is_planet <- identical(region, "planet")
+  url_region <- "planet"
 
   if (!is_planet) {
+    region_long <- region
     country <- tolower(countrycode::countryname(
-      country,
+      region,
       destination = "iso2c",
       warn = FALSE
     ))
 
-    if (is.na(country)) {
-      ph_stop(paste(
-        "{.code country} is not a valid country name. See",
-        "{.code ?countrycode::countryname()} for details."
-      ), class = "country_invalid")
+    if (!is.na(country)) {
+      region <- country
     }
 
-    req <- httr2::req_url_path_append(req, "extracts", "by-country-code", country)
-  }
+    html <- rvest::read_html(req$url)
+    regions <- rvest::html_table(html)[[1]]
 
-  date_format <- "%y%m%d"
-  if (!identical(date, "latest")) {
-    date <- as.POSIXct(date)
-    html <- httr2::resp_body_string(httr2::req_perform(req))
-    html <- strsplit(html, "\n")[[1]]
-    all_dates <- regex_match(
-      html,
-      sprintf(
-        "photon-db%s-([0-9]+)\\.tar\\.bz2</a>",
-        if (!is_planet) paste0("-", country) else ""
-      ),
-      i = 2
-    )
-    all_dates <- as.POSIXct(drop_na(all_dates), format = date_format, tz = "UTC")
+    region <- gsub(" ", "-", tolower(region))
+    has_region <- region == tolower(regions$Region)
+    if (is.na(country) && !any(has_region)) {
+      ph_stop(
+        c(
+          "{.val {region}} is neither a country name nor a region name.",
+          "i" = "Run `list_regions()` for a list of valid countries and regions."
+        ),
+        class = "country_invalid"
+      )
+    }
 
-    if (exact) {
-      if (!date %in% all_dates) {
-        ph_stop(c(
-          "!" = "Specified {.code date} does not match any available dates.",
-          "i" = "Consider setting {.code exact = FALSE}."
-        ), class = "no_index_match")
+    if (!any(has_region)) {
+      has_country <- grepl(region, regions$Countries, ignore.case = TRUE)
+    } else {
+      has_country <- has_region
+    }
+
+    has_dump <- "\u2713" %in% regions[has_country, ]$`DB dump`
+    if (!json && !has_dump) {
+      json_dump_error(region_long) # nocov
+    }
+
+    url_region <- tolower(regions[has_country, "Region"])
+    req <- httr2::req_url_path_append(req, url_region)
+
+    if (!any(has_region)) {
+      html <- rvest::read_html(req$url)
+      regions <- rvest::html_table(html)[[1]]
+      has_country <- grepl(region, regions$Countries, ignore.case = TRUE)
+
+      has_dump <- "\u2713" %in% regions[has_country, ]$`DB dump`
+      if (!json && !has_dump) {
+        json_dump_error(region_long) # nocov
       }
 
-    } else {
-      diff <- date - all_dates
-      date <- all_dates[diff == min(diff)]
+      url_region <- tolower(regions[has_country, "Region"])
+      req <- httr2::req_url_path_append(req, url_region)
     }
-
-    date <- format(as.POSIXct(date), date_format)
   }
 
-  if (is_planet) {
-    file <- sprintf("photon-db-%s.tar.bz2", date)
-  } else {
-    file <- sprintf("photon-db-%s-%s.tar.bz2", country, date)
-  }
+  dump_name <- sprintf(
+    "photon-db-%s-%s-latest.%s",
+    url_region,
+    substr(version, 1, 3),
+    ifelse(json, "jsonl.zst", "tar.bz2")
+  )
+  req <- httr2::req_url_path_append(req, dump_name)
+  path <- file.path(path, dump_name)
 
-  path <- file.path(path, file)
-  req <- httr2::req_url_path_append(req, file)
   if (only_url) return(req$url)
   req <- httr2::req_retry(req, max_tries = getOption("photon_max_tries", 3))
 
@@ -162,18 +151,8 @@ download_searchindex <- function(country,
   }
 
   if (!quiet) {
-    date_fmt <- ifelse(
-      identical(date, "latest"),
-      date,
-      format(as.POSIXct(date, format = date_format), "%Y-%m-%d")
-    )
-    if (is_planet) {
-      country <- "Planet" # nocov
-    } else {
-      country <- countrycode::countrycode(country, "iso2c", "country.name")
-    }
     cli::cli_progress_step(
-      msg = "Fetching search index for {.field {country}}, created on {.field {date_fmt}}",
+      msg = "Fetching search index for {.field {region_long}}",
       msg_done = "Successfully downloaded search index.",
       msg_failed = "Failed to download search index."
     )
@@ -182,10 +161,51 @@ download_searchindex <- function(country,
   req <- httr2::req_error(req, body = function(resp) {
     status <- httr2::resp_status(resp)
     if (identical(status, 404L)) {
-      sprintf("This usually means that country %s is not available.", country)
+      sprintf("This usually means that region %s is not available.", region)
     }
   })
 
   httr2::req_perform(req, path = path)
   normalizePath(path, "/")
 }
+
+
+#' @rdname download_database
+#' @export
+list_regions <- function(region = NULL) {
+  base_url <- "https://download1.graphhopper.com/public/"
+
+  if (!is.null(region)) {
+    region <- gsub(" ", "-", tolower(region))
+    base_url <- paste0(base_url, "/", region)
+  }
+
+  html <- rvest::read_html(base_url)
+  regions <- rvest::html_table(html)[[1]]
+  names(regions) <- c("region", "has_db_dump", "countries")
+  regions$has_db_dump <- regions$has_db_dump == "\u2713"
+  countries <- strsplit(regions$countries, ", ")
+  countries <- vapply(countries, function(x) {
+    cnames <- countrycode::countrycode(
+      x,
+      "iso2c",
+      "country.name",
+      warn = FALSE
+    )
+    cnames[is.na(cnames)] <- "Kosovo"
+    paste(cnames, collapse = ", ")
+  }, FUN.VALUE = character(1))
+  regions$countries <- countries
+  regions
+}
+
+
+json_dump_error <- function(region) { # nocov start
+  ph_stop(
+    c(
+      "Database dumps are not available for {.val {region}}.",
+      "i" = "You need to set `json = TRUE` and build your own database from a JSON dump."
+    ),
+    class = "json_dump_error"
+  )
+} # nocov end

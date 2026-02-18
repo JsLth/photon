@@ -105,9 +105,6 @@ photon_local <- R6::R6Class(
     initialize = function(path,
                           photon_version = NULL,
                           country = NULL,
-                          date = "latest",
-                          exact = FALSE,
-                          section = "experimental",
                           opensearch = TRUE,
                           mount = TRUE,
                           overwrite = FALSE,
@@ -127,9 +124,6 @@ photon_local <- R6::R6Class(
         path,
         photon_version,
         country = country,
-        date = date,
-        exact = exact,
-        section = section,
         opensearch = opensearch,
         overwrite = overwrite,
         quiet = quiet
@@ -376,36 +370,22 @@ photon_local <- R6::R6Class(
     },
 
     #' @description
-    #' Downloads a search index using \code{\link{download_searchindex}}.
-    #' @param country Character string that can be identified by
-    #' \code{\link[countrycode]{countryname}} as a country. An extract for this
-    #' country will be downloaded. If \code{"planet"}, downloads a global search
-    #' index.
-    #' @param date Character string or date-time object used to specify the creation
-    #' date of the search index. If \code{"latest"}, will download the file tagged
-    #' with "latest". If a character string, the value should be parseable by
-    #' \code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
-    #' compared to all available dates and the closest date will be selected.
-    #' Otherwise, a file will be selected that exactly matches the input to
-    #' \code{date}.
-    #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-    #' selects the date with lowest difference to the \code{date} parameter.
-    #' @param section Subdirectory of the download server from which to select a
-    #' search index. If \code{"experimental"}, selects a dump made for the master
-    #' version of photon. If \code{"archived"}, selects a dump made for an older
-    #' version of photon. If \code{NULL} (or any arbitrary string), selects a
-    #' dump made for the current release. Defaults to \code{NULL}.
-    download_data = function(country,
-                             date = "latest",
-                             exact = FALSE,
-                             section = "experimental") {
-      archive_path <- download_searchindex(
+    #' Downloads a search index using \code{\link{download_database}}.
+    #' @param region Character string that identifies a region or country. An
+    #' extract for this region will be downloaded. If \code{"planet"}, downloads
+    #' a global extract (see note). Run \code{list_regions()} to get an overview
+    #' of available regions. You can specify countries using any code that can
+    #' be translated by \code{\link[countrycode]{countrycode}}.
+    #' @param json Extracts come in two forms: JSON dumps and pre-build databases.
+    #' Pre-built databases are more convenient but less flexible and are not available
+    #' for all regions. If you wish or need to build your own database, set
+    #' \code{json = TRUE} and use the \code{$import()} method.
+    download_data = function(region) {
+      archive_path <- download_database(
+        region = region,
         path = self$path,
         quiet = private$quiet,
-        country = country,
-        date = date,
-        exact = exact,
-        section = section
+        version = private$version
       )
       untar_index(archive_path, self$path)
       store_index_metadata(self$path, archive_path)
@@ -535,9 +515,6 @@ photon_local <- R6::R6Class(
 setup_photon_directory <- function(path,
                                    version,
                                    country = NULL,
-                                   date = NULL,
-                                   exact = FALSE,
-                                   section = NULL,
                                    opensearch = FALSE,
                                    overwrite = FALSE,
                                    quiet = FALSE) {
@@ -559,12 +536,10 @@ setup_photon_directory <- function(path,
     has_archive <- grepl("\\.bz2$", files)
     if ((!any(has_archive) || overwrite) && !is.null(country)) {
       section <- if (opensearch) "experimental" else section
-      archive_path <- download_searchindex(
+      archive_path <- download_database(
         path = path,
         country = country,
-        date = date,
-        exact = exact,
-        section = section,
+        version = version,
         quiet = quiet
       )
     } else if (!any(has_archive)) {

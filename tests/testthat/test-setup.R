@@ -48,27 +48,15 @@ test_that("logs can be parsed", {
 
 test_that("search indices are matched", {
   skip_if_offline("graphhopper.com")
-  de_latest <- download_searchindex(only_url = TRUE, country = "Germany")
-  expect_equal(basename(de_latest), "photon-db-de-latest.tar.bz2")
-  global_latest <- download_searchindex(only_url = TRUE, country = "planet")
-  expect_equal(basename(global_latest), "photon-db-latest.tar.bz2")
-  global_time <- download_searchindex(only_url = TRUE, date = Sys.Date(), country = "Monaco")
-  expect_match(basename(global_time), "photon-db-mc-[0-9]+\\.tar\\.bz2")
+  de_latest <- download_database(only_url = TRUE, region = "Germany")
+  expect_equal(basename(de_latest), "photon-db-germany-1.0-latest.tar.bz2")
+  na_latest <- download_database(only_url = TRUE, region = "North America")
+  expect_equal(basename(na_latest), "photon-db-north-america-1.0-latest.tar.bz2")
+  global_latest <- download_database(only_url = TRUE, region = "planet")
+  expect_equal(basename(global_latest), "photon-db-planet-1.0-latest.tar.bz2")
   expect_error(
-    download_searchindex(only_url = TRUE, date = Sys.Date(), exact = TRUE, country = "Monaco"),
-    class = "no_index_match"
-  )
-  expect_error(
-    download_searchindex(only_url = TRUE, country = "not a country"),
+    download_database(only_url = TRUE, region = "not a country"),
     class = "country_invalid"
-  )
-})
-
-test_that("search index download signals a useful error", {
-  skip_if_offline("graphhopper.com")
-  expect_error(
-    download_searchindex(country = "Vatican"),
-    regexp = "Vatican City is not available"
   )
 })
 
@@ -88,14 +76,14 @@ describe("photon_local", {
   options(photon_setup_warn = FALSE)
   on.exit(options(photon_setup_warn = NULL), add = TRUE)
   dir <- file.path(tempdir(), "photon")
-  photon <- new_photon(path = dir, country = "monaco")
+  photon <- new_photon(path = dir, region = "andorra")
   on.exit(photon$purge(ask = FALSE), add = TRUE)
 
   it("can print", {
     expect_no_error(print(photon))
   })
 
-  photon <- new_photon(path = dir, country = "monaco")
+  photon <- new_photon(path = dir, region = "andorra")
 
   it("can suppress verbosity", {
     expect_no_message(new_photon(path = dir, quiet = TRUE))
@@ -170,7 +158,7 @@ describe("photon_local", {
 
   it("can download data manually", {
     photon$remove_data()
-    photon$download_data("monaco")
+    photon$download_data("andorra")
     photon$start(host = "127.0.0.1")
     photon$stop()
   })

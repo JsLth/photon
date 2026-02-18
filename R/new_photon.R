@@ -68,16 +68,13 @@
 #' if (has_java("11")) {
 #'   # set up a local instance in a temporary directory
 #'   dir <- file.path(tempdir(), "photon")
-#'   photon <- new_photon(dir, country = "Monaco")
+#'   photon <- new_photon(dir, country = "Andorra")
 #'   photon$purge(ask = FALSE)
 #' }
 new_photon <- function(path = NULL,
                        url = NULL,
                        photon_version = NULL,
-                       country = NULL,
-                       date = "latest",
-                       exact = FALSE,
-                       section = NULL,
+                       region = NULL,
                        opensearch = TRUE,
                        mount = TRUE,
                        overwrite = FALSE,
@@ -90,10 +87,7 @@ new_photon <- function(path = NULL,
     photon_local$new(
       path = path,
       photon_version = photon_version,
-      country = country,
-      date = date,
-      exact = exact,
-      section = section,
+      region = region,
       opensearch = opensearch,
       mount = mount,
       overwrite = overwrite,

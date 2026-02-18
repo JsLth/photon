@@ -106,6 +106,7 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
 }
 }
 \examples{
+\dontshow{if (getFromNamespace("is_online", "photon")("photon.komoot.io")) withAutoprint(\{ # examplesIf}
 \donttest{# an instance must be mounted first
 photon <- new_photon()
 
@@ -119,4 +120,5 @@ reverse(df_data)
 
 # limit search radius to 10m
 reverse(df_data, radius = 10)}
+\dontshow{\}) # examplesIf}
 }

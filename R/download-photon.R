@@ -12,7 +12,7 @@
 #' photon if available. OpenSearch versions are available for photon >= 0.6.0.
 #' Since photon >= 0.7.0, OpenSearch versions are recommended. Defaults to
 #' \code{TRUE}.
-#' @inheritParams download_searchindex
+#' @inheritParams download_database
 #'
 #' @returns If \code{only_url = FALSE}, returns a character string giving the
 #' path to the downloaded file. Otherwise, returns the URL to be downloaded.
