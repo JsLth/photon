@@ -11,12 +11,12 @@
 #' Nominatim database or they can be downloaded from the
 #' \href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
 #' If you want to download pre-built search indices, simply provide a
-#' \code{country} string during initialization or use the
+#' \code{region} string during initialization or use the
 #' \code{$download_data} method. Pre-built search indices do not come with
 #' support for structured geocoding.
 #'
 #' If you want to build from Nominatim, do not
-#' provide a country string and use the \code{$import} method. See
+#' provide a region string and use the \code{$import()} method. See
 #' \code{vignette("nominatim-import", package = "photon")} for details on how
 #' to import from Nominatim.
 #'
@@ -27,12 +27,12 @@
 #' @export
 #' @import R6
 #'
-#' @examples
-#' \donttest{if (has_java("11")) {
+#' @examplesIf getFromNamespace("is_online", "photon")("graphhopper.com") && getFromNamespace("photon_run_examples", "photon")()
+#' if (has_java("11")) {
 #' dir <- file.path(tempdir(), "photon")
 #'
 #' # start a new instance using a Monaco extract
-#' photon <- new_photon(path = dir, country = "Monaco")
+#' photon <- new_photon(path = dir, region = "Andorra")
 #'
 #' # start a new instance with an older photon version
 #' photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)
@@ -45,7 +45,7 @@
 #' photon <- new_photon(path = dir, opensearch = TRUE)
 #' photon$import(photon_options = cmd_options(port = 29146, password = "pgpass"))}
 #'
-#' photon$purge(ask = FALSE)}
+#' photon$purge(ask = FALSE)
 photon_local <- R6::R6Class(
   inherit = photon,
   classname = "photon_local",
@@ -68,32 +68,17 @@ photon_local <- R6::R6Class(
     #' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
     #' Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
     #' version (Currently: `r get_latest_photon()`).
-    #' @param country Character string that can be identified by
-    #' \code{\link[countrycode]{countryname}} as a country. An extract for this
-    #' country will be downloaded. If \code{"planet"}, downloads a global search
-    #' index.
-    #' @param date Character string or date-time object used to specify the creation
-    #' date of the search index. If \code{"latest"}, will download the file tagged
-    #' with "latest". If a character string, the value should be parseable by
-    #' \code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
-    #' compared to all available dates and the closest date will be selected.
-    #' Otherwise, a file will be selected that exactly matches the input to
-    #' \code{date}.
-    #' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-    #' selects the date with lowest difference to the \code{date} parameter.
-    #' @param section Subdirectory of the download server from which to select a
-    #' search index. If \code{"experimental"}, selects a dump made for the master
-    #' version of photon. If \code{"archived"}, selects a dump made for an older
-    #' version of photon. If \code{NULL} (or any arbitrary string), selects a
-    #' dump made for the current release. Defaults to \code{NULL}.
-    #' @param opensearch Superseded for photon versions >= 0.7.0. If \code{TRUE},
+    #' @param region Character string that identifies a region or country. An
+    #' extract for this region will be downloaded. If \code{"planet"}, downloads
+    #' a global extract (see note). Run \code{list_regions()} to get an overview
+    #' of available regions. You can specify countries using any code that can
+    #' be translated by \code{\link[countrycode]{countrycode}}.
+    #' @param opensearch Deprecated for photon versions >= 1.0.0 and superseded
+    #' for photon versions >= 0.7.0. If \code{TRUE},
     #' attempts to download the OpenSearch version of photon. OpenSearch-based
-    #' photon supports structrued geocoding. Readily available OpenSearch
-    #' photon executables are only offered since photon version 0.6.0. For
-    #' earlier versions, you need to build from source using gradle. In this
-    #' case, if \code{TRUE}, will look for an OpenSearch version of photon in
-    #' the specified path. Since photon version 0.7.0, OpenSearch is the
-    #' recommended option. Defaults to \code{TRUE}.
+    #' photon supports structured geocoding. If \code{FALSE}, falls back to
+    #' ElasticSearch. Since photon 0.7.0, OpenSearch is the default and since
+    #' 1.0.0, ElasticSearch is not supported anymore.
     #' @param mount If \code{TRUE}, mounts the object to the session so that
     #' functions like \code{\link{geocode}} automatically detect the new
     #' instance. If \code{FALSE}, initializies the instance but doesn't mount
@@ -104,7 +89,7 @@ photon_local <- R6::R6Class(
     #' @param quiet If \code{TRUE}, suppresses all informative messages.
     initialize = function(path,
                           photon_version = NULL,
-                          country = NULL,
+                          region = NULL,
                           opensearch = TRUE,
                           mount = TRUE,
                           overwrite = FALSE,
@@ -123,7 +108,7 @@ photon_local <- R6::R6Class(
       setup_photon_directory(
         path,
         photon_version,
-        country = country,
+        region = region,
         opensearch = opensearch,
         overwrite = overwrite,
         quiet = quiet
@@ -135,7 +120,7 @@ photon_local <- R6::R6Class(
       private$opensearch <- opensearch
 
       meta <- private$get_metadata(quiet = quiet)
-      private$country <- meta$country
+      private$region <- meta$region
       private$date <- meta$date
       if (mount) self$mount()
       invisible(self)
@@ -151,7 +136,7 @@ photon_local <- R6::R6Class(
 
     #' @description
     #' Retrieve metadata about the java and photon version used as well
-    #' as the country and creation date of the search index.
+    #' as the region and creation date of the search index.
     #' @return A list containing the java version, the photon version, and
     #' if applicable, the spatial and temporal coverage of the search index.
     info = function() {
@@ -474,7 +459,7 @@ photon_local <- R6::R6Class(
     host = NULL,
     port = NULL,
     ssl = NULL,
-    country = NULL,
+    region = NULL,
     date = NULL,
     opensearch = NULL,
     logs = NULL,
@@ -486,7 +471,7 @@ photon_local <- R6::R6Class(
 
       if (!file.exists(meta_path)) {
         # if photon_data has been created outside of {photon}, metadata cannot be retrieved
-        meta <- list(country = NULL, date = NULL) # nocov
+        meta <- list(region = NULL, date = NULL) # nocov
       } else {
         meta <- readRDS(meta_path)
       }
@@ -500,7 +485,7 @@ photon_local <- R6::R6Class(
       if (!quiet) {
         cli::cli_ul(c(
           sprintf("Version: %s", meta$version),
-          sprintf("Coverage: %s", meta$country %|||% NULL),
+          sprintf("Coverage: %s", meta$region %|||% NULL),
           sprintf("Time: %s", meta$date %|||% NULL)
         ))
       }
@@ -514,7 +499,7 @@ photon_local <- R6::R6Class(
 # External ----
 setup_photon_directory <- function(path,
                                    version,
-                                   country = NULL,
+                                   region = NULL,
                                    opensearch = FALSE,
                                    overwrite = FALSE,
                                    quiet = FALSE) {
@@ -534,11 +519,11 @@ setup_photon_directory <- function(path,
 
   if (!any(grepl("photon_data$", files)) || overwrite) {
     has_archive <- grepl("\\.bz2$", files)
-    if ((!any(has_archive) || overwrite) && !is.null(country)) {
+    if ((!any(has_archive) || overwrite) && !is.null(region)) {
       section <- if (opensearch) "experimental" else section
       archive_path <- download_database(
         path = path,
-        country = country,
+        region = region,
         version = version,
         quiet = quiet
       )
@@ -568,20 +553,29 @@ untar_index <- function(archive_path, path) {
 
 
 store_index_metadata <- function(path, archive_path) {
+  # legacy file name scheme
   meta <- utils::strcapture(
     pattern = "photon-db-?([a-z]{2})?-([0-9]+|latest)\\.tar\\.bz2",
     x = basename(archive_path),
-    proto = data.frame(country = character(), date = character())
+    proto = data.frame(region = character(), date = character())
   )
+
+  if (all(is.na(meta))) {
+    meta <- utils::strcapture(
+      pattern = "photon-db-(.+)-(\\d+\\.\\d+)-([0-9]+|latest)\\.tar\\.bz2",
+      x = basename(archive_path),
+      proto = data.frame(region = character(), build_version = character(), date = character())
+    )
+  }
 
   # if a date is missing from the file name, set the current date
   meta$date <- if (identical(meta$date, "latest")) Sys.Date() else meta$date
   meta$date <- as.POSIXct(meta$date, format = "%y%m%d")
 
-  # if a country is missing from the file name, it is likely global
-  meta$country <- ifelse(
-    nzchar(meta$country),
-    countrycode::countrycode(meta$country, "iso2c", "country.name"),
+  # if a region is missing from the file name, it is likely global
+  meta$region <- ifelse(
+    nzchar(meta$region),
+    to_title(gsub("-", " ", meta$region)),
     "global"
   )
 
@@ -606,8 +600,9 @@ print.photon <- function(x, ...) {
         if (x$is_running()) cli::col_yellow("Live now!"),
         sprintf("Type     : %s", type),
         sprintf("Version  : %s (%s)", info$version, os),
-        sprintf("Coverage : %s", info$country),
-        sprintf("Time     : %s", info$date)
+        sprintf("Coverage : %s", info$region),
+        sprintf("Time     : %s", info$date),
+        sprintf("Database built for photon %s", info$build_version)
       )
     }
   )
@@ -632,7 +627,12 @@ check_opensearch <- function(opensearch, version) {
   if (version >= "0.7.0" && !opensearch) {
     cli::cli_warn(c( # nocov start
       "!" = "ElasticSearch versions are superseded for photon 0.7.0 or higher.",
-      "i" = "You can set opensearch = TRUE, to use OpenSearch photon instead."
+      "i" = "You can set opensearch = TRUE, to use OpenSearch instead."
+    ))
+  } else if (version >= "1.0.0" && !opensearch) {
+    cli::cli_abort(c(
+      "!" = "Since photon 1.0.0, ElasticSearch is not supported anymore.",
+      "i" = "Set `opensearch = TRUE` to use OpenSearch instead."
     )) # nocov end
   }
 }

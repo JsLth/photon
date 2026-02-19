@@ -195,6 +195,11 @@ latinize <- function(x, encoding = "latin1") {
 }
 
 
+to_title <- function(x) {
+  gsub("\\b([[:alpha:]])([[:alpha:]]+)", "\\U\\1\\L\\2", x, perl = TRUE)
+}
+
+
 is_online <- function(host) { # nocov start
   req <- httr2::request(host)
   req <- httr2::req_method(req, "HEAD")
