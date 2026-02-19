@@ -32,6 +32,14 @@
 #' effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
 #' to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
 #' Defaults to 16.
+#' @param dedupe If \code{FALSE}, keeps duplicates in the geocoding results.
+#' By default, photon attempts to deduplicate results that have the same name,
+#' postcode, and OSM value. Defaults to \code{TRUE}.
+#' @param include,exclude Character vector containing
+#' \href{https://github.com/komoot/photon/blob/master/docs/categories.md}{categories}
+#' to include or exclude. Places will be \emph{included} if any category in
+#' \code{include} is present. Places will be \emph{excluded} if all categories
+#' in \code{exclude} are present.
 #' @param latinize If \code{TRUE} sanitizes search terms in \code{texts} by
 #' converting their encoding to \code{"latin1"} using \code{\link{latinize}}.
 #' This can be helpful if the search terms contain certain symbols (e.g. fancy
@@ -121,6 +129,9 @@ geocode <- function(texts,
                     locbias = NULL,
                     locbias_scale = NULL,
                     zoom = NULL,
+                    dedupe = TRUE,
+                    include = NULL,
+                    exclude = NULL,
                     latinize = TRUE,
                     progress = interactive()) {
   assert_vector(texts, "character")
@@ -130,13 +141,18 @@ geocode <- function(texts,
   assert_vector(layer, "character", null = TRUE)
   assert_vector(locbias_scale, "numeric", size = 1, null = TRUE)
   assert_vector(zoom, "numeric", size = 1, null = TRUE)
+  assert_vector(include, "character", null = TRUE)
+  assert_vector(exclude, "character", null = TRUE)
   assert_range(locbias_scale, min = 0, max = 1, than = FALSE)
+  assert_flag(dedupe)
   assert_flag(progress)
   assert_flag(latinize)
   progress <- progress && globally_enabled("photon_movers")
 
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
+  include <- format_csv(include)
+  exclude <- format_csv(exclude)
   query <- unique(texts)
   gids <- group_id(texts, query)
   if (latinize) query <- latinize(query)
@@ -165,7 +181,10 @@ geocode_impl <- function(q, i, env) {
     lon = env$locbias$lon,
     lat = env$locbias$lat,
     location_bias_scale = env$locbias_scale,
-    zoom = env$zoom
+    zoom = env$zoom,
+    dedupe = env$dedupe,
+    include = env$include,
+    exclude = env$exclude
   )
 }
 
@@ -185,6 +204,15 @@ format_locbias <- function(locbias) {
     locbias = list(lon = locbias[1], lat = locbias[2])
   }
   locbias
+}
+
+
+format_csv <- function(categories) {
+  if (is.null(categories)) {
+    return(categories)
+  }
+
+  paste(categories, collapse = ",")
 }
 
 

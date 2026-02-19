@@ -3,6 +3,15 @@
 \name{photon_local}
 \alias{photon_local}
 \title{Local photon instance}
+\value{
+A list containing four elements:
+\itemize{
+\strong{status}: Shows \code{"Ok"} when photon is running without problems.
+\strong{import_date}: Time stamp when the database was built.
+\strong{version}: Photon version currently running.
+\strong{git_commit}: Git commit string of the photon version currently running.
+}
+}
 \description{
 This R6 class is used to initialize and manage local photon instances.
 It can download and setup the Java, the photon executable, and the necessary
@@ -16,12 +25,12 @@ Search indices can be self-provided by importing an existing
 Nominatim database or they can be downloaded from the
 \href{https://nominatim.org/2020/10/21/photon-country-extracts.html}{Photon download server}.
 If you want to download pre-built search indices, simply provide a
-\code{country} string during initialization or use the
+\code{region} string during initialization or use the
 \code{$download_data} method. Pre-built search indices do not come with
 support for structured geocoding.
 
 If you want to build from Nominatim, do not
-provide a country string and use the \code{$import} method. See
+provide a region string and use the \code{$import()} method. See
 \code{vignette("nominatim-import", package = "photon")} for details on how
 to import from Nominatim.
 
@@ -31,11 +40,12 @@ standard and ElasticSearch is deprecated.
 }
 
 \examples{
-\donttest{if (has_java("11")) {
+\dontshow{if (getFromNamespace("is_online", "photon")("graphhopper.com") && getFromNamespace("photon_run_examples", "photon")()) withAutoprint(\{ # examplesIf}
+if (has_java("11")) {
 dir <- file.path(tempdir(), "photon")
 
 # start a new instance using a Monaco extract
-photon <- new_photon(path = dir, country = "Monaco")
+photon <- new_photon(path = dir, region = "Andorra")
 
 # start a new instance with an older photon version
 photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)
@@ -48,7 +58,8 @@ photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)
 photon <- new_photon(path = dir, opensearch = TRUE)
 photon$import(photon_options = cmd_options(port = 29146, password = "pgpass"))}
 
-photon$purge(ask = FALSE)}
+photon$purge(ask = FALSE)
+\dontshow{\}) # examplesIf}
 }
 \section{Super class}{
 \code{\link[photon:photon]{photon::photon}} -> \code{photon_local}
@@ -74,6 +85,7 @@ external process running photon.}
 \item \href{#method-photon_local-import}{\code{photon_local$import()}}
 \item \href{#method-photon_local-start}{\code{photon_local$start()}}
 \item \href{#method-photon_local-stop}{\code{photon_local$stop()}}
+\item \href{#method-photon_local-status}{\code{photon_local$status()}}
 \item \href{#method-photon_local-download_data}{\code{photon_local$download_data()}}
 \item \href{#method-photon_local-remove_data}{\code{photon_local$remove_data()}}
 \item \href{#method-photon_local-is_running}{\code{photon_local$is_running()}}
@@ -93,10 +105,7 @@ executable, the search index, and Java.
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$new(
   path,
   photon_version = NULL,
-  country = NULL,
-  date = "latest",
-  exact = FALSE,
-  section = "experimental",
+  region = NULL,
   opensearch = TRUE,
   mount = TRUE,
   overwrite = FALSE,
@@ -115,36 +124,18 @@ releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
 version (Currently: 1.0.0).}
 
-\item{\code{country}}{Character string that can be identified by
-\code{\link[countrycode]{countryname}} as a country. An extract for this
-country will be downloaded. If \code{"planet"}, downloads a global search
-index.}
+\item{\code{region}}{Character string that identifies a region or country. An
+extract for this region will be downloaded. If \code{"planet"}, downloads
+a global extract (see note). Run \code{list_regions()} to get an overview
+of available regions. You can specify countries using any code that can
+be translated by \code{\link[countrycode]{countrycode}}.}
 
-\item{\code{date}}{Character string or date-time object used to specify the creation
-date of the search index. If \code{"latest"}, will download the file tagged
-with "latest". If a character string, the value should be parseable by
-\code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
-compared to all available dates and the closest date will be selected.
-Otherwise, a file will be selected that exactly matches the input to
-\code{date}.}
-
-\item{\code{exact}}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-selects the date with lowest difference to the \code{date} parameter.}
-
-\item{\code{section}}{Subdirectory of the download server from which to select a
-search index. If \code{"experimental"}, selects a dump made for the master
-version of photon. If \code{"archived"}, selects a dump made for an older
-version of photon. If \code{NULL} (or any arbitrary string), selects a
-dump made for the current release. Defaults to \code{NULL}.}
-
-\item{\code{opensearch}}{Superseded for photon versions >= 0.7.0. If \code{TRUE},
+\item{\code{opensearch}}{Deprecated for photon versions >= 1.0.0 and superseded
+for photon versions >= 0.7.0. If \code{TRUE},
 attempts to download the OpenSearch version of photon. OpenSearch-based
-photon supports structrued geocoding. Readily available OpenSearch
-photon executables are only offered since photon version 0.6.0. For
-earlier versions, you need to build from source using gradle. In this
-case, if \code{TRUE}, will look for an OpenSearch version of photon in
-the specified path. Since photon version 0.7.0, OpenSearch is the
-recommended option. Defaults to \code{TRUE}.}
+photon supports structured geocoding. If \code{FALSE}, falls back to
+ElasticSearch. Since photon 0.7.0, OpenSearch is the default and since
+1.0.0, ElasticSearch is not supported anymore.}
 
 \item{\code{mount}}{If \code{TRUE}, mounts the object to the session so that
 functions like \code{\link{geocode}} automatically detect the new
@@ -177,7 +168,7 @@ is useful if you want to switch between multiple photon instances.
 \if{latex}{\out{\hypertarget{method-photon_local-info}{}}}
 \subsection{Method \code{info()}}{
 Retrieve metadata about the java and photon version used as well
-as the country and creation date of the search index.
+as the region and creation date of the search index.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{photon_local$info()}\if{html}{\out{</div>}}
 }
@@ -319,6 +310,12 @@ located in the instance directory.
   port = "2322",
   ssl = FALSE,
   timeout = 60,
+  countries = NULL,
+  threads = 1,
+  query_timeout = NULL,
+  max_results = NULL,
+  max_reverse_results = NULL,
+  metrics = FALSE,
   java_opts = NULL,
   photon_opts = NULL
 )}\if{html}{\out{</div>}}
@@ -337,6 +334,25 @@ Defaults to \code{FALSE}.}
 
 \item{\code{timeout}}{Time in seconds before the java process aborts. Defaults
 to 60 seconds.}
+
+\item{\code{countries}}{Character vector of countries to import. By default,
+all countries in the database are imported.}
+
+\item{\code{threads}}{Number of threads in parallel. Defaults to 1.}
+
+\item{\code{query_timeout}}{Time in seconds after which to cancel queries
+to Photon. Defaults to 7 seconds.}
+
+\item{\code{max_results}}{Maximum number of results returned to
+\code{\link{geocode}} and \code{\link{structured}}. Defaults to
+50.}
+
+\item{\code{max_reverse_results}}{Maximum number of results returned to
+\code{\link{reverse}}. Defaults to 50.}
+
+\item{\code{metrics}}{If \code{"prometheus"}, enables a metrics endpoint that
+keeps track of usage metrics. Can be accessed using the
+\code{\link{metrics}} function.}
 
 \item{\code{java_opts}}{Character vector of further flags passed on to the
 \code{java} command.}
@@ -366,12 +382,23 @@ Kills the running photon process.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-photon_local-status"></a>}}
+\if{latex}{\out{\hypertarget{method-photon_local-status}{}}}
+\subsection{Method \code{status()}}{
+Returns information from a live server about the photon version used
+and the date of data import.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$status()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-photon_local-download_data"></a>}}
 \if{latex}{\out{\hypertarget{method-photon_local-download_data}{}}}
 \subsection{Method \code{download_data()}}{
 Downloads a search index using \code{\link{download_database}}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{photon_local$download_data(region)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$download_data(region, json = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

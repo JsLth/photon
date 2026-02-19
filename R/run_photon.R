@@ -10,7 +10,12 @@ run_photon <- function(self,
 
   exec <- get_photon_executable(path, version, private$opensearch)
   path <- normalizePath(path, winslash = "/")
-  args <- c(java_opts, "-jar", exec, photon_opts)
+  class <- switch(
+    mode,
+    import = "import",
+    start = "serve"
+  )
+  args <- c(java_opts, "-jar", exec, class, photon_opts)
 
   switch(
     mode,
@@ -300,7 +305,17 @@ photon_ready <- function(self, private) {
     return(FALSE)
   }
 
-  can_access_photon(self$get_url(), "api")
+  req <- httr2::request(self$get_url())
+  req <- httr2::req_template(req, "GET /status")
+  req <- httr2::req_error(req, is_error = function(r) FALSE)
+  tryCatch(
+    {
+      resp <- httr2::req_perform(req)
+      status <- httr2::resp_body_json(resp)
+      identical(status$status, "Ok")
+    },
+    error = function(e) FALSE
+  )
 }
 
 

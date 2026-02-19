@@ -15,6 +15,9 @@ structured(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
+  dedupe = TRUE,
+  include = NULL,
+  exclude = NULL,
   progress = interactive()
 )
 
@@ -63,6 +66,16 @@ effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
 to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
 Defaults to 16.}
 
+\item{dedupe}{If \code{FALSE}, keeps duplicates in the geocoding results.
+By default, photon attempts to deduplicate results that have the same name,
+postcode, and OSM value. Defaults to \code{TRUE}.}
+
+\item{include, exclude}{Character vector containing
+\href{https://github.com/komoot/photon/blob/master/docs/categories.md}{categories}
+to include or exclude. Places will be \emph{included} if any category in
+\code{include} is present. Places will be \emph{excluded} if all categories
+in \code{exclude} are present.}
+
 \item{progress}{If \code{TRUE}, shows a progress bar for longer queries.}
 }
 \value{
@@ -94,12 +107,10 @@ Geocode a set of place information such as street, house number, or
 post code. Structured geocoding is generally more accurate but requires
 more information than \link[=geocode]{unstructured geocoding}.
 
-Note that structured geocoding must be specifically enabled when building a
-Nominatim database. It is generally not available on komoot's public API and
-on pre-built search indices through \code{\link{download_database}}. See
-\code{vignette("nominatim-import", package = "photon")} for details. You can
-use the helper function \code{has_structured_support()} to check if the
-current API supports structured geocoding.
+You can use the helper function \code{has_structured_support()} to check if
+the current API supports structured geocoding. Structured geocoding should
+be enabled on the public photon instance and all photon instances >= 1.0.0,
+but older versions usually have structured queries disabled.
 }
 \details{
 Filtering by OpenStreetMap tags follows a distinct syntax explained on
@@ -115,15 +126,7 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
 }
 }
 \examples{
-\dontrun{
-# structured() requires an OpenSearch instance with structured support
-# the following code will not work off the shelf
-# refer to vignette("nominatim-import") for details
-dir <- file.path(tempdir(), "photon")
-photon <- new_photon(dir, opensearch = TRUE)
-photon$import(password = "psql_password", structured = TRUE)
-photon$start()
-
+\donttest{
 # check if structured() is supported
 has_structured_support()
 
@@ -143,8 +146,8 @@ structured(data.frame(city = "Apia"), layer = "house") # matches nothing
 
 # structured geocoding can discern small differences in places
 safune <- data.frame(
-  city = c("Safune", "Safune"),
-  state = c("Gaga'ifomauga", "Tuamasaga")
+  city = c("Berlin", "Berlin"),
+  countrycode = c("DE", "US")
 )
 structured(safune, limit = 1)
 }

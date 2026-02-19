@@ -13,7 +13,9 @@ test_that("basic requests work", {
   res3 <- geocode("Berlin", bbox = c(xmin = 0, xmax = 13, ymin = 52, ymax = 53))
   expect_failure(expect_equal(res1, res3))
 
-  expect_no_error(geocode("Berlin", locbias = c(-45, 30), zoom = 12, locbias_scale = 0.1, limit = 5))
+  res4a <- geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, limit = 5)
+  res4b <- geocode("Berlin", limit = 5)
+  expect_failure(expect_equal(res4a, res4b))
 
   res5 <- geocode("notarealplace")
   expect_equal(nrow(res5), 1)

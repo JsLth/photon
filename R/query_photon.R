@@ -1,4 +1,4 @@
-query_photon <- function(endpoint, ...) {
+query_photon <- function(endpoint, ..., geojson = TRUE) {
   args <- drop_null(drop_na(list(...)))
   req <- httr2::request(get_photon_url())
   req <- httr2::req_template(req, "GET {endpoint}")
@@ -20,8 +20,13 @@ query_photon <- function(endpoint, ...) {
   }
 
   resp <- httr2::req_perform(req)
-  resp <- httr2::resp_body_string(resp, encoding = "UTF-8")
-  sf::st_read(resp, as_tibble = TRUE, quiet = TRUE, drivers = "geojson")
+
+  if (geojson) {
+    resp <- httr2::resp_body_string(resp, encoding = "UTF-8")
+    sf::st_read(resp, as_tibble = TRUE, quiet = TRUE, drivers = "geojson")
+  } else {
+    httr2::resp_body_json(resp)
+  }
 }
 
 

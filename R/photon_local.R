@@ -294,6 +294,16 @@ photon_local <- R6::R6Class(
     #' Defaults to \code{FALSE}.
     #' @param timeout Time in seconds before the java process aborts. Defaults
     #' to 60 seconds.
+    #' @param countries Character vector of countries to import. By default,
+    #' all countries in the database are imported.
+    #' @param threads Number of threads in parallel. Defaults to 1.
+    #' @param query_timeout Time in seconds after which to cancel queries
+    #' to Photon. Defaults to 7 seconds.
+    #' @param max_results Maximum number of results returned to
+    #' \code{\link{geocode}} and \code{\link{structured}}. Defaults to
+    #' 50.
+    #' @param max_reverse_results Maximum number of results returned to
+    #' \code{\link{reverse}}. Defaults to 50.
     #' @param java_opts Character vector of further flags passed on to the
     #' \code{java} command.
     #' @param photon_opts Character vector of further flags passed on to the
@@ -309,6 +319,11 @@ photon_local <- R6::R6Class(
                      port = "2322",
                      ssl = FALSE,
                      timeout = 60,
+                     countries = NULL,
+                     threads = 1,
+                     query_timeout = NULL,
+                     max_results = NULL,
+                     max_reverse_results = NULL,
                      java_opts = NULL,
                      photon_opts = NULL) {
       assert_vector(host, "character")
@@ -330,7 +345,17 @@ photon_local <- R6::R6Class(
         )
       }
 
-      popts <- cmd_options(listen_ip = host, listen_port = port)
+      java_opts <- cmd_options(java_opts)
+      photon_opts <- cmd_options(photon_opts)
+      popts <- cmd_options(
+        listen_ip = host,
+        listen_port = port,
+        countries = format_csv(countries),
+        j = threads,
+        query_timeout = query_timeout,
+        max_results = max_results,
+        max_reverse_results = max_reverse_results
+      )
       cleanup <- function(e) self$stop()
       withCallingHandlers(
         run_photon(
@@ -355,6 +380,23 @@ photon_local <- R6::R6Class(
     },
 
     #' @description
+    #' Returns information from a live server about the photon version used
+    #' and the date of data import.
+    #'
+    #' @returns A list containing four elements:
+    #' \itemize{
+    #'  \strong{status}: Shows \code{"Ok"} when photon is running without problems.
+    #'  \strong{import_date}: Time stamp when the database was built.
+    #'  \strong{version}: Photon version currently running.
+    #'  \strong{git_commit}: Git commit string of the photon version currently running.
+    #' }
+    status = function() {
+      if (self$is_ready()) {
+        query_photon("status", geojson = FALSE)
+      }
+    },
+
+    #' @description
     #' Downloads a search index using \code{\link{download_database}}.
     #' @param region Character string that identifies a region or country. An
     #' extract for this region will be downloaded. If \code{"planet"}, downloads
@@ -365,12 +407,13 @@ photon_local <- R6::R6Class(
     #' Pre-built databases are more convenient but less flexible and are not available
     #' for all regions. If you wish or need to build your own database, set
     #' \code{json = TRUE} and use the \code{$import()} method.
-    download_data = function(region) {
+    download_data = function(region, json = FALSE) {
       archive_path <- download_database(
         region = region,
         path = self$path,
         quiet = private$quiet,
-        version = private$version
+        version = private$version,
+        json = json
       )
       untar_index(archive_path, self$path)
       store_index_metadata(self$path, archive_path)
@@ -617,7 +660,11 @@ print.photon <- function(x, ...) {
 
 construct_jar <- function(version = NULL, opensearch = FALSE) {
   version <- version %||% get_latest_photon()
-  opensearch <- ifelse(opensearch, "-opensearch", "")
+  opensearch <- ifelse(
+    opensearch & numeric_version(version) < "1.0.0",
+    "-opensearch",
+    ""
+  )
   sprintf("photon%s-%s.jar", opensearch, version)
 }
 
@@ -627,7 +674,7 @@ check_opensearch <- function(opensearch, version) {
   if (version >= "0.7.0" && !opensearch) {
     cli::cli_warn(c( # nocov start
       "!" = "ElasticSearch versions are superseded for photon 0.7.0 or higher.",
-      "i" = "You can set opensearch = TRUE, to use OpenSearch instead."
+      "i" = "You can set `opensearch = TRUE` to use OpenSearch instead."
     ))
   } else if (version >= "1.0.0" && !opensearch) {
     cli::cli_abort(c(

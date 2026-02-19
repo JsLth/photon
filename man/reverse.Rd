@@ -14,6 +14,9 @@ reverse(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
+  dedupe = TRUE,
+  include = NULL,
+  exclude = NULL,
   distance_sort = TRUE,
   progress = interactive()
 )
@@ -57,6 +60,16 @@ places. Possible values range from 0 to 1. Defaults to 0.2.}
 effective. Corresponds to the zoom level in OpenStreetMap. The exact relation
 to \code{locbias} is \eqn{0.25\text{ km} \cdot 2^{(18 - \text{zoom})}}.
 Defaults to 16.}
+
+\item{dedupe}{If \code{FALSE}, keeps duplicates in the geocoding results.
+By default, photon attempts to deduplicate results that have the same name,
+postcode, and OSM value. Defaults to \code{TRUE}.}
+
+\item{include, exclude}{Character vector containing
+\href{https://github.com/komoot/photon/blob/master/docs/categories.md}{categories}
+to include or exclude. Places will be \emph{included} if any category in
+\code{include} is present. Places will be \emph{excluded} if all categories
+in \code{exclude} are present.}
 
 \item{distance_sort}{If \code{TRUE}, sorts the reverse geocoding results
 based on the distance to the input point. Defaults to \code{TRUE}.}
