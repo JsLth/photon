@@ -19,18 +19,6 @@
 #' releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 #' Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
 #' version.
-#' @param country Character string that can be identified by
-#' \code{\link[countrycode]{countryname}} as a country. An extract for this
-#' country will be downloaded. If \code{"planet"}, downloads a global search
-#' index. If \code{NULL}, downloads no index and leaves download or import to
-#' the user.
-#' @param date Character string or date-time object used to specify the creation
-#' date of the search index. If \code{"latest"}, will download the file tagged
-#' with "latest". If a character string, the value should be parseable by
-#' \code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
-#' compared to all available dates and the closest date will be selected.
-#' Otherwise, a file will be selected that exactly matches the input to
-#' \code{date}.
 #' @param opensearch If \code{TRUE}, attempts to download the OpenSearch
 #' version of photon. OpenSearch-based photon supports structrued geocoding.
 #' Readily available OpenSearch photon executables are only offered since
@@ -38,13 +26,6 @@
 #' source using gradle. In this case, if \code{TRUE}, will look for an
 #' OpenSearch version of photon in the specified path. Since photon version
 #' 0.7.0, OpenSearch is the recommended option. Defaults to \code{TRUE}.
-#' @param exact If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-#' selects the date with lowest difference to the \code{date} parameter.
-#' @param section Subdirectory of the download server from which to select a
-#' search index. If \code{"experimental"}, selects a dump made for the master
-#' version of photon. If \code{"archived"}, selects a dump made for an older
-#' version of photon. If \code{NULL} (or any arbitrary string), selects a
-#' dump made for the current release. Defaults to \code{NULL}.
 #' @param mount If \code{TRUE}, mounts the object to the session so that
 #' functions like \code{\link{geocode}} automatically detect the new
 #' instance. If \code{FALSE}, initializies the instance but doesn't mount
@@ -53,12 +34,13 @@
 #' search indices when initializing a new instance. Defaults to
 #' \code{FALSE}.
 #' @param quiet If \code{TRUE}, suppresses all informative messages.
+#' @inheritParams download_database
 #'
 #' @returns An R6 object of class \code{photon}.
 #'
 #' @export
 #'
-#' @examplesIf getFromNamespace("is_online", "photon")("graphhopper.com")
+#' @examplesIf getFromNamespace("is_online", "photon")("graphhopper.com") && getFromNamespace("photon_run_examples", "photon")()
 #' # connect to public API
 #' photon <- new_photon()
 #'
@@ -68,7 +50,7 @@
 #' if (has_java("11")) {
 #'   # set up a local instance in a temporary directory
 #'   dir <- file.path(tempdir(), "photon")
-#'   photon <- new_photon(dir, country = "Andorra")
+#'   photon <- new_photon(dir, region = "Andorra")
 #'   photon$purge(ask = FALSE)
 #' }
 new_photon <- function(path = NULL,

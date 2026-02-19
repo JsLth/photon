@@ -30,6 +30,12 @@ releases can be found here: \url{https://github.com/komoot/photon/releases/}.
 Ignored if \code{jar} is given. If \code{NULL}, uses the latest known
 version.}
 
+\item{region}{Character string that identifies a region or country. An
+extract for this region will be downloaded. If \code{"planet"}, downloads
+a global extract (see note). Run \code{list_regions()} to get an overview
+of available regions. You can specify countries using any code that can
+be translated by \code{\link[countrycode]{countrycode}}.}
+
 \item{opensearch}{If \code{TRUE}, attempts to download the OpenSearch
 version of photon. OpenSearch-based photon supports structrued geocoding.
 Readily available OpenSearch photon executables are only offered since
@@ -48,29 +54,6 @@ search indices when initializing a new instance. Defaults to
 \code{FALSE}.}
 
 \item{quiet}{If \code{TRUE}, suppresses all informative messages.}
-
-\item{country}{Character string that can be identified by
-\code{\link[countrycode]{countryname}} as a country. An extract for this
-country will be downloaded. If \code{"planet"}, downloads a global search
-index. If \code{NULL}, downloads no index and leaves download or import to
-the user.}
-
-\item{date}{Character string or date-time object used to specify the creation
-date of the search index. If \code{"latest"}, will download the file tagged
-with "latest". If a character string, the value should be parseable by
-\code{\link{as.POSIXct}}. If \code{exact = FALSE}, the input value is
-compared to all available dates and the closest date will be selected.
-Otherwise, a file will be selected that exactly matches the input to
-\code{date}.}
-
-\item{exact}{If \code{TRUE}, exactly matches the \code{date}. Otherwise,
-selects the date with lowest difference to the \code{date} parameter.}
-
-\item{section}{Subdirectory of the download server from which to select a
-search index. If \code{"experimental"}, selects a dump made for the master
-version of photon. If \code{"archived"}, selects a dump made for an older
-version of photon. If \code{NULL} (or any arbitrary string), selects a
-dump made for the current release. Defaults to \code{NULL}.}
 }
 \value{
 An R6 object of class \code{photon}.
@@ -85,7 +68,7 @@ the setup of the photon executable, a search index, and Java. See
 \code{\link{photon_local}} for details.
 }
 \examples{
-\dontshow{if (getFromNamespace("is_online", "photon")("graphhopper.com")) withAutoprint(\{ # examplesIf}
+\dontshow{if (getFromNamespace("is_online", "photon")("graphhopper.com") && getFromNamespace("photon_run_examples", "photon")()) withAutoprint(\{ # examplesIf}
 # connect to public API
 photon <- new_photon()
 
@@ -95,7 +78,7 @@ photon <- new_photon(url = "https://photonserver.org")
 if (has_java("11")) {
   # set up a local instance in a temporary directory
   dir <- file.path(tempdir(), "photon")
-  photon <- new_photon(dir, country = "Andorra")
+  photon <- new_photon(dir, region = "Andorra")
   photon$purge(ask = FALSE)
 }
 \dontshow{\}) # examplesIf}

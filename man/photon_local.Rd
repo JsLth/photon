@@ -315,7 +315,6 @@ located in the instance directory.
   query_timeout = NULL,
   max_results = NULL,
   max_reverse_results = NULL,
-  metrics = FALSE,
   java_opts = NULL,
   photon_opts = NULL
 )}\if{html}{\out{</div>}}
@@ -349,10 +348,6 @@ to Photon. Defaults to 7 seconds.}
 
 \item{\code{max_reverse_results}}{Maximum number of results returned to
 \code{\link{reverse}}. Defaults to 50.}
-
-\item{\code{metrics}}{If \code{"prometheus"}, enables a metrics endpoint that
-keeps track of usage metrics. Can be accessed using the
-\code{\link{metrics}} function.}
 
 \item{\code{java_opts}}{Character vector of further flags passed on to the
 \code{java} command.}

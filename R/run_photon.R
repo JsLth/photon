@@ -162,7 +162,7 @@ log_callback <- function(private, quiet = FALSE) {
 handle_log_conditions <- function(out) {
   out <- split_by_logs_entry(out)
   log <- parse_log_line(out)
-  is_usage_error <- grepl("Usage: <main class> [options]", out, fixed = TRUE)
+  is_usage_error <- grepl("Usage: photon", out, fixed = TRUE)
   is_warning <- log$type %in% "WARN"
   is_exception <- grepl("exception", log$msg, ignore.case = TRUE) &
                      (log$class %in% "stderr" | is.na(log$type))

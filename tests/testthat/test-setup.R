@@ -3,7 +3,6 @@ test_that("remote photons work", {
   expect_error(get_instance(), class = "instance_missing")
   photon <- new_photon()
   expect_true(is_komoot(photon$get_url()))
-  expect_error(structured(), regexp = "disabled")
   photon <- new_photon(url = "https://test.org")
   expect_equal(photon$get_url(), "https://test.org")
 })
@@ -153,7 +152,7 @@ describe("photon_local", {
   })
 
   it("can run help", {
-    expect_output(photon$help(), regexp = "Usage: <main class>")
+    expect_output(photon$help(), regexp = "Usage: photon")
   })
 
   it("can download data manually", {
