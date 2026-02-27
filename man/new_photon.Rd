@@ -36,17 +36,16 @@ a global extract (see note). Run \code{list_regions()} to get an overview
 of available regions. You can specify countries using any code that can
 be translated by \code{\link[countrycode]{countrycode}}.}
 
-\item{opensearch}{If \code{TRUE}, attempts to download the OpenSearch
-version of photon. OpenSearch-based photon supports structrued geocoding.
-Readily available OpenSearch photon executables are only offered since
-photon version 0.6.0. For earlier versions, you need to build it from
-source using gradle. In this case, if \code{TRUE}, will look for an
-OpenSearch version of photon in the specified path. Since photon version
-0.7.0, OpenSearch is the recommended option. Defaults to \code{TRUE}.}
+\item{opensearch}{Deprecated for photon versions >= 1.0.0 and superseded
+for photon versions >= 0.7.0. If \code{TRUE},
+attempts to download the OpenSearch version of photon. OpenSearch-based
+photon supports structured geocoding. If \code{FALSE}, falls back to
+ElasticSearch. Since photon 0.7.0, OpenSearch is the default and since
+1.0.0, ElasticSearch is not supported anymore.}
 
 \item{mount}{If \code{TRUE}, mounts the object to the session so that
 functions like \code{\link{geocode}} automatically detect the new
-instance. If \code{FALSE}, initializies the instance but doesn't mount
+instance. If \code{FALSE}, initializes the instance but doesn't mount
 it to the session. Defaults to \code{TRUE}.}
 
 \item{overwrite}{If \code{TRUE}, overwrites existing jar files and
