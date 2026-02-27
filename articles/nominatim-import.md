@@ -1,14 +1,14 @@
-# Importing a database from Nominatim
+# Importing a database
 
 As specified in the [introduction
 vignette](https://jslth.github.io/photon/articles/photon.md), you can
 download pre-built search indices for selected country extracts. If you
 require more freedom in providing the geocoding data, you can choose to
-import from an existing Nominatim database. Importing from Nominatim is
-also a requirement if you want to enable structured geocoding queries.
-This vignette guides you through the setup and import of an external
-Nominatim database as well as the setup of structured geocoding support
-through OpenSearch-based photon.
+import from an existing Nominatim database or from a JSON dump. This
+vignette guides you through the setup and import of an external
+database.
+
+## Importing from Nominatim
 
 Technically, Nominatim databases can only be reliably set up on Linux
 systems. Here, we use the `mediagis/nominatim` docker image to set up
@@ -22,7 +22,7 @@ machine, otherwise photon is not able to connect to the database.
 ``` r
 opts <- cmd_options(
   e = "PBF_URL=https://download.geofabrik.de/australia-oceania/samoa-latest.osm.pbf",
-  e = "NOMINATIM_PASSWORD=MNdtC2*pP#aMbe",
+  e = "NOMINATIM_PASSWORD=mypassword",
   e = "FREEZE=true",
   p = "8080:8080",
   p = "5432:5432",
@@ -31,7 +31,24 @@ opts <- cmd_options(
   use_double_hyphens = TRUE
 )
 
+# Note: on Windows, make sure you have Docker Desktop running!
 nominatim <- process$new("docker", c("run", opts))
+
+# Wait until Nominatim is ready
+ready <- FALSE
+while (!ready) {
+  Sys.sleep(5)
+  logs <- run("docker", c("logs", "nominatim"))
+  ready <- any(grepl("ready to accept requests", logs))
+}
+
+run(
+  "docker",
+  c(
+    "exec", "--user", "postgres", "nominatim", "psql", "-d", "nominatim", "-c",
+    "ALTER USER nominatim WITH ENCRYPTED PASSWORD 'mypassword'"
+  )
+)
 ```
 
 To verify that the database can be connected to, you can connect to it
@@ -78,19 +95,11 @@ photon <- new_photon(dir, overwrite = TRUE)
 #> ℹ java version "22" 2024-03-19
 #> ℹ Java(TM) SE Runtime Environment (build 22+36-2370)
 #> ℹ Java HotSpot(TM) 64-Bit Server VM (build 22+36-2370, mixed mode, sharing)
-#> ✔ Successfully downloaded photon 0.6.2. [8.2s]        
+#> ✔ Successfully downloaded photon 1.0.0. [8.2s]        
 #> ℹ No search index downloaded! Download one or import from a Nominatim database.
-#> • Version: 0.6.2
+#> • Version: 1.0.0
 
 photon$import(host = "localhost", password = "MNdtC2*pP#aMbe")
-#> 2024-10-24 23:07:35,904 [main] WARN  org.elasticsearch.node.Node - version [5.6.16-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
-#> 2024-10-24 23:07:43,326 [main] INFO  de.komoot.photon.elasticsearch.Server - Started elastic search node
-#> 2024-10-24 23:07:43,326 [main] INFO  de.komoot.photon.App - Make sure that the ES cluster is ready, this might take some time.
-#> 2024-10-24 23:07:43,905 [main] INFO  de.komoot.photon.App - ES cluster is now ready.
-#> 2024-10-24 23:07:45,299 [main] INFO  de.komoot.photon.App - Starting import from nominatim to photon with languages: en,fr,de,it
-#> 2024-10-24 23:07:45,300 [main] INFO  de.komoot.photon.nominatim.NominatimConnector - Start importing documents from nominatim (global)
-#> 2024-10-24 23:07:59,080 [main] INFO  de.komoot.photon.nominatim.ImportThread - Finished import of 2085 photon documents.
-#> 2024-10-24 23:07:59,080 [main] INFO  de.komoot.photon.App - Imported data from nominatim to photon with languages: en,fr,de,it
 ```
 
 After the import has finished, you can start the photon instance.
@@ -117,62 +126,23 @@ geocode("Apia", limit = 3)
 #> # ℹ 1 more variable: geometry <POINT [°]>
 ```
 
-## OpenSearch
+## Import from a JSON dump
 
-Previous setups of photon were based on the ElasticSearch search engine.
-Photon also offers a version that is based on
-[OpenSearch](https://opensearch.org/). This photon version is necessary
-to enable structured geocoding queries. Since photon 0.6.0, OpenSearch
-jar files are provided with new photon releases and can be downloaded by
-setting `opensearch = TRUE` in the
-[`new_photon()`](https://jslth.github.io/photon/reference/new_photon.md)
-function.
+Since photon 0.7.0, databases can be dumped to and imported from JSON
+files (so called Nominatim Dump Files, see the
+[https://github.com/komoot/photon/blob/master/docs/json-dump-format-0.1.0.md](https://jslth.github.io/photon/articles/docs)).
+While pre-built databases are not available for every region through
+`$download_data()`, JSON dumps are. You can choose to download JSON
+dumps instead of pre-built databases by setting `json = TRUE`.
 
 ``` r
-# set opensearch = TRUE to use OpenSearch photon
-photon <- new_photon(dir, opensearch = TRUE, quiet = TRUE)
-
-# set structured = TRUE to enable structured geocoding
-photon$import(host = "localhost", password = "MNdtC2*pP#aMbe", structured = TRUE)
+photon$remove_data()
+photon$download_data("Andorra", json = TRUE)
 ```
 
-Again, the `$import()` method created a directory `photon_data`, which
-is 10-20% larger than the ElasticSearch version. After starting photon,
-you can verify that structured geocoding is enabled by running
-[`has_structured_support()`](https://jslth.github.io/photon/reference/structured.md).
+Using this data, you can then simply import the dump using the
+`$import()` method with `json = TRUE`.
 
 ``` r
-photon$start()
-has_structured_support()
-#> [1] TRUE
-```
-
-Since structured geocoding now works, you can now send entire datasets
-with structured address data. Structured geocoding allows you to search
-for specific elements of an address instead of passing free text
-queries. In the following example, we search for three different spatial
-features by querying their state, street, and housenumber. Photon is
-able to geocode them with very high precision due to the detailed data
-structure we provide.
-
-``` r
-place_data <- data.frame(
-  housenumber = c(NA, "77C", NA),
-  street = c("Falealilli Cross Island Road", "Main Beach Road", "Le Mafa Pass Road"),
-  state = c("Tuamasaga", "Tuamasaga", "Atua")
-)
-
-structured(place_data)
-#> Simple feature collection with 3 features and 14 fields
-#> Geometry type: POINT
-#> Dimension:     XY
-#> Bounding box:  xmin: -171.7759 ymin: -14.04544 xmax: -171.451 ymax: -13.8338
-#> Geodetic CRS:  WGS 84
-#> # A tibble: 3 × 15
-#>     idx osm_type    osm_id country osm_key  city      countrycode osm_value name    state type  extent housenumber street
-#>   <int> <chr>        <int> <chr>   <chr>    <chr>     <chr>       <chr>     <chr>   <chr> <chr> <list> <chr>       <chr> 
-#> 1     1 W        319147189 Samoa   highway  Siumu Uta WS          primary   Faleal… Tuam… stre… <dbl>  NA          NA    
-#> 2     2 W        569855981 Samoa   building Apia      WS          yes       NA      Tuam… house <dbl>  77C         Main …
-#> 3     3 W         40681149 Samoa   highway  Lalomanu  WS          primary   Main S… Ātua  stre… <dbl>  NA          NA    
-#> # ℹ 1 more variable: geometry <POINT [°]>
+photon$import(json = TRUE)
 ```

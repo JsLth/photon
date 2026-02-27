@@ -190,7 +190,15 @@ a list of additional photon arguments for `$start()` or `$import()`.
 
 #### Usage
 
-    photon_local$help()
+    photon_local$help(cmd = "start")
+
+#### Arguments
+
+- `cmd`:
+
+  A command for which to display the help page. Must be one of
+  `"start"`, `"import"`, `"update"`, `"update-init"`, or
+  `"dump-nominatim-db"`. Defaults to `"start"`.
 
 #### Returns
 
@@ -233,16 +241,17 @@ Nominatim database that can be connected to.
       database = "nominatim",
       user = "nominatim",
       password = "",
-      structured = FALSE,
-      update = FALSE,
-      enable_update_api = FALSE,
+      json = FALSE,
       languages = c("en", "fr", "de", "it"),
       countries = NULL,
+      full_geometries = FALSE,
       extra_tags = NULL,
-      json = FALSE,
       timeout = 60,
       java_opts = NULL,
-      photon_opts = NULL
+      photon_opts = NULL,
+      structured = NULL,
+      update = NULL,
+      enable_update_api = NULL
     )
 
 #### Arguments
@@ -267,24 +276,10 @@ Nominatim database that can be connected to.
 
   Postgres database password. Defaults to `""`.
 
-- `structured`:
+- `json`:
 
-  If `TRUE`, enables structured query support when importing the
-  database. This allows the usage of
-  [`structured`](https://jslth.github.io/photon/reference/structured.md).
-  Structured queries are only supported in the OpenSearch version of
-  photon. See section "OpenSearch" above. Defaults to `FALSE`.
-
-- `update`:
-
-  If `TRUE`, fetches updates from the Nominatim database, updating the
-  search index without offering an API. If `FALSE`, imports the database
-  an deletes the previous index. Defaults to `FALSE`.
-
-- `enable_update_api`:
-
-  If `TRUE`, enables an additional endpoint `/nominatim-update`, which
-  allows updates from Nominatim databases.
+  If `TRUE` and a JSON dump is present in the photon directory, imports
+  from a JSON dump. Otherwise, tries to import from Nominatim.
 
 - `languages`:
 
@@ -296,16 +291,16 @@ Nominatim database that can be connected to.
   Character vector specifying the country codes to import from the
   Nominatim database. Defaults to all country codes.
 
+- `full_geometries`:
+
+  Add the full geometry for each place if available. Considerably
+  increases the size of the photon database.
+
 - `extra_tags`:
 
   Character vector specifying extra OSM tags to import from the
   Nominatim database. These tags are used to augment geocoding results.
   Defaults to `NULL`.
-
-- `json`:
-
-  If `TRUE`, dumps the imported Nominatim database to a JSON file and
-  returns the path to the output file. Defaults to `FALSE`.
 
 - `timeout`:
 
@@ -322,6 +317,21 @@ Nominatim database that can be connected to.
   java command. See
   [`cmd_options`](https://jslth.github.io/photon/reference/cmd_options.md)
   for a helper function.
+
+- `structured`:
+
+  Deprecated since v1.0.0. Structured geocoding is enabled by default
+  now. For earlier versions, use `photon_opts`.
+
+- `update`:
+
+  Deprecated since v1.0.0. Updates are done using a distinct command
+  now. For earlier versions, use `photon_opts`.
+
+- `enable_update_api`:
+
+  Deprecated since v1.0.0. The update API is enabled by default now. For
+  earlier versions, use `photon_opts`.
 
 ------------------------------------------------------------------------
 

@@ -220,9 +220,19 @@ if applicable, the spatial and temporal coverage of the search index.</p>
 get a list of additional photon arguments for <code>$start()</code> or
 <code>$import()</code>.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">help</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">help</span><span class="op">(</span>cmd <span class="op">=</span> <span class="st">"start"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+<div class="section">
+<h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>cmd</code></dt>
+<dd><p>A command for which to display the help page. Must be one
+of <code>"start"</code>, <code>"import"</code>, <code>"update"</code>, <code>"update-init"</code>,
+or <code>"dump-nominatim-db"</code>. Defaults to <code>"start"</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div>
 <div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
 <p>Nothing, but prints to the console.</p>
@@ -237,7 +247,7 @@ of an instance entirely.</p><div class="section">
 </div>
 
 <div class="section">
-<h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
+<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>ask</code></dt>
 <dd><p>If <code>TRUE</code>, asks for confirmation before purging the
 instance.</p></dd>
@@ -262,21 +272,22 @@ a running Nominatim database that can be connected to.</p><div class="section">
 <span>  database <span class="op">=</span> <span class="st">"nominatim"</span>,</span>
 <span>  user <span class="op">=</span> <span class="st">"nominatim"</span>,</span>
 <span>  password <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  structured <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  update <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  enable_update_api <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  json <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  languages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"en"</span>, <span class="st">"fr"</span>, <span class="st">"de"</span>, <span class="st">"it"</span><span class="op">)</span>,</span>
 <span>  countries <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  full_geometries <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  extra_tags <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  json <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="fl">60</span>,</span>
 <span>  java_opts <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  photon_opts <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  photon_opts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  structured <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  update <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  enable_update_api <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>host</code></dt>
 <dd><p>Postgres host of the database. Defaults to <code>"127.0.0.1"</code>.</p></dd>
 
@@ -297,25 +308,10 @@ a running Nominatim database that can be connected to.</p><div class="section">
 <dd><p>Postgres database password. Defaults to <code>""</code>.</p></dd>
 
 
-<dt><code>structured</code></dt>
-<dd><p>If <code>TRUE</code>, enables structured query support when
-importing the database. This allows the usage of
-<code><a href="structured.html">structured</a></code>. Structured queries are only supported in the
-OpenSearch version of photon. See section "OpenSearch" above. Defaults
-to <code>FALSE</code>.</p></dd>
-
-
-<dt><code>update</code></dt>
-<dd><p>If <code>TRUE</code>, fetches updates from the Nominatim database,
-updating the search index without offering an API. If <code>FALSE</code>,
-imports the database an deletes the previous index. Defaults to
-<code>FALSE</code>.</p></dd>
-
-
-<dt><code>enable_update_api</code></dt>
-<dd><p>If <code>TRUE</code>, enables an additional
-endpoint <code>/nominatim-update</code>, which allows updates from
-Nominatim databases.</p></dd>
+<dt><code>json</code></dt>
+<dd><p>If <code>TRUE</code> and a JSON dump is present in the photon
+directory, imports from a JSON dump. Otherwise, tries to import from
+Nominatim.</p></dd>
 
 
 <dt><code>languages</code></dt>
@@ -329,16 +325,15 @@ and Italian.</p></dd>
 import from the Nominatim database. Defaults to all country codes.</p></dd>
 
 
+<dt><code>full_geometries</code></dt>
+<dd><p>Add the full geometry for each place if
+available. Considerably increases the size of the photon database.</p></dd>
+
+
 <dt><code>extra_tags</code></dt>
 <dd><p>Character vector specifying extra OSM tags to import
 from the Nominatim database. These tags are used to augment geocoding
 results. Defaults to <code>NULL</code>.</p></dd>
-
-
-<dt><code>json</code></dt>
-<dd><p>If <code>TRUE</code>, dumps the imported Nominatim database to
-a JSON file and returns the path to the output file. Defaults to
-<code>FALSE</code>.</p></dd>
 
 
 <dt><code>timeout</code></dt>
@@ -355,6 +350,21 @@ to 60 seconds.</p></dd>
 <dd><p>Character vector of further flags passed on to the
 photon jar in the java command. See <code><a href="cmd_options.html">cmd_options</a></code> for a
 helper function.</p></dd>
+
+
+<dt><code>structured</code></dt>
+<dd><p>Deprecated since v1.0.0. Structured geocoding is
+enabled by default now. For earlier versions, use <code>photon_opts</code>.</p></dd>
+
+
+<dt><code>update</code></dt>
+<dd><p>Deprecated since v1.0.0. Updates are done using a distinct
+command now. For earlier versions, use <code>photon_opts</code>.</p></dd>
+
+
+<dt><code>enable_update_api</code></dt>
+<dd><p>Deprecated since v1.0.0. The update API is
+enabled by default now. For earlier versions, use <code>photon_opts</code>.</p></dd>
 
 
 </dl><p></p></div>
@@ -381,7 +391,7 @@ located in the instance directory.</p><div class="section">
 </div>
 
 <div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>host</code></dt>
 <dd><p>Character string of the host name that the geocoder should
 be opened on.</p></dd>
@@ -473,7 +483,7 @@ and the date of data import.</p><div class="section">
 </div>
 
 <div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>region</code></dt>
 <dd><p>Character string that identifies a region or country. An
 extract for this region will be downloaded. If <code>"planet"</code>, downloads
@@ -570,7 +580,7 @@ error message.</p>
 </div>
 
 <div class="section">
-<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

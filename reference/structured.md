@@ -39,8 +39,8 @@ has_structured_support()
   Dataframe or list containing structured information on a place to
   geocode. Can contain the columns `street`, `housenumber`, `postcode`,
   `city`, `district`, `county`, `state`, and `countrycode`. At least one
-  of these columns must be present in the dataframe. Note that countries
-  must be passed as ISO-2 country codes.
+  of these columns must be present in the dataframe. Country names are
+  automatically converted to ISO-2 codes where possible.
 
 - limit:
 

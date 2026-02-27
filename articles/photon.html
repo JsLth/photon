@@ -126,6 +126,29 @@ supports <code>sf</code> objects so that all geocoding functions return
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">cities1</span>, <span class="va">cities2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>More recently, the photon geocoder started to support structured
+geocoding. Structured geocoding works just like <code><a href="../reference/geocode.html">geocode()</a></code>,
+but you provide place data in a dataframe instead of a character string.
+This allows you to be much more specific in what you want to geocode.
+While you’d have to fiddle with location biases to geocode Moscow, MN,
+structured geocoding can be a little more precise.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">place</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  city <span class="op">=</span> <span class="st">"Moscow"</span>,</span>
+<span>  state <span class="op">=</span> <span class="st">"Minnesota"</span>,</span>
+<span>  countrycode <span class="op">=</span> <span class="st">"USA"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/structured.html">structured</a></span><span class="op">(</span><span class="va">place</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Simple feature collection with 1 feature and 12 fields</span></span>
+<span><span class="co">#&gt; Geometry type: POINT</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: -93.09825 ymin: 43.70718 xmax: -93.09825 ymax: 43.70718</span></span>
+<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 13</span></span></span>
+<span><span class="co">#&gt;     idx osm_type   osm_id osm_key osm_value type  countrycode name  county state</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 R        19<span style="text-decoration: underline;">843</span>371 place   village   city  US          Mosc… Freeb… Minn…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: country &lt;chr&gt;, extent &lt;list&gt;, geometry &lt;POINT [°]&gt;</span></span></span></code></pre></div>
 <p>Online geocoding is nice and it is most likely what you need for
 basic tasks. But what if online geocoding is not enough? What if you
 need to geocode a dataset of 200,000 places? What if you need to geocode
@@ -145,7 +168,7 @@ over this task!</p>
 higher. To do that, you can use the <a href="https://cran.r-project.org/package=rJavaEnv" class="external-link"><code>{rJavaEnv}</code></a>
 package by Egor Kotov. It allows you to easily set up a JDK environment
 for a local project.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># pak::pkg_install("rJavaEnv")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/e-kotov/rJavaEnv" class="external-link">rJavaEnv</a></span><span class="op">)</span></span>
 <span></span>
@@ -170,116 +193,81 @@ coverage is also possible, the global search index is extremely large
 (around 80 GB). By default, <code><a href="../reference/new_photon.html">new_photon()</a></code> downloads a search
 index tagged with <code>latest</code> but it is also possible to query a
 search index created at a specific date.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span>
-<span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">path</span>, country <span class="op">=</span> <span class="st">"Monaco"</span><span class="op">)</span></span>
+<span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">path</span>, region <span class="op">=</span> <span class="st">"Andorra"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ openjdk version "24.0.1" 2025-04-15</span></span>
 <span><span class="co">#&gt; ℹ OpenJDK Runtime Environment Corretto-24.0.1.9.1 (build 24.0.1+9-FR)</span></span>
 <span><span class="co">#&gt; ℹ OpenJDK 64-Bit Server VM Corretto-24.0.1.9.1 (build 24.0.1+9-FR, mixed mode, sharing)</span></span>
-<span><span class="co">#&gt; ✔ Successfully downloaded OpenSearch photon 0.7.0. [17.9s]</span></span>
+<span><span class="co">#&gt; ✔ Successfully downloaded OpenSearch photon 1.0.0. [17.9s]</span></span>
 <span><span class="co">#&gt; ✔ Successfully downloaded search index. [854ms]</span></span>
-<span><span class="co">#&gt; • Version: 0.7.4</span></span>
-<span><span class="co">#&gt; • Coverage: Monaco</span></span>
-<span><span class="co">#&gt; • Time: 2025-09-17</span></span></code></pre></div>
+<span><span class="co">#&gt; • Version: 1.0.0</span></span>
+<span><span class="co">#&gt; • Coverage: Andorra</span></span>
+<span><span class="co">#&gt; • Time: 2026-02-27</span></span></code></pre></div>
 <p>The resulting object is an R6 class with a few methods to control the
 instance. To start photon, run <code>$start()</code>. This starts an
 external java process which can be accessed using the <code>$proc</code>
 attribute.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Cluster Name: photon</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#&gt; photon$start()</span></span>
+<span><span class="co">#&gt; Cluster Name: photon </span></span>
 <span><span class="co">#&gt; Base Path:    /tmp/RtmpLQIqmy/photon/./photon_data</span></span>
-<span><span class="co">#&gt; Num Of Node:  1</span></span>
+<span><span class="co">#&gt; Num Of Node:  1      </span></span>
 <span><span class="co">#&gt; Node Name:      Node 1</span></span>
-<span><span class="co">#&gt; HTTP Port:      9201</span></span>
+<span><span class="co">#&gt; HTTP Port:      9201 </span></span>
 <span><span class="co">#&gt; Data Directory: /tmp/RtmpLQIqmy/photon/./photon_data/node_1/data</span></span>
 <span><span class="co">#&gt; Log Directory:  /tmp/RtmpLQIqmy/photon/./photon_data/node_1/logs</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:26,879][INFO ][o.o.n.Node               ] version[2.19.1], pid[1896], build[unknown/unknown/unknown], OS[Linux/6.6.87.1-microsoft-standard-WSL2/amd64], JVM[Amazon.com Inc./OpenJDK 64-Bit Server VM/24.0.1/24.0.1+9-FR]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:26,887][INFO ][o.o.n.Node               ] JVM home [/root/.cache/R/rJavaEnv/installed/linux/x64/24]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:26,899][INFO ][o.o.n.Node               ] JVM arguments []</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:26,932][INFO ][o.o.p.PluginsService     ] no modules loaded</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.analysis.common.CommonAnalysisPlugin]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.geo.GeoModulePlugin]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.transport.Netty4Plugin]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:27,174][INFO ][o.a.l.s.MemorySegmentIndexInputProvider] Using MemorySegmentIndexInput and native madvise support with Java 21 or later; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:27,184][INFO ][o.o.e.NodeEnvironment    ] using [1] data paths, mounts [[/ (/dev/sdd)]], net usable_space [222.3gb], net total_space [250.9gb], types [ext4]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:27,190][INFO ][o.o.e.NodeEnvironment    ] heap size [2.4gb], compressed ordinary object pointers [true]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:27,384][WARN ][o.a.l.i.v.VectorizationProvider] You are running with Java 23 or later. To make full use of the Vector API, please update Apache Lucene.</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:27,603][INFO ][o.o.n.Node               ] node name [Node 1], node ID [IFRXmNbwTYi4SLrEQXOn3A], cluster name [photon], roles [data, cluster_manager]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:27,708][INFO ][o.o.e.ExtensionsManager  ] ExtensionsManager initialized</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:29,302][INFO ][o.o.t.NettyAllocator     ] creating NettyAllocator with the following configs: [name=opensearch_configured, chunk_size=512kb, suggested_max_allocation_size=512kb, factors={opensearch.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=2mb}]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:29,499][INFO ][o.o.d.DiscoveryModule    ] using discovery type [single-node] and seed hosts providers [settings]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:30,082][WARN ][o.o.g.DanglingIndicesState] gateway.auto_import_dangling_indices is disabled, dangling indices will not be automatically detected or imported and must be managed manually</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:30,572][INFO ][o.o.n.Node               ] initialized</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:30,572][INFO ][o.o.n.Node               ] starting ...</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:30,723][INFO ][o.o.t.TransportService   ] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,016][INFO ][o.o.c.c.Coordinator      ] cluster UUID [wbcIe8ZCQw-oX0uvwZgysw]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,199][INFO ][o.o.c.s.MasterService    ] Tasks batched with key: org.opensearch.cluster.coordination.JoinHelper, count:3 and sample tasks: elected-as-cluster-manager ([1] nodes joined)[{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true} elect leader, _BECOME_CLUSTER_MANAGER_TASK_, _FINISH_ELECTION_], term: 2, version: 11, delta: cluster-manager node changed {previous [], current [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,289][INFO ][o.o.c.s.ClusterApplierService] cluster-manager node changed {previous [], current [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}, term: 2, version: 11, reason: Publication{term=2, version=11}</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,316][INFO ][o.o.d.PeerFinder         ] setting findPeersInterval to [1s] as node commission status = [true] for local node [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,321][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,329][INFO ][o.o.h.AbstractHttpServerTransport] publish_address {127.0.0.1:9201}, bound_addresses {[::1]:9201}, {127.0.0.1:9201}</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,330][INFO ][o.o.n.Node               ] started</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,345][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,402][INFO ][o.o.g.GatewayService     ] recovered [1] indices into cluster_state</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,403][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:31,599][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:32,346][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:32,519][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][2]]]).</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:32,623][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:33,179][INFO ][d.k.p.App                ] Make sure that the ES cluster is ready, this might take some time.</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:33,447][INFO ][d.k.p.App                ] ES cluster is now ready.</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:33,637][INFO ][o.o.c.m.MetadataIndexStateService] closing indices [photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:33,732][INFO ][o.o.c.m.MetadataIndexStateService] completed closing of indices [photon]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:33,733][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:33,837][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:33,936][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,245][INFO ][o.o.c.m.MetadataIndexStateService] opening indices [[photon/3te8gZq4Q-u1LwWbZGtxPA]]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,252][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,281][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,369][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,452][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,741][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,880][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][2]]]).</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:34,970][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:35,038][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]</span></span>
-<span><span class="co">#&gt; [2025-06-09T23:54:35,165][INFO ][d.k.p.App                ] Starting API with the following settings:</span></span>
-<span><span class="co">#&gt;  Languages: [en, de, fr]</span></span>
-<span><span class="co">#&gt;  Import Date: 2025-06-01T03:00:01.000+0200</span></span>
-<span><span class="co">#&gt;  Support Structured Queries: false</span></span>
-<span><span class="co">#&gt;  Support Geometries: false</span></span>
-<span><span class="co">#&gt; ✔ Photon is now running. [12.8s]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,384][INFO ][o.o.n.Node               ] version[3.4.0], pid[19752], build[unknown/unknown/unknown], OS[Windows 11/10.0/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/22/22+36-2370]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,385][INFO ][o.o.n.Node               ] JVM home [/root/.cache/R/rJavaEnv/installed/linux/x64/24]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,389][INFO ][o.o.n.Node               ] JVM arguments []</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,395][INFO ][o.o.p.PluginsService     ] no modules loaded</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,396][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.analysis.common.CommonAnalysisModulePlugin]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,397][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.geo.GeoModulePlugin]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,397][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.transport.Netty4ModulePlugin]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,438][INFO ][o.o.e.NodeEnvironment    ] using [1] data paths, mounts [[/ (/dev/sdd)]], net usable_space [103.5gb], net total_space [783.6gb], types [NTFS]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,443][INFO ][o.o.e.NodeEnvironment    ] heap size [3.9gb], compressed ordinary object pointers [true]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,536][WARN ][o.a.l.i.v.VectorizationProvider] Java vector incubator module is not readable. For optimal vector performance, pass '--add-modules jdk.incubator.vector' to enable Vector API.</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,624][INFO ][o.o.n.Node               ] node name [Node 1], node ID [FYcghCrFQyi8ZcOrpZkWmA], cluster name [photon], roles [data, cluster_manager]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,664][INFO ][o.o.e.ExtensionsManager  ] ExtensionsManager initialized</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,911][INFO ][o.o.i.MergeSchedulerConfig] Updating autoThrottle for index _na_ from [false] to [true]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,911][INFO ][o.o.i.MergeSchedulerConfig] Updating maxThreadCount from [0] to [4] and maxMergeCount from [0] to [9] for index _na_.</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:54,911][INFO ][o.o.i.MergeSchedulerConfig] Initialized index _na_ with maxMergeCount=9, maxThreadCount=4, autoThrottleEnabled=true</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:55,087][INFO ][o.o.i.MergeSchedulerConfig] Updating autoThrottle for index _na_ from [false] to [true]</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:55,087][INFO ][o.o.i.MergeSchedulerConfig] Updating maxThreadCount from [0] to [4] and maxMergeCount from [0] to [9] for index _na_.</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:55,087][INFO ][o.o.i.MergeSchedulerConfig] Initialized index _na_ with maxMergeCount=9, maxThreadCount=4, autoThrottleEnabled=true</span></span>
+<span><span class="co">#&gt; [2026-02-27T14:29:56,578][INFO ][o.o.t.NettyAllocator     ] creating NettyAllocator with the following configs: [name=opensearch_configured, chunk_size=512kb, suggested_max_allocation_size=512kb, factors={opensearch.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=2mb}]</span></span>
+<span><span class="co">#&gt; ✔ Photon is now running. [6.2s]</span></span>
 <span></span>
 <span><span class="va">photon</span><span class="op">$</span><span class="va">proc</span></span>
 <span><span class="co">#&gt; PROCESS 'java', running, pid 1896.</span></span></code></pre></div>
 <p>To check if the service is up and running, you can use
 <code>$is_ready()</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">is_ready</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>Finally, to properly stop photon after you used it, you can run
-<code>$stop()</code>. You do not actually <em>need</em> to run it
-manually, because it is (implicitly) executed on two occasions: 1. on
-garbage collection and 2. when the R session ends and external processes
-are killed.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="kw">stop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>To compare offline and online geocoding, let’s benchmark them by
 geocoding the Samoan capital Apia:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># offline geocoding</span></span>
 <span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/with_photon.html">with_photon</a></span><span class="op">(</span><span class="va">photon</span>, <span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Monte Carlo"</span><span class="op">)</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">$</span><span class="va">median</span></span>
-<span><span class="co">#&gt; [1] 17.1ms</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30.2ms</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># online geocoding</span></span>
 <span><span class="va">photon_pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_photon.html">new_photon</a></span><span class="op">(</span>mount <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu"><a href="../reference/with_photon.html">with_photon</a></span><span class="op">(</span><span class="va">photon_pub</span>, <span class="fu"><a href="../reference/geocode.html">geocode</a></span><span class="op">(</span><span class="st">"Monte Carlo"</span><span class="op">)</span><span class="op">)</span>, iterations <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">$</span><span class="va">median</span></span>
-<span><span class="co">#&gt; [1] 1.04s</span></span></code></pre></div>
-<p>That is a speed increase by a factor of almost 60 (and possibly more
-on faster machines)!</p>
+<span><span class="co">#&gt; [1] 334ms</span></span></code></pre></div>
+<p>That is a speed increase by a factor of over 10 (and possibly more on
+faster machines)!</p>
+<p>To properly stop photon after you used it, you can run
+<code>$stop()</code>. You do not actually <em>need</em> to run it
+manually, because it is (implicitly) executed on two occasions: 1. on
+garbage collection and 2. when the R session ends and external processes
+are killed.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="kw">stop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, to clean up photon, i.e. stop the instance and delete the
 photon directory, run <code>$purge()</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">photon</span><span class="op">$</span><span class="fu">purge</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Purging an instance kills the photon process and removes the photon directory.</span></span>
 <span><span class="co">#&gt; Continue? (y/N/Cancel) y</span></span></code></pre></div>
