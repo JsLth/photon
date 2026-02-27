@@ -80,27 +80,29 @@ download_database <- function(region,
 
   if (!is_planet) {
     region_long <- region
-    region <- try_iso2(region)
-
+    country <- try_iso2(region)
+    converted <- !identical(country, region)
+    region <- country
     html <- rvest::read_html(req$url)
     regions <- rvest::html_table(html)[[1]]
 
-    region <- gsub(" ", "-", tolower(region))
-    has_region <- region == tolower(regions$Region)
-    if (is.na(country) && !any(has_region)) {
-      ph_stop(
-        c(
-          "{.val {region}} is neither a country name nor a region name.",
-          "i" = "Run `list_regions()` for a list of valid countries and regions."
-        ),
-        class = "country_invalid"
-      )
-    }
-
-    if (!any(has_region)) {
-      has_country <- grepl(region, regions$Countries, ignore.case = TRUE)
-    } else {
+    has_region <- FALSE
+    if (!converted) {
+      region <- gsub(" ", "-", tolower(region))
+      has_region <- region == tolower(regions$Region)
       has_country <- has_region
+
+      if (!any(has_region)) {
+        ph_stop(
+          c(
+            "{.val {region}} is neither a country name nor a region name.",
+            "i" = "Run `list_regions()` for a list of valid countries and regions."
+          ),
+          class = "country_invalid"
+        )
+      }
+    } else {
+      has_country <- grepl(region, regions$Countries, ignore.case = TRUE)
     }
 
     has_dump <- "\u2713" %in% regions[has_country, ]$`DB dump`
@@ -151,13 +153,6 @@ download_database <- function(region,
     )
   }
 
-  req <- httr2::req_error(req, body = function(resp) {
-    status <- httr2::resp_status(resp)
-    if (identical(status, 404L)) {
-      sprintf("This usually means that region %s is not available.", region)
-    }
-  })
-
   httr2::req_perform(req, path = path)
   normalizePath(path, "/")
 }
@@ -194,6 +189,7 @@ list_regions <- function(region = NULL) {
 
 
 try_iso2 <- function(country) {
+  if (!is.character(country) && !is.numeric(country)) return(country)
   cc <- countrycode::countryname(country, destination = "iso2c", warn = FALSE)
   cc[is.na(cc)] <- country[is.na(cc)]
   cc
