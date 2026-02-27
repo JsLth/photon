@@ -261,7 +261,7 @@ photon_local <- R6::R6Class(
           ph_stop(c(
             "No JSON dump found.",
             "i" = "Download a database using $download_data(json = TRUE)"
-          ))
+          ), class = "import_no_json")
       }
 
       countries <- try_iso2(countries)
@@ -427,7 +427,7 @@ photon_local <- R6::R6Class(
       )
 
       if (json) {
-        private$json_path <- archive_path
+        private$json_path <- archive_path # nocov
       } else {
         untar_index(archive_path, self$path)
         store_index_metadata(self$path, archive_path)

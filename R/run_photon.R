@@ -82,8 +82,8 @@ run_import <- function(self,
   versionize_logs(private)
   log_error <- assemble_log_error(private$logs)
   abort_log_error(log_error, quiet, class = "import_error")
-  cli::cli_progress_done()
-  invisible(proc)
+  cli::cli_progress_done() # nocov
+  invisible(proc) # nocov
 }
 
 

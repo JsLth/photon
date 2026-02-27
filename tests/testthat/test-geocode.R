@@ -71,7 +71,7 @@ test_that("reversing only works with points", {
 
 test_that("structured works", {
   df <- data.frame(city = "Berlin", countrycode = "Berlin")
-  res <- structured(df)
+  res <- structured(df, progress = TRUE)
   expect_s3_class(res, "sf")
   expect_equal(nrow(res), 1)
 })

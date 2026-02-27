@@ -1,6 +1,7 @@
 test_that("character tools work", {
   expect_equal(regex_match(c("test1", "test2"), "[0-9]"), list("1", "2"))
   expect_equal(regex_match("abc", "a(b)c", i = 2), "b")
+  expect_equal(format_csv(c("a", "b", "c")), "a,b,c")
 })
 
 test_that("%||% works", {
@@ -78,6 +79,7 @@ test_that("assertions work", {
   assert_class(data.frame(), "data.frame")
   assert_named(list(a = 1), c("a", "b"))
   assert_range(5, min = 1, max = 6)
+  check_utility("ping")
 
   expect_error(assert_na(NA), class = "assert_na")
   expect_error(assert_vector(1, size = 2), class = "assert_vector")
@@ -91,6 +93,7 @@ test_that("assertions work", {
   expect_error(assert_named(list(a = 1, b = 2), "b", all = TRUE), class = "assert_named")
   expect_error(assert_range(5, min = 6, max = 10), class = "assert_range")
   expect_error(assert_range(5, min = 1, max = 2), class = "assert_range")
+  expect_error(check_utility("abcdefg"))
 })
 
 test_that("cmd_options work", {

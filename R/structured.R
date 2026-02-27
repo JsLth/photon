@@ -61,7 +61,7 @@ structured <- function(.data,
                        exclude = NULL,
                        progress = interactive()) {
   if (!has_structured_support()) {
-    ph_stop("Structured geocoding is disabled for the mounted photon instance.")
+    ph_stop("Structured geocoding is disabled for the mounted photon instance.") # nocov
   }
 
   cols <- c("street", "housenumber", "postcode", "city", "county", "state", "countrycode")

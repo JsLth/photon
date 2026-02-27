@@ -144,6 +144,7 @@ describe("photon_local", {
     expect_error(photon$import(), class = "import_error")
     logs <- photon$get_logs()
     expect_equal(unique(logs$rid), c(1, 2))
+    expect_error(photon$import(json = TRUE), class = "import_no_json")
   })
 
   it("intercepts usage errors correctly", {
