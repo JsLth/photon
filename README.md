@@ -48,48 +48,74 @@ directly start geocoding.
 
 ``` r
 library(photon)
-places <- c("Paris", "Beijing", "Sao Paolo", "Kinshasa")
+places <- c("Paris", "Shenzen", "Sao Paulo", "Kinshasa")
 
 cities1 <- geocode(places, layer = "city")
 cities1
 #> Simple feature collection with 4 features and 12 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: -46.63338 ymin: -23.55065 xmax: 110.7344 ymax: 48.8535
+#> Bounding box:  xmin: -46.63338 ymin: -23.55065 xmax: 114.0545 ymax: 48.8535
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 4 × 13
-#>     idx osm_type  osm_id country osm_key countrycode osm_value name  state type 
-#>   <int> <chr>      <dbl> <chr>   <chr>   <chr>       <chr>     <chr> <chr> <chr>
-#> 1     1 R         7.15e4 France  place   FR          city      Paris Ile-… city 
-#> 2     2 N         4.52e9 China   place   CN          town      Beij… Shan… city 
-#> 3     3 R         2.98e5 Brazil  place   BR          municipa… São … São … city 
-#> 4     4 R         3.88e5 Democr… bounda… CD          administ… Kins… Kins… city 
+#>     idx osm_type  osm_id osm_key osm_value type  countrycode name  state country
+#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>       <chr> <chr> <chr>  
+#> 1     1 R          71525 place   city      city  FR          Paris Isla… France 
+#> 2     2 R        3464353 place   city      city  CN          Shen… Guan… China  
+#> 3     3 R         298285 place   municipa… city  BR          São … São … Brazil 
+#> 4     4 R         388103 bounda… administ… city  CD          Kins… Kins… Democr…
 #> # ℹ 3 more variables: extent <list>, county <chr>, geometry <POINT [°]>
+```
+
+Structured geocoding means providing address / place details in a
+structured format.
+
+``` r
+places_str <- data.frame(
+  city = places,
+  countrycode = c("FR", "CN", "BR", "CD")
+)
+cities2 <- structured(places_str)
+cities2
+#> Simple feature collection with 4 features and 13 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -35.76483 ymin: -5.894168 xmax: 114.0545 ymax: 46.91503
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 4 × 14
+#>     idx osm_type  osm_id osm_key  osm_value     type  postcode countrycode name 
+#>   <int> <chr>      <int> <chr>    <chr>         <chr> <chr>    <chr>       <chr>
+#> 1     1 R        2706247 place    village       city  71150    FR          Pari…
+#> 2     2 R        3464353 place    city          city  <NA>     CN          Shen…
+#> 3     3 R         301120 place    municipality  city  59460-0… BR          São …
+#> 4     4 R         388103 boundary administrati… city  <NA>     CD          Kins…
+#> # ℹ 5 more variables: county <chr>, state <chr>, country <chr>, extent <list>,
+#> #   geometry <POINT [°]>
 ```
 
 Reverse geocoding means taking point geometries and returning their
 addresses or place names.
 
 ``` r
-cities2 <- reverse(cities1$geometry, layer = "city")
-cities2
+cities3 <- reverse(cities1$geometry, layer = "city")
+cities3
 #> Simple feature collection with 4 features and 12 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: -46.63338 ymin: -23.55065 xmax: 110.7344 ymax: 48.8535
+#> Bounding box:  xmin: -46.63338 ymin: -23.55065 xmax: 114.0545 ymax: 48.8535
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 4 × 13
-#>     idx osm_type  osm_id country osm_key countrycode osm_value name  state type 
-#>   <int> <chr>      <dbl> <chr>   <chr>   <chr>       <chr>     <chr> <chr> <chr>
-#> 1     1 R         7.15e4 France  place   FR          city      Paris Ile-… city 
-#> 2     2 N         4.52e9 China   place   CN          town      Beij… Shan… city 
-#> 3     3 R         2.98e5 Brazil  place   BR          municipa… São … São … city 
-#> 4     4 R         3.88e5 Democr… bounda… CD          administ… Kins… Kins… city 
+#>     idx osm_type  osm_id osm_key osm_value type  countrycode name  state country
+#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>       <chr> <chr> <chr>  
+#> 1     1 R          71525 place   city      city  FR          Paris Isla… France 
+#> 2     2 R        3464353 place   city      city  CN          Shen… Guan… China  
+#> 3     3 R         298285 place   municipa… city  BR          São … São … Brazil 
+#> 4     4 R         388103 bounda… administ… city  CD          Kins… Kins… Democr…
 #> # ℹ 3 more variables: extent <list>, county <chr>, geometry <POINT [°]>
 ```
 
 ``` r
-all.equal(cities1, cities2)
+all.equal(cities1, cities3)
 #> [1] TRUE
 ```
 
@@ -100,7 +126,7 @@ can install photon locally. The following code would install and start
 photon covering the country of Germany in the current working directory.
 
 ``` r
-photon <- new_photon(path = "./photon", country = "Germany")
+photon <- new_photon(path = "./photon", region = "Germany")
 photon$start()
 ```
 

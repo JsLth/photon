@@ -49,22 +49,34 @@ When loading `{photon}`, the package assumes that you want send geocoding reques
 
 ```{r geocode}
 library(photon)
-places <- c("Paris", "Beijing", "Sao Paolo", "Kinshasa")
+places <- c("Paris", "Shenzen", "Sao Paulo", "Kinshasa")
 
 cities1 <- geocode(places, layer = "city")
 cities1
 ```
 
-Reverse geocoding means taking point geometries and returning their addresses or place names.
+Structured geocoding means providing address / place details in a structured format.
 
-```{r reverse}
-cities2 <- reverse(cities1$geometry, layer = "city")
+```{r}
+places_str <- data.frame(
+  city = places,
+  countrycode = c("FR", "CN", "BR", "CD")
+)
+cities2 <- structured(places_str)
 cities2
 ```
 
-```{r compare}
-all.equal(cities1, cities2)
+Reverse geocoding means taking point geometries and returning their addresses or place names.
+
+```{r reverse}
+cities3 <- reverse(cities1$geometry, layer = "city")
+cities3
 ```
+
+```{r compare}
+all.equal(cities1, cities3)
+```
+
 
 
 ## Offline geocoding
@@ -72,7 +84,7 @@ all.equal(cities1, cities2)
 `{photon}` is designed to facilitate offline geocoding. `new_photon()` can install photon locally. The following code would install and start photon covering the country of Germany in the current working directory.
 
 ```{r offline, eval=FALSE}
-photon <- new_photon(path = "./photon", country = "Germany")
+photon <- new_photon(path = "./photon", region = "Germany")
 photon$start()
 ```
 
