@@ -1,5 +1,7 @@
 query_photon <- function(endpoint, ..., geojson = TRUE) {
   args <- drop_null(drop_na(list(...)))
+  is_logical <- vapply(args, is.logical, logical(1))
+  args[is_logical] <- as.numeric(args[is_logical])
   req <- httr2::request(get_photon_url())
   req <- httr2::req_template(req, "GET {endpoint}")
   req <- do.call(
