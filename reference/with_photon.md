@@ -39,16 +39,16 @@ new_photon(url = "https://localhost:8001/")
 
 # Geocode with the public instance only once
 with_photon(pub_photon, geocode("Rutland"))
-#> Simple feature collection with 1 feature and 11 fields
+#> Simple feature collection with 1 feature and 10 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: -0.6632643 ymin: 52.6423 xmax: -0.6632643 ymax: 52.6423
+#> Bounding box:  xmin: 97.74531 ymin: 64.68631 xmax: 97.74531 ymax: 64.68631
 #> Geodetic CRS:  WGS 84
-#> # A tibble: 1 × 12
-#>     idx osm_type osm_id osm_key  osm_value type  countrycode name  country state
-#>   <int> <chr>     <int> <chr>    <chr>     <chr> <chr>       <chr> <chr>   <chr>
-#> 1     1 R         57398 boundary administ… coun… GB          Rutl… United… Engl…
-#> # ℹ 2 more variables: extent <list>, geometry <POINT [°]>
+#> # A tibble: 1 × 11
+#>     idx osm_type osm_id osm_key osm_value type  countrycode name  country extent
+#>   <int> <chr>     <int> <chr>   <chr>     <chr> <chr>       <chr> <chr>   <list>
+#> 1     1 R         60189 place   country   coun… RU          Russ… Russia  <dbl> 
+#> # ℹ 1 more variable: geometry <POINT [°]>
 
 # The custom instance is still mounted
 get_instance()

@@ -20,7 +20,8 @@
   : Local photon instances
 - [`photon_local`](https://jslth.github.io/photon/reference/photon_local.md)
   : Local photon instance
-- [`download_searchindex()`](https://jslth.github.io/photon/reference/download_searchindex.md)
+- [`download_database()`](https://jslth.github.io/photon/reference/download_database.md)
+  [`list_regions()`](https://jslth.github.io/photon/reference/download_database.md)
   : Download search index
 - [`download_photon()`](https://jslth.github.io/photon/reference/download_photon.md)
   : Download photon

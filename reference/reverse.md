@@ -19,6 +19,9 @@ reverse(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
+  dedupe = TRUE,
+  include = NULL,
+  exclude = NULL,
   distance_sort = TRUE,
   progress = interactive()
 )
@@ -81,6 +84,20 @@ reverse(
   Corresponds to the zoom level in OpenStreetMap. The exact relation to
   `locbias` is \\0.25\text{ km} \cdot 2^{(18 - \text{zoom})}\\. Defaults
   to 16.
+
+- dedupe:
+
+  If `FALSE`, keeps duplicates in the geocoding results. By default,
+  photon attempts to deduplicate results that have the same name,
+  postcode, and OSM value. Defaults to `TRUE`.
+
+- include, exclude:
+
+  Character vector containing
+  [categories](https://github.com/komoot/photon/blob/master/docs/categories.md)
+  to include or exclude. Places will be *included* if any category in
+  `include` is present. Places will be *excluded* if all categories in
+  `exclude` are present.
 
 - distance_sort:
 
@@ -164,8 +181,8 @@ reverse(sf_data)
 #>   <int> <chr>         <dbl> <chr>   <chr>       <chr> <chr>    <chr>       <chr>
 #> 1     1 W          28000939 highway unclassifi… stre… 48336    DE          Gröb…
 #> 2     2 N        4210183016 place   house       house 48703    DE          NA   
-#> # ℹ 9 more variables: country <chr>, city <chr>, district <chr>, state <chr>,
-#> #   county <chr>, extent <list>, housenumber <chr>, street <chr>,
+#> # ℹ 9 more variables: district <chr>, city <chr>, county <chr>, state <chr>,
+#> #   country <chr>, extent <list>, housenumber <chr>, street <chr>,
 #> #   geometry <POINT [°]>
 
 # ... but also with simple dataframes
@@ -181,8 +198,8 @@ reverse(df_data)
 #>   <int> <chr>         <dbl> <chr>   <chr>       <chr> <chr>    <chr>       <chr>
 #> 1     1 W          28000939 highway unclassifi… stre… 48336    DE          Gröb…
 #> 2     2 N        4210183016 place   house       house 48703    DE          NA   
-#> # ℹ 9 more variables: country <chr>, city <chr>, district <chr>, state <chr>,
-#> #   county <chr>, extent <list>, housenumber <chr>, street <chr>,
+#> # ℹ 9 more variables: district <chr>, city <chr>, county <chr>, state <chr>,
+#> #   country <chr>, extent <list>, housenumber <chr>, street <chr>,
 #> #   geometry <POINT [°]>
 
 # limit search radius to 10m
@@ -197,7 +214,7 @@ reverse(df_data, radius = 10)
 #>   <int> <chr>         <dbl> <chr>   <chr>       <chr> <chr>    <chr>       <chr>
 #> 1     1 W          28000939 highway unclassifi… stre… 48336    DE          Gröb…
 #> 2     2 N        4210183016 place   house       house 48703    DE          NA   
-#> # ℹ 9 more variables: country <chr>, city <chr>, district <chr>, state <chr>,
-#> #   county <chr>, extent <list>, housenumber <chr>, street <chr>,
+#> # ℹ 9 more variables: district <chr>, city <chr>, county <chr>, state <chr>,
+#> #   country <chr>, extent <list>, housenumber <chr>, street <chr>,
 #> #   geometry <POINT [°]>
 ```

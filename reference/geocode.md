@@ -17,6 +17,9 @@ geocode(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
+  dedupe = TRUE,
+  include = NULL,
+  exclude = NULL,
   latinize = TRUE,
   progress = interactive()
 )
@@ -79,6 +82,20 @@ geocode(
   Corresponds to the zoom level in OpenStreetMap. The exact relation to
   `locbias` is \\0.25\text{ km} \cdot 2^{(18 - \text{zoom})}\\. Defaults
   to 16.
+
+- dedupe:
+
+  If `FALSE`, keeps duplicates in the geocoding results. By default,
+  photon attempts to deduplicate results that have the same name,
+  postcode, and OSM value. Defaults to `TRUE`.
+
+- include, exclude:
+
+  Character vector containing
+  [categories](https://github.com/komoot/photon/blob/master/docs/categories.md)
+  to include or exclude. Places will be *included* if any category in
+  `include` is present. Places will be *excluded* if all categories in
+  `exclude` are present.
 
 - latinize:
 
@@ -172,48 +189,48 @@ geocode("Berlin", limit = 10)
 #> Simple feature collection with 10 features and 18 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: -89.90316 ymin: 39.75894 xmax: 13.39513 ymax: 52.52502
+#> Bounding box:  xmin: -89.90316 ymin: 39.75894 xmax: 13.39513 ymax: 52.53406
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 10 × 19
-#>      idx osm_type     osm_id osm_key  osm_value     type  postcode housenumber
-#>    <int> <chr>         <dbl> <chr>    <chr>         <chr> <chr>    <chr>      
-#>  1     1 R             62422 place    city          city  NA       NA         
-#>  2     1 W          38862723 leisure  stadium       house 14053    3          
-#>  3     1 W           9393789 tourism  zoo           house 10787    8          
-#>  4     1 R              6647 building university    house 10117    6          
-#>  5     1 R          11148577 amenity  university    house 14195    NA         
-#>  6     1 R            170184 place    city          city  03570    NA         
-#>  7     1 N        3856100103 railway  station       house 10557    1          
-#>  8     1 R            126290 place    village       city  NA       NA         
-#>  9     1 N         289404068 amenity  theatre       house 10627    35         
-#> 10     1 R           3600565 building train_station house 10557    NA         
-#> # ℹ 11 more variables: countrycode <chr>, name <chr>, country <chr>,
-#> #   city <chr>, district <chr>, locality <chr>, state <chr>, county <chr>,
-#> #   street <chr>, extent <list>, geometry <POINT [°]>
+#>      idx osm_type      osm_id osm_key  osm_value  type  postcode housenumber
+#>    <int> <chr>          <dbl> <chr>    <chr>      <chr> <chr>    <chr>      
+#>  1     1 R              62422 place    city       city  NA       NA         
+#>  2     1 R            1152723 place    village    city  57370    NA         
+#>  3     1 N        13277221839 historic citywalls  house 13355    NA         
+#>  4     1 N        13456118964 tourism  artwork    house 10117    NA         
+#>  5     1 N        13456106083 tourism  artwork    house 10117    NA         
+#>  6     1 R             170184 place    city       city  03570    NA         
+#>  7     1 W           38862723 leisure  stadium    house 14053    3          
+#>  8     1 R           14720811 amenity  university house 10719    NA         
+#>  9     1 R           11042445 place    town       city  NA       NA         
+#> 10     1 R             126290 place    village    city  NA       NA         
+#> # ℹ 11 more variables: countrycode <chr>, name <chr>, county <chr>,
+#> #   state <chr>, street <chr>, locality <chr>, district <chr>, city <chr>,
+#> #   country <chr>, extent <list>, geometry <POINT [°]>
 
 # return the results in german
 geocode("Berlin", limit = 10, lang = "de")
 #> Simple feature collection with 10 features and 18 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: -89.90316 ymin: 39.75894 xmax: 13.39513 ymax: 52.52502
+#> Bounding box:  xmin: -89.90316 ymin: 39.75894 xmax: 13.39513 ymax: 52.53406
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 10 × 19
-#>      idx osm_type     osm_id osm_key  osm_value     type  postcode housenumber
-#>    <int> <chr>         <dbl> <chr>    <chr>         <chr> <chr>    <chr>      
-#>  1     1 R             62422 place    city          city  NA       NA         
-#>  2     1 W          38862723 leisure  stadium       house 14053    3          
-#>  3     1 W           9393789 tourism  zoo           house 10787    8          
-#>  4     1 R          11148577 amenity  university    house 14195    NA         
-#>  5     1 R              6647 building university    house 10117    6          
-#>  6     1 R            170184 place    city          city  03570    NA         
-#>  7     1 N        3856100103 railway  station       house 10557    1          
-#>  8     1 R           3600565 building train_station house 10557    NA         
-#>  9     1 R            126290 place    village       city  NA       NA         
-#> 10     1 R           1273140 amenity  university    house 12165    NA         
-#> # ℹ 11 more variables: countrycode <chr>, name <chr>, country <chr>,
-#> #   city <chr>, district <chr>, locality <chr>, state <chr>, county <chr>,
-#> #   street <chr>, extent <list>, geometry <POINT [°]>
+#>      idx osm_type      osm_id osm_key  osm_value  type  postcode housenumber
+#>    <int> <chr>          <dbl> <chr>    <chr>      <chr> <chr>    <chr>      
+#>  1     1 R              62422 place    city       city  NA       NA         
+#>  2     1 R            1152723 place    village    city  57370    NA         
+#>  3     1 N        13277221839 historic citywalls  house 13355    NA         
+#>  4     1 N        13456118964 tourism  artwork    house 10117    NA         
+#>  5     1 N        13456106083 tourism  artwork    house 10117    NA         
+#>  6     1 R             170184 place    city       city  03570    NA         
+#>  7     1 W           38862723 leisure  stadium    house 14053    3          
+#>  8     1 R           14720811 amenity  university house 10719    NA         
+#>  9     1 R           11042445 place    town       city  NA       NA         
+#> 10     1 R             126290 place    village    city  NA       NA         
+#> # ℹ 11 more variables: countrycode <chr>, name <chr>, county <chr>,
+#> #   state <chr>, street <chr>, locality <chr>, district <chr>, city <chr>,
+#> #   country <chr>, extent <list>, geometry <POINT [°]>
 
 # limit to cities
 geocode("Berlin", layer = "city")
@@ -230,45 +247,45 @@ geocode("Berlin", layer = "city")
 
 # limit to European cities
 geocode("Berlin", bbox = c(xmin = -71.18, ymin = 44.46, xmax = 13.39, ymax = 52.52))
-#> Simple feature collection with 1 feature and 15 fields
+#> Simple feature collection with 1 feature and 13 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: 13.23981 ymin: 52.51458 xmax: 13.23981 ymax: 52.51458
+#> Bounding box:  xmin: 7.241838 ymin: 48.80095 xmax: 7.241838 ymax: 48.80095
 #> Geodetic CRS:  WGS 84
-#> # A tibble: 1 × 16
-#>     idx osm_type osm_id osm_key osm_value type  postcode housenumber countrycode
-#>   <int> <chr>     <int> <chr>   <chr>     <chr> <chr>    <chr>       <chr>      
-#> 1     1 W        3.89e7 leisure stadium   house 14053    3           DE         
-#> # ℹ 7 more variables: name <chr>, country <chr>, city <chr>, district <chr>,
-#> #   street <chr>, extent <list>, geometry <POINT [°]>
+#> # A tibble: 1 × 14
+#>     idx osm_type  osm_id osm_key osm_value type  postcode countrycode name   
+#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>    <chr>       <chr>  
+#> 1     1 R        1152723 place   village   city  57370    FR          Berling
+#> # ℹ 5 more variables: county <chr>, state <chr>, country <chr>, extent <list>,
+#> #   geometry <POINT [°]>
 
 # search for museums in berlin
 geocode("Berlin", osm_tag = "tourism:museum")
-#> Simple feature collection with 1 feature and 15 fields
-#> Geometry type: POINT
-#> Dimension:     XY
-#> Bounding box:  xmin: 13.50136 ymin: 52.5417 xmax: 13.50136 ymax: 52.5417
-#> Geodetic CRS:  WGS 84
-#> # A tibble: 1 × 16
-#>     idx osm_type    osm_id osm_key osm_value type  postcode countrycode name    
-#>   <int> <chr>        <int> <chr>   <chr>     <chr> <chr>    <chr>       <chr>   
-#> 1     1 W        367216314 tourism museum    house 13055    DE          Memoria…
-#> # ℹ 7 more variables: country <chr>, city <chr>, district <chr>,
-#> #   locality <chr>, street <chr>, extent <list>, geometry <POINT [°]>
-
-# search for touristic attractions in berlin
-geocode("Berlin", osm_tag = "tourism")
 #> Simple feature collection with 1 feature and 16 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: 13.33923 ymin: 52.50845 xmax: 13.33923 ymax: 52.50845
+#> Bounding box:  xmin: 13.39823 ymin: 52.50391 xmax: 13.39823 ymax: 52.50391
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 1 × 17
 #>     idx osm_type osm_id osm_key osm_value type  postcode housenumber countrycode
 #>   <int> <chr>     <int> <chr>   <chr>     <chr> <chr>    <chr>       <chr>      
-#> 1     1 W        9.39e6 tourism zoo       house 10787    8           DE         
-#> # ℹ 8 more variables: name <chr>, country <chr>, city <chr>, district <chr>,
-#> #   locality <chr>, street <chr>, extent <list>, geometry <POINT [°]>
+#> 1     1 W        3.37e7 tourism museum    house 10969    124-128     DE         
+#> # ℹ 8 more variables: name <chr>, street <chr>, locality <chr>, district <chr>,
+#> #   city <chr>, country <chr>, extent <list>, geometry <POINT [°]>
+
+# search for touristic attractions in berlin
+geocode("Berlin", osm_tag = "tourism")
+#> Simple feature collection with 1 feature and 14 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: 13.37353 ymin: 52.52413 xmax: 13.37353 ymax: 52.52413
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 1 × 15
+#>     idx osm_type      osm_id osm_key osm_value type  postcode countrycode name  
+#>   <int> <chr>          <dbl> <chr>   <chr>     <chr> <chr>    <chr>       <chr> 
+#> 1     1 N        13456118964 tourism artwork   house 10117    DE          Berli…
+#> # ℹ 6 more variables: street <chr>, locality <chr>, district <chr>, city <chr>,
+#> #   country <chr>, geometry <POINT [°]>
 
 # search for anything but tourism
 geocode("Berlin", osm_tag = "!tourism")
@@ -291,10 +308,10 @@ geocode("Berlin", locbias = c(-100, 40), locbias_scale = 0.1, zoom = 7, osm_tag 
 #> Bounding box:  xmin: -89.90316 ymin: 39.75894 xmax: -89.90316 ymax: 39.75894
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 1 × 13
-#>     idx osm_type osm_id osm_key osm_value type  countrycode name   country state
+#>     idx osm_type osm_id osm_key osm_value type  countrycode name   county  state
 #>   <int> <chr>     <int> <chr>   <chr>     <chr> <chr>       <chr>  <chr>   <chr>
-#> 1     1 R        126290 place   village   city  US          Berlin United… Illi…
-#> # ℹ 3 more variables: county <chr>, extent <list>, geometry <POINT [°]>
+#> 1     1 R        126290 place   village   city  US          Berlin Sangam… Illi…
+#> # ℹ 3 more variables: country <chr>, extent <list>, geometry <POINT [°]>
 
 # latinization can help normalize search terms
 geocode("Luatuanu\u2019u", latinize = FALSE) # fails
@@ -304,9 +321,9 @@ geocode("Luatuanu\u2019u", latinize = FALSE) # fails
 #> Bounding box:  xmin: -171.6764 ymin: -13.87342 xmax: -171.6764 ymax: -13.87342
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 1 × 12
-#>     idx osm_type  osm_id osm_key osm_value type  countrycode name  country state
-#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>       <chr> <chr>   <chr>
-#> 1     1 W         1.10e9 place   village   city  WS          Luat… Samoa   Ātua 
+#>     idx osm_type  osm_id osm_key osm_value type  countrycode name  state country
+#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>       <chr> <chr> <chr>  
+#> 1     1 W         1.10e9 place   village   city  WS          Luat… Ātua  Samoa  
 #> # ℹ 2 more variables: extent <list>, geometry <POINT [°]>
 geocode("Luatuanu\u2019u", latinize = TRUE)  # works
 #> Simple feature collection with 1 feature and 11 fields
@@ -315,8 +332,8 @@ geocode("Luatuanu\u2019u", latinize = TRUE)  # works
 #> Bounding box:  xmin: -171.6764 ymin: -13.87342 xmax: -171.6764 ymax: -13.87342
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 1 × 12
-#>     idx osm_type  osm_id osm_key osm_value type  countrycode name  country state
-#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>       <chr> <chr>   <chr>
-#> 1     1 W         1.10e9 place   village   city  WS          Luat… Samoa   Ātua 
+#>     idx osm_type  osm_id osm_key osm_value type  countrycode name  state country
+#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>       <chr> <chr> <chr>  
+#> 1     1 W         1.10e9 place   village   city  WS          Luat… Ātua  Samoa  
 #> # ℹ 2 more variables: extent <list>, geometry <POINT [°]>
 ```

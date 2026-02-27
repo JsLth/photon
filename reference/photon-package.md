@@ -67,5 +67,5 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Jonas Lieth <jonas.lieth@gesis.org>
+**Maintainer**: Jonas Lieth <jslth@outlook.com>
 ([ORCID](https://orcid.org/0000-0002-3451-3176)) \[copyright holder\]

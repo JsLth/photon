@@ -10,13 +10,13 @@
 Source:
 [`DESCRIPTION`](https://github.com/jslth/photon/blob/main/DESCRIPTION)
 
-Lieth J (2025). *photon: High-Performance Geocoding using 'photon'*. R
-package version 0.7.4-1, <https://github.com/jslth/photon/>.
+Lieth J (2026). *photon: High-Performance Geocoding using 'photon'*. R
+package version 1.0.0, <https://github.com/jslth/photon/>.
 
     @Manual{,
       title = {photon: High-Performance Geocoding using 'photon'},
       author = {Jonas Lieth},
-      year = {2025},
-      note = {R package version 0.7.4-1},
+      year = {2026},
+      note = {R package version 1.0.0},
       url = {https://github.com/jslth/photon/},
     }

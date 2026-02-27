@@ -17,7 +17,7 @@ or structured geocoding."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.4-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,9 @@ or <a href="structured.html">structured</a> geocoding.</p>
 <span>  locbias <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  locbias_scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  zoom <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dedupe <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  include <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  distance_sort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  progress <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -129,6 +132,20 @@ to <code>locbias</code> is \(0.25\text{ km} \cdot 2^{(18 - \text{zoom})}\).
 Defaults to 16.</p></dd>
 
 
+<dt id="arg-dedupe">dedupe<a class="anchor" aria-label="anchor" href="#arg-dedupe"></a></dt>
+<dd><p>If <code>FALSE</code>, keeps duplicates in the geocoding results.
+By default, photon attempts to deduplicate results that have the same name,
+postcode, and OSM value. Defaults to <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-include-exclude">include, exclude<a class="anchor" aria-label="anchor" href="#arg-include-exclude"></a></dt>
+<dd><p>Character vector containing
+<a href="https://github.com/komoot/photon/blob/master/docs/categories.md" class="external-link">categories</a>
+to include or exclude. Places will be <em>included</em> if any category in
+<code>include</code> is present. Places will be <em>excluded</em> if all categories
+in <code>exclude</code> are present.</p></dd>
+
+
 <dt id="arg-distance-sort">distance_sort<a class="anchor" aria-label="anchor" href="#arg-distance-sort"></a></dt>
 <dd><p>If <code>TRUE</code>, sorts the reverse geocoding results
 based on the distance to the input point. Defaults to <code>TRUE</code>.</p></dd>
@@ -190,8 +207,8 @@ R (relation), or P (polygon).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 W          28<span style="text-decoration: underline;">000</span>939 highway unclassifi… stre… 48336    DE          Gröb…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 N        <span style="text-decoration: underline;">4</span>210<span style="text-decoration: underline;">183</span>016 place   house       house 48703    DE          <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: country &lt;chr&gt;, city &lt;chr&gt;, district &lt;chr&gt;, state &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   county &lt;chr&gt;, extent &lt;list&gt;, housenumber &lt;chr&gt;, street &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: district &lt;chr&gt;, city &lt;chr&gt;, county &lt;chr&gt;, state &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   country &lt;chr&gt;, extent &lt;list&gt;, housenumber &lt;chr&gt;, street &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   geometry &lt;POINT [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ... but also with simple dataframes</span></span></span>
@@ -207,8 +224,8 @@ R (relation), or P (polygon).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 W          28<span style="text-decoration: underline;">000</span>939 highway unclassifi… stre… 48336    DE          Gröb…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 N        <span style="text-decoration: underline;">4</span>210<span style="text-decoration: underline;">183</span>016 place   house       house 48703    DE          <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: country &lt;chr&gt;, city &lt;chr&gt;, district &lt;chr&gt;, state &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   county &lt;chr&gt;, extent &lt;list&gt;, housenumber &lt;chr&gt;, street &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: district &lt;chr&gt;, city &lt;chr&gt;, county &lt;chr&gt;, state &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   country &lt;chr&gt;, extent &lt;list&gt;, housenumber &lt;chr&gt;, street &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   geometry &lt;POINT [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># limit search radius to 10m</span></span></span>
@@ -223,8 +240,8 @@ R (relation), or P (polygon).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 W          28<span style="text-decoration: underline;">000</span>939 highway unclassifi… stre… 48336    DE          Gröb…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 N        <span style="text-decoration: underline;">4</span>210<span style="text-decoration: underline;">183</span>016 place   house       house 48703    DE          <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: country &lt;chr&gt;, city &lt;chr&gt;, district &lt;chr&gt;, state &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   county &lt;chr&gt;, extent &lt;list&gt;, housenumber &lt;chr&gt;, street &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: district &lt;chr&gt;, city &lt;chr&gt;, county &lt;chr&gt;, state &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   country &lt;chr&gt;, extent &lt;list&gt;, housenumber &lt;chr&gt;, street &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   geometry &lt;POINT [°]&gt;</span></span>
 </code></pre></div>
     </div>

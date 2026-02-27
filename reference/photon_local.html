@@ -21,7 +21,7 @@ to retrieve the URL for geocoding."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.4-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,13 @@ to retrieve the URL for geocoding.</p>
 
 
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A list containing four elements:</p><ul><li><p><strong>status</strong>: Shows <code>"Ok"</code> when photon is running without problems.
+<strong>import_date</strong>: Time stamp when the database was built.
+<strong>version</strong>: Photon version currently running.
+<strong>git_commit</strong>: Git commit string of the photon version currently running.</p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="search-indices">Search indices<a class="anchor" aria-label="anchor" href="#search-indices"></a></h2>
 
 
@@ -66,11 +73,11 @@ to retrieve the URL for geocoding.</p>
 Nominatim database or they can be downloaded from the
 <a href="https://nominatim.org/2020/10/21/photon-country-extracts.html" class="external-link">Photon download server</a>.
 If you want to download pre-built search indices, simply provide a
-<code>country</code> string during initialization or use the
+<code>region</code> string during initialization or use the
 <code>$download_data</code> method. Pre-built search indices do not come with
 support for structured geocoding.</p>
 <p>If you want to build from Nominatim, do not
-provide a country string and use the <code>$import</code> method. See
+provide a region string and use the <code>$import()</code> method. See
 <code><a href="../articles/nominatim-import.html">vignette("nominatim-import", package = "photon")</a></code> for details on how
 to import from Nominatim.</p>
 <p>To enable structured geocoding, the photon geocoder needs to be built to
@@ -108,6 +115,7 @@ external process running photon.</p></dd>
 <li><p><a href="#method-photon_local-import"><code>photon_local$import()</code></a></p></li>
 <li><p><a href="#method-photon_local-start"><code>photon_local$start()</code></a></p></li>
 <li><p><a href="#method-photon_local-stop"><code>photon_local$stop()</code></a></p></li>
+<li><p><a href="#method-photon_local-status"><code>photon_local$status()</code></a></p></li>
 <li><p><a href="#method-photon_local-download_data"><code>photon_local$download_data()</code></a></p></li>
 <li><p><a href="#method-photon_local-remove_data"><code>photon_local$remove_data()</code></a></p></li>
 <li><p><a href="#method-photon_local-is_running"><code>photon_local$is_running()</code></a></p></li>
@@ -123,10 +131,7 @@ executable, the search index, and Java.</p><div class="section">
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/photon_local.html">photon_local</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  <span class="va">path</span>,</span>
 <span>  photon_version <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  country <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  date <span class="op">=</span> <span class="st">"latest"</span>,</span>
-<span>  exact <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  section <span class="op">=</span> <span class="st">"experimental"</span>,</span>
+<span>  region <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  opensearch <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mount <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -145,48 +150,24 @@ should be stored.</p></dd>
 <dd><p>Version of photon to be used. A list of all
 releases can be found here: <a href="https://github.com/komoot/photon/releases/" class="external-link">https://github.com/komoot/photon/releases/</a>.
 Ignored if <code>jar</code> is given. If <code>NULL</code>, uses the latest known
-version (Currently: 0.7.4).</p></dd>
+version (Currently: 1.0.0).</p></dd>
 
 
-<dt><code>country</code></dt>
-<dd><p>Character string that can be identified by
-<code><a href="https://vincentarelbundock.github.io/countrycode/reference/countryname.html" class="external-link">countryname</a></code> as a country. An extract for this
-country will be downloaded. If <code>"planet"</code>, downloads a global search
-index.</p></dd>
-
-
-<dt><code>date</code></dt>
-<dd><p>Character string or date-time object used to specify the creation
-date of the search index. If <code>"latest"</code>, will download the file tagged
-with "latest". If a character string, the value should be parseable by
-<code><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></code>. If <code>exact = FALSE</code>, the input value is
-compared to all available dates and the closest date will be selected.
-Otherwise, a file will be selected that exactly matches the input to
-<code>date</code>.</p></dd>
-
-
-<dt><code>exact</code></dt>
-<dd><p>If <code>TRUE</code>, exactly matches the <code>date</code>. Otherwise,
-selects the date with lowest difference to the <code>date</code> parameter.</p></dd>
-
-
-<dt><code>section</code></dt>
-<dd><p>Subdirectory of the download server from which to select a
-search index. If <code>"experimental"</code>, selects a dump made for the master
-version of photon. If <code>"archived"</code>, selects a dump made for an older
-version of photon. If <code>NULL</code> (or any arbitrary string), selects a
-dump made for the current release. Defaults to <code>NULL</code>.</p></dd>
+<dt><code>region</code></dt>
+<dd><p>Character string that identifies a region or country. An
+extract for this region will be downloaded. If <code>"planet"</code>, downloads
+a global extract (see note). Run <code><a href="download_database.html">list_regions()</a></code> to get an overview
+of available regions. You can specify countries using any code that can
+be translated by <code><a href="https://vincentarelbundock.github.io/countrycode/man/countrycode.html" class="external-link">countrycode</a></code>.</p></dd>
 
 
 <dt><code>opensearch</code></dt>
-<dd><p>Superseded for photon versions &gt;= 0.7.0. If <code>TRUE</code>,
+<dd><p>Deprecated for photon versions &gt;= 1.0.0 and superseded
+for photon versions &gt;= 0.7.0. If <code>TRUE</code>,
 attempts to download the OpenSearch version of photon. OpenSearch-based
-photon supports structrued geocoding. Readily available OpenSearch
-photon executables are only offered since photon version 0.6.0. For
-earlier versions, you need to build from source using gradle. In this
-case, if <code>TRUE</code>, will look for an OpenSearch version of photon in
-the specified path. Since photon version 0.7.0, OpenSearch is the
-recommended option. Defaults to <code>TRUE</code>.</p></dd>
+photon supports structured geocoding. If <code>FALSE</code>, falls back to
+ElasticSearch. Since photon 0.7.0, OpenSearch is the default and since
+1.0.0, ElasticSearch is not supported anymore.</p></dd>
 
 
 <dt><code>mount</code></dt>
@@ -222,7 +203,7 @@ is useful if you want to switch between multiple photon instances.</p><div class
 </div><p></p><hr><a id="method-photon_local-info"></a><div class="section">
 <h3 id="method-info-">Method <code>info()</code><a class="anchor" aria-label="anchor" href="#method-info-"></a></h3>
 <p>Retrieve metadata about the java and photon version used as well
-as the country and creation date of the search index.</p><div class="section">
+as the region and creation date of the search index.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">info</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -389,6 +370,11 @@ located in the instance directory.</p><div class="section">
 <span>  port <span class="op">=</span> <span class="st">"2322"</span>,</span>
 <span>  ssl <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="fl">60</span>,</span>
+<span>  countries <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  threads <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  query_timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_results <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_reverse_results <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  java_opts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  photon_opts <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -413,6 +399,31 @@ Defaults to <code>FALSE</code>.</p></dd>
 <dt><code>timeout</code></dt>
 <dd><p>Time in seconds before the java process aborts. Defaults
 to 60 seconds.</p></dd>
+
+
+<dt><code>countries</code></dt>
+<dd><p>Character vector of countries to import. By default,
+all countries in the database are imported.</p></dd>
+
+
+<dt><code>threads</code></dt>
+<dd><p>Number of threads in parallel. Defaults to 1.</p></dd>
+
+
+<dt><code>query_timeout</code></dt>
+<dd><p>Time in seconds after which to cancel queries
+to Photon. Defaults to 7 seconds.</p></dd>
+
+
+<dt><code>max_results</code></dt>
+<dd><p>Maximum number of results returned to
+<code><a href="geocode.html">geocode</a></code> and <code><a href="structured.html">structured</a></code>. Defaults to
+50.</p></dd>
+
+
+<dt><code>max_reverse_results</code></dt>
+<dd><p>Maximum number of results returned to
+<code><a href="reverse.html">reverse</a></code>. Defaults to 50.</p></dd>
 
 
 <dt><code>java_opts</code></dt>
@@ -445,48 +456,37 @@ emitting an error. In this case, please open a bug report.</p>
 </div>
 
 
+</div><p></p><hr><a id="method-photon_local-status"></a><div class="section">
+<h3 id="method-status-">Method <code>status()</code><a class="anchor" aria-label="anchor" href="#method-status-"></a></h3>
+<p>Returns information from a live server about the photon version used
+and the date of data import.</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-photon_local-download_data"></a><div class="section">
 <h3 id="method-download-data-">Method <code>download_data()</code><a class="anchor" aria-label="anchor" href="#method-download-data-"></a></h3>
-<p>Downloads a search index using <code><a href="download_searchindex.html">download_searchindex</a></code>.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">download_data</span><span class="op">(</span></span>
-<span>  <span class="va">country</span>,</span>
-<span>  date <span class="op">=</span> <span class="st">"latest"</span>,</span>
-<span>  exact <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  section <span class="op">=</span> <span class="st">"experimental"</span></span>
-<span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p>Downloads a search index using <code><a href="download_database.html">download_database</a></code>.</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">download_data</span><span class="op">(</span><span class="va">region</span>, json <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>country</code></dt>
-<dd><p>Character string that can be identified by
-<code><a href="https://vincentarelbundock.github.io/countrycode/reference/countryname.html" class="external-link">countryname</a></code> as a country. An extract for this
-country will be downloaded. If <code>"planet"</code>, downloads a global search
-index.</p></dd>
+<p></p><div class="arguments"><dl><dt><code>region</code></dt>
+<dd><p>Character string that identifies a region or country. An
+extract for this region will be downloaded. If <code>"planet"</code>, downloads
+a global extract (see note). Run <code><a href="download_database.html">list_regions()</a></code> to get an overview
+of available regions. You can specify countries using any code that can
+be translated by <code><a href="https://vincentarelbundock.github.io/countrycode/man/countrycode.html" class="external-link">countrycode</a></code>.</p></dd>
 
 
-<dt><code>date</code></dt>
-<dd><p>Character string or date-time object used to specify the creation
-date of the search index. If <code>"latest"</code>, will download the file tagged
-with "latest". If a character string, the value should be parseable by
-<code><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></code>. If <code>exact = FALSE</code>, the input value is
-compared to all available dates and the closest date will be selected.
-Otherwise, a file will be selected that exactly matches the input to
-<code>date</code>.</p></dd>
-
-
-<dt><code>exact</code></dt>
-<dd><p>If <code>TRUE</code>, exactly matches the <code>date</code>. Otherwise,
-selects the date with lowest difference to the <code>date</code> parameter.</p></dd>
-
-
-<dt><code>section</code></dt>
-<dd><p>Subdirectory of the download server from which to select a
-search index. If <code>"experimental"</code>, selects a dump made for the master
-version of photon. If <code>"archived"</code>, selects a dump made for an older
-version of photon. If <code>NULL</code> (or any arbitrary string), selects a
-dump made for the current release. Defaults to <code>NULL</code>.</p></dd>
+<dt><code>json</code></dt>
+<dd><p>Extracts come in two forms: JSON dumps and pre-build databases.
+Pre-built databases are more convenient but less flexible and are not available
+for all regions. If you wish or need to build your own database, set
+<code>json = TRUE</code> and use the <code>$import()</code> method.</p></dd>
 
 
 </dl><p></p></div>
@@ -496,7 +496,7 @@ dump made for the current release. Defaults to <code>NULL</code>.</p></dd>
 <h3 id="method-remove-data-">Method <code>remove_data()</code><a class="anchor" aria-label="anchor" href="#method-remove-data-"></a></h3>
 <p>Removes the data currently used in the photon directory. This only
 affects the unpacked <code>photon_data</code> directory, not archived files.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">remove_data</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -511,7 +511,7 @@ if the running photon instance is managed by a process from its own
 return <code>TRUE</code>. This method is useful if you want to ensure that
 the <code>photon</code> object can control its photon server (mostly internal
 use).</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_running</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -526,7 +526,7 @@ use).</p><div class="section">
 is the case if the photon server returns a HTTP 400 when sending a
 queryless request. This method is useful if you want to check whether
 you can send requests.</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">is_ready</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -538,7 +538,7 @@ you can send requests.</p><div class="section">
 </div><p></p><hr><a id="method-photon_local-get_url"></a><div class="section">
 <h3 id="method-get-url-">Method <code>get_url()</code><a class="anchor" aria-label="anchor" href="#method-get-url-"></a></h3>
 <p>Constructs the URL that geocoding requests should be sent to.</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">get_url</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -550,7 +550,7 @@ you can send requests.</p><div class="section">
 </div><p></p><hr><a id="method-photon_local-get_logs"></a><div class="section">
 <h3 id="method-get-logs-">Method <code>get_logs()</code><a class="anchor" aria-label="anchor" href="#method-get-logs-"></a></h3>
 <p>Retrieve the logs of previous photon runs.</p><div class="section">
-<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">get_logs</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -565,7 +565,7 @@ error message.</p>
 </div><p></p><hr><a id="method-photon_local-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">photon_local</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -584,39 +584,16 @@ error message.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="has_java.html">has_java</a></span><span class="op">(</span><span class="st">"11"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># getFromNamespace("is_online", "photon")("graphhopper.com") &amp;&amp; getFromNamespace("photon_run_examples", "photon")()</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="has_java.html">has_java</a></span><span class="op">(</span><span class="st">"11"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># start a new instance using a Monaco extract</span></span></span>
-<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">dir</span>, country <span class="op">=</span> <span class="st">"Monaco"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">dir</span>, region <span class="op">=</span> <span class="st">"Andorra"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># start a new instance with an older photon version</span></span></span>
 <span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">dir</span>, photon_version <span class="op">=</span> <span class="st">"0.4.1"</span>, opensearch <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> openjdk version "17.0.17" 2025-10-21</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> OpenJDK Runtime Environment Temurin-17.0.17+10 (build 17.0.17+10)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> OpenJDK 64-Bit Server VM Temurin-17.0.17+10 (build 17.0.17+10, mixed mode,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   sharing)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching OpenSearch photon <span style="color: #00BB00;">0.7.4</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded OpenSearch photon <span style="color: #00BB00;">0.7.4</span>. <span style="color: #B2B2B2;">[279ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching search index for <span style="color: #00BB00;">Monaco</span>, created on <span style="color: #00BB00;">latest</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded search index. <span style="color: #B2B2B2;">[651ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Version: 0.7.4</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Coverage: Monaco</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Time: 2025-12-29</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> openjdk version "17.0.17" 2025-10-21</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> OpenJDK Runtime Environment Temurin-17.0.17+10 (build 17.0.17+10)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> OpenJDK 64-Bit Server VM Temurin-17.0.17+10 (build 17.0.17+10, mixed mode,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   sharing)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Fetching ElasticSearch photon <span style="color: #00BB00;">0.4.1</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Successfully downloaded ElasticSearch photon <span style="color: #00BB00;">0.4.1</span>. <span style="color: #B2B2B2;">[159ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> A search index already exists at the given path. Download will be skipped</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Version: 0.4.1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Coverage: Monaco</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • Time: 2025-12-29</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># import a nominatim database using OpenSearch photon</span></span></span>
@@ -626,6 +603,7 @@ error message.</p>
 <span class="r-in"><span><span class="va">photon</span><span class="op">$</span><span class="fu">import</span><span class="op">(</span>photon_options <span class="op">=</span> <span class="fu"><a href="cmd_options.html">cmd_options</a></span><span class="op">(</span>port <span class="op">=</span> <span class="fl">29146</span>, password <span class="op">=</span> <span class="st">"pgpass"</span><span class="op">)</span><span class="op">)</span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">photon</span><span class="op">$</span><span class="fu">purge</span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

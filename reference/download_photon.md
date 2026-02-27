@@ -24,7 +24,7 @@ download_photon(
 - version:
 
   Version tag of the photon release. If `NULL`, downloads the latest
-  known version (0.7.4). A list of all releases can be found here:
+  known version (1.0.0). A list of all releases can be found here:
   <https://github.com/komoot/photon/releases/>. Ignored if `jar` is
   given.
 
@@ -53,7 +53,7 @@ downloaded file. Otherwise, returns the URL to be downloaded.
 ``` r
 download_photon(tempdir(), version = "0.4.1", opensearch = FALSE)
 #> ℹ Fetching ElasticSearch photon 0.4.1.
-#> ✔ Successfully downloaded ElasticSearch photon 0.4.1. [1.1s]
+#> ✔ Successfully downloaded ElasticSearch photon 0.4.1. [1s]
 #> 
-#> [1] "/tmp/Rtmp97w4wR/photon-0.4.1.jar"
+#> [1] "/tmp/Rtmph9n2dC/photon-0.4.1.jar"
 ```

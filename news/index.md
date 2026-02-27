@@ -2,6 +2,8 @@
 
 ## photon 0.7.4-1
 
+CRAN release: 2026-01-17
+
 - Adjusted tests and examples to be more resilient to server outages
 
 ## photon 0.7.4

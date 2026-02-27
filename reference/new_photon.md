@@ -18,10 +18,7 @@ new_photon(
   path = NULL,
   url = NULL,
   photon_version = NULL,
-  country = NULL,
-  date = "latest",
-  exact = FALSE,
-  section = NULL,
+  region = NULL,
   opensearch = TRUE,
   mount = TRUE,
   overwrite = FALSE,
@@ -49,52 +46,30 @@ new_photon(
   here: <https://github.com/komoot/photon/releases/>. Ignored if `jar`
   is given. If `NULL`, uses the latest known version.
 
-- country:
+- region:
 
-  Character string that can be identified by
-  [`countryname`](https://vincentarelbundock.github.io/countrycode/reference/countryname.html)
-  as a country. An extract for this country will be downloaded. If
-  `"planet"`, downloads a global search index. If `NULL`, downloads no
-  index and leaves download or import to the user.
-
-- date:
-
-  Character string or date-time object used to specify the creation date
-  of the search index. If `"latest"`, will download the file tagged with
-  "latest". If a character string, the value should be parseable by
-  [`as.POSIXct`](https://rdrr.io/r/base/as.POSIXlt.html). If
-  `exact = FALSE`, the input value is compared to all available dates
-  and the closest date will be selected. Otherwise, a file will be
-  selected that exactly matches the input to `date`.
-
-- exact:
-
-  If `TRUE`, exactly matches the `date`. Otherwise, selects the date
-  with lowest difference to the `date` parameter.
-
-- section:
-
-  Subdirectory of the download server from which to select a search
-  index. If `"experimental"`, selects a dump made for the master version
-  of photon. If `"archived"`, selects a dump made for an older version
-  of photon. If `NULL` (or any arbitrary string), selects a dump made
-  for the current release. Defaults to `NULL`.
+  Character string that identifies a region or country. An extract for
+  this region will be downloaded. If `"planet"`, downloads a global
+  extract (see note). Run
+  [`list_regions()`](https://jslth.github.io/photon/reference/download_database.md)
+  to get an overview of available regions. You can specify countries
+  using any code that can be translated by
+  [`countrycode`](https://vincentarelbundock.github.io/countrycode/man/countrycode.html).
 
 - opensearch:
 
-  If `TRUE`, attempts to download the OpenSearch version of photon.
-  OpenSearch-based photon supports structrued geocoding. Readily
-  available OpenSearch photon executables are only offered since photon
-  version 0.6.0. For earlier versions, you need to build it from source
-  using gradle. In this case, if `TRUE`, will look for an OpenSearch
-  version of photon in the specified path. Since photon version 0.7.0,
-  OpenSearch is the recommended option. Defaults to `TRUE`.
+  Deprecated for photon versions \>= 1.0.0 and superseded for photon
+  versions \>= 0.7.0. If `TRUE`, attempts to download the OpenSearch
+  version of photon. OpenSearch-based photon supports structured
+  geocoding. If `FALSE`, falls back to ElasticSearch. Since photon
+  0.7.0, OpenSearch is the default and since 1.0.0, ElasticSearch is not
+  supported anymore.
 
 - mount:
 
   If `TRUE`, mounts the object to the session so that functions like
   [`geocode`](https://jslth.github.io/photon/reference/geocode.md)
-  automatically detect the new instance. If `FALSE`, initializies the
+  automatically detect the new instance. If `FALSE`, initializes the
   instance but doesn't mount it to the session. Defaults to `TRUE`.
 
 - overwrite:
@@ -113,6 +88,7 @@ An R6 object of class `photon`.
 ## Examples
 
 ``` r
+if (FALSE) { # getFromNamespace("is_online", "photon")("graphhopper.com") && getFromNamespace("photon_run_examples", "photon")()
 # connect to public API
 photon <- new_photon()
 
@@ -120,23 +96,10 @@ photon <- new_photon()
 photon <- new_photon(url = "https://photonserver.org")
 
 if (has_java("11")) {
-# set up a local instance in a temporary directory
-dir <- file.path(tempdir(), "photon")
-photon <- new_photon(dir, country = "Monaco")
+  # set up a local instance in a temporary directory
+  dir <- file.path(tempdir(), "photon")
+  photon <- new_photon(dir, region = "Andorra")
+  photon$purge(ask = FALSE)
 }
-#> ℹ openjdk version "17.0.17" 2025-10-21
-#> ℹ OpenJDK Runtime Environment Temurin-17.0.17+10 (build 17.0.17+10)
-#> ℹ OpenJDK 64-Bit Server VM Temurin-17.0.17+10 (build 17.0.17+10, mixed mode,
-#>   sharing)
-#> ℹ Fetching OpenSearch photon 0.7.4.
-#> ✔ Successfully downloaded OpenSearch photon 0.7.4. [1.6s]
-#> 
-#> ℹ Fetching search index for Monaco, created on latest
-#> ✔ Successfully downloaded search index. [1.1s]
-#> 
-#> • Version: 0.7.4
-#> • Coverage: Monaco
-#> • Time: 2025-12-29
-
-photon$purge(ask = FALSE)
+}
 ```

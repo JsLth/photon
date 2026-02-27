@@ -6,18 +6,27 @@ necessary OpenSearch index. It can start, stop, and query the status of
 the photon instance. It is also the basis for geocoding requests as it
 is used to retrieve the URL for geocoding.
 
+## Value
+
+A list containing four elements:
+
+- **status**: Shows `"Ok"` when photon is running without problems.
+  **import_date**: Time stamp when the database was built. **version**:
+  Photon version currently running. **git_commit**: Git commit string of
+  the photon version currently running.
+
 ## Search indices
 
 Search indices can be self-provided by importing an existing Nominatim
 database or they can be downloaded from the [Photon download
 server](https://nominatim.org/2020/10/21/photon-country-extracts.html).
 If you want to download pre-built search indices, simply provide a
-`country` string during initialization or use the `$download_data`
+`region` string during initialization or use the `$download_data`
 method. Pre-built search indices do not come with support for structured
 geocoding.
 
-If you want to build from Nominatim, do not provide a country string and
-use the `$import` method. See
+If you want to build from Nominatim, do not provide a region string and
+use the `$import()` method. See
 [`vignette("nominatim-import", package = "photon")`](https://jslth.github.io/photon/articles/nominatim-import.md)
 for details on how to import from Nominatim.
 
@@ -61,6 +70,8 @@ standard and ElasticSearch is deprecated.
 
 - [`photon_local$stop()`](#method-photon_local-stop)
 
+- [`photon_local$status()`](#method-photon_local-status)
+
 - [`photon_local$download_data()`](#method-photon_local-download_data)
 
 - [`photon_local$remove_data()`](#method-photon_local-remove_data)
@@ -87,10 +98,7 @@ executable, the search index, and Java.
     photon_local$new(
       path,
       photon_version = NULL,
-      country = NULL,
-      date = "latest",
-      exact = FALSE,
-      section = "experimental",
+      region = NULL,
       opensearch = TRUE,
       mount = TRUE,
       overwrite = FALSE,
@@ -108,48 +116,26 @@ executable, the search index, and Java.
 
   Version of photon to be used. A list of all releases can be found
   here: <https://github.com/komoot/photon/releases/>. Ignored if `jar`
-  is given. If `NULL`, uses the latest known version (Currently: 0.7.4).
+  is given. If `NULL`, uses the latest known version (Currently: 1.0.0).
 
-- `country`:
+- `region`:
 
-  Character string that can be identified by
-  [`countryname`](https://vincentarelbundock.github.io/countrycode/reference/countryname.html)
-  as a country. An extract for this country will be downloaded. If
-  `"planet"`, downloads a global search index.
-
-- `date`:
-
-  Character string or date-time object used to specify the creation date
-  of the search index. If `"latest"`, will download the file tagged with
-  "latest". If a character string, the value should be parseable by
-  [`as.POSIXct`](https://rdrr.io/r/base/as.POSIXlt.html). If
-  `exact = FALSE`, the input value is compared to all available dates
-  and the closest date will be selected. Otherwise, a file will be
-  selected that exactly matches the input to `date`.
-
-- `exact`:
-
-  If `TRUE`, exactly matches the `date`. Otherwise, selects the date
-  with lowest difference to the `date` parameter.
-
-- `section`:
-
-  Subdirectory of the download server from which to select a search
-  index. If `"experimental"`, selects a dump made for the master version
-  of photon. If `"archived"`, selects a dump made for an older version
-  of photon. If `NULL` (or any arbitrary string), selects a dump made
-  for the current release. Defaults to `NULL`.
+  Character string that identifies a region or country. An extract for
+  this region will be downloaded. If `"planet"`, downloads a global
+  extract (see note). Run
+  [`list_regions()`](https://jslth.github.io/photon/reference/download_database.md)
+  to get an overview of available regions. You can specify countries
+  using any code that can be translated by
+  [`countrycode`](https://vincentarelbundock.github.io/countrycode/man/countrycode.html).
 
 - `opensearch`:
 
-  Superseded for photon versions \>= 0.7.0. If `TRUE`, attempts to
-  download the OpenSearch version of photon. OpenSearch-based photon
-  supports structrued geocoding. Readily available OpenSearch photon
-  executables are only offered since photon version 0.6.0. For earlier
-  versions, you need to build from source using gradle. In this case, if
-  `TRUE`, will look for an OpenSearch version of photon in the specified
-  path. Since photon version 0.7.0, OpenSearch is the recommended
-  option. Defaults to `TRUE`.
+  Deprecated for photon versions \>= 1.0.0 and superseded for photon
+  versions \>= 0.7.0. If `TRUE`, attempts to download the OpenSearch
+  version of photon. OpenSearch-based photon supports structured
+  geocoding. If `FALSE`, falls back to ElasticSearch. Since photon
+  0.7.0, OpenSearch is the default and since 1.0.0, ElasticSearch is not
+  supported anymore.
 
 - `mount`:
 
@@ -184,7 +170,7 @@ useful if you want to switch between multiple photon instances.
 ### Method `info()`
 
 Retrieve metadata about the java and photon version used as well as the
-country and creation date of the search index.
+region and creation date of the search index.
 
 #### Usage
 
@@ -351,6 +337,11 @@ located in the instance directory.
       port = "2322",
       ssl = FALSE,
       timeout = 60,
+      countries = NULL,
+      threads = 1,
+      query_timeout = NULL,
+      max_results = NULL,
+      max_reverse_results = NULL,
       java_opts = NULL,
       photon_opts = NULL
     )
@@ -374,6 +365,33 @@ located in the instance directory.
 
   Time in seconds before the java process aborts. Defaults to 60
   seconds.
+
+- `countries`:
+
+  Character vector of countries to import. By default, all countries in
+  the database are imported.
+
+- `threads`:
+
+  Number of threads in parallel. Defaults to 1.
+
+- `query_timeout`:
+
+  Time in seconds after which to cancel queries to Photon. Defaults to 7
+  seconds.
+
+- `max_results`:
+
+  Maximum number of results returned to
+  [`geocode`](https://jslth.github.io/photon/reference/geocode.md) and
+  [`structured`](https://jslth.github.io/photon/reference/structured.md).
+  Defaults to 50.
+
+- `max_reverse_results`:
+
+  Maximum number of results returned to
+  [`reverse`](https://jslth.github.io/photon/reference/reverse.md).
+  Defaults to 50.
 
 - `java_opts`:
 
@@ -405,51 +423,44 @@ Kills the running photon process.
 
 ------------------------------------------------------------------------
 
-### Method `download_data()`
+### Method `status()`
 
-Downloads a search index using
-[`download_searchindex`](https://jslth.github.io/photon/reference/download_searchindex.md).
+Returns information from a live server about the photon version used and
+the date of data import.
 
 #### Usage
 
-    photon_local$download_data(
-      country,
-      date = "latest",
-      exact = FALSE,
-      section = "experimental"
-    )
+    photon_local$status()
+
+------------------------------------------------------------------------
+
+### Method `download_data()`
+
+Downloads a search index using
+[`download_database`](https://jslth.github.io/photon/reference/download_database.md).
+
+#### Usage
+
+    photon_local$download_data(region, json = FALSE)
 
 #### Arguments
 
-- `country`:
+- `region`:
 
-  Character string that can be identified by
-  [`countryname`](https://vincentarelbundock.github.io/countrycode/reference/countryname.html)
-  as a country. An extract for this country will be downloaded. If
-  `"planet"`, downloads a global search index.
+  Character string that identifies a region or country. An extract for
+  this region will be downloaded. If `"planet"`, downloads a global
+  extract (see note). Run
+  [`list_regions()`](https://jslth.github.io/photon/reference/download_database.md)
+  to get an overview of available regions. You can specify countries
+  using any code that can be translated by
+  [`countrycode`](https://vincentarelbundock.github.io/countrycode/man/countrycode.html).
 
-- `date`:
+- `json`:
 
-  Character string or date-time object used to specify the creation date
-  of the search index. If `"latest"`, will download the file tagged with
-  "latest". If a character string, the value should be parseable by
-  [`as.POSIXct`](https://rdrr.io/r/base/as.POSIXlt.html). If
-  `exact = FALSE`, the input value is compared to all available dates
-  and the closest date will be selected. Otherwise, a file will be
-  selected that exactly matches the input to `date`.
-
-- `exact`:
-
-  If `TRUE`, exactly matches the `date`. Otherwise, selects the date
-  with lowest difference to the `date` parameter.
-
-- `section`:
-
-  Subdirectory of the download server from which to select a search
-  index. If `"experimental"`, selects a dump made for the master version
-  of photon. If `"archived"`, selects a dump made for an older version
-  of photon. If `NULL` (or any arbitrary string), selects a dump made
-  for the current release. Defaults to `NULL`.
+  Extracts come in two forms: JSON dumps and pre-build databases.
+  Pre-built databases are more convenient but less flexible and are not
+  available for all regions. If you wish or need to build your own
+  database, set `json = TRUE` and use the `$import()` method.
 
 ------------------------------------------------------------------------
 
@@ -548,39 +559,16 @@ The objects of this class are cloneable with this method.
 ## Examples
 
 ``` r
+if (FALSE) { # getFromNamespace("is_online", "photon")("graphhopper.com") && getFromNamespace("photon_run_examples", "photon")()
 if (has_java("11")) {
 dir <- file.path(tempdir(), "photon")
 
 # start a new instance using a Monaco extract
-photon <- new_photon(path = dir, country = "Monaco")
+photon <- new_photon(path = dir, region = "Andorra")
 
 # start a new instance with an older photon version
 photon <- new_photon(path = dir, photon_version = "0.4.1", opensearch = FALSE)
 }
-#> ℹ openjdk version "17.0.17" 2025-10-21
-#> ℹ OpenJDK Runtime Environment Temurin-17.0.17+10 (build 17.0.17+10)
-#> ℹ OpenJDK 64-Bit Server VM Temurin-17.0.17+10 (build 17.0.17+10, mixed mode,
-#>   sharing)
-#> ℹ Fetching OpenSearch photon 0.7.4.
-#> ✔ Successfully downloaded OpenSearch photon 0.7.4. [279ms]
-#> 
-#> ℹ Fetching search index for Monaco, created on latest
-#> ✔ Successfully downloaded search index. [651ms]
-#> 
-#> • Version: 0.7.4
-#> • Coverage: Monaco
-#> • Time: 2025-12-29
-#> ℹ openjdk version "17.0.17" 2025-10-21
-#> ℹ OpenJDK Runtime Environment Temurin-17.0.17+10 (build 17.0.17+10)
-#> ℹ OpenJDK 64-Bit Server VM Temurin-17.0.17+10 (build 17.0.17+10, mixed mode,
-#>   sharing)
-#> ℹ Fetching ElasticSearch photon 0.4.1.
-#> ✔ Successfully downloaded ElasticSearch photon 0.4.1. [159ms]
-#> 
-#> ℹ A search index already exists at the given path. Download will be skipped
-#> • Version: 0.4.1
-#> • Coverage: Monaco
-#> • Time: 2025-12-29
 
 if (FALSE) { # \dontrun{
 # import a nominatim database using OpenSearch photon
@@ -590,4 +578,5 @@ photon <- new_photon(path = dir, opensearch = TRUE)
 photon$import(photon_options = cmd_options(port = 29146, password = "pgpass"))} # }
 
 photon$purge(ask = FALSE)
+}
 ```

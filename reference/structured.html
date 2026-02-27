@@ -8,20 +8,16 @@
 </script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet"><link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet"><link href="../deps/Roboto_Slab-0.4.10/font.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Structured geocoding — structured"><meta name="description" content="Geocode a set of place information such as street, house number, or
 post code. Structured geocoding is generally more accurate but requires
 more information than unstructured geocoding.
-Note that structured geocoding must be specifically enabled when building a
-Nominatim database. It is generally not available on komoot's public API and
-on pre-built search indices through download_searchindex. See
-vignette(&quot;nominatim-import&quot;, package = &quot;photon&quot;) for details. You can
-use the helper function has_structured_support() to check if the
-current API supports structured geocoding."><meta property="og:description" content="Geocode a set of place information such as street, house number, or
+You can use the helper function has_structured_support() to check if
+the current API supports structured geocoding. Structured geocoding should
+be enabled on the public photon instance and all photon instances &amp;gt;= 1.0.0,
+but older versions usually have structured queries disabled."><meta property="og:description" content="Geocode a set of place information such as street, house number, or
 post code. Structured geocoding is generally more accurate but requires
 more information than unstructured geocoding.
-Note that structured geocoding must be specifically enabled when building a
-Nominatim database. It is generally not available on komoot's public API and
-on pre-built search indices through download_searchindex. See
-vignette(&quot;nominatim-import&quot;, package = &quot;photon&quot;) for details. You can
-use the helper function has_structured_support() to check if the
-current API supports structured geocoding."></head><body>
+You can use the helper function has_structured_support() to check if
+the current API supports structured geocoding. Structured geocoding should
+be enabled on the public photon instance and all photon instances &amp;gt;= 1.0.0,
+but older versions usually have structured queries disabled."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +25,7 @@ current API supports structured geocoding."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">photon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.4-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,12 +57,10 @@ current API supports structured geocoding."></head><body>
     <p>Geocode a set of place information such as street, house number, or
 post code. Structured geocoding is generally more accurate but requires
 more information than <a href="geocode.html">unstructured geocoding</a>.</p>
-<p>Note that structured geocoding must be specifically enabled when building a
-Nominatim database. It is generally not available on komoot's public API and
-on pre-built search indices through <code><a href="download_searchindex.html">download_searchindex</a></code>. See
-<code><a href="../articles/nominatim-import.html">vignette("nominatim-import", package = "photon")</a></code> for details. You can
-use the helper function <code>has_structured_support()</code> to check if the
-current API supports structured geocoding.</p>
+<p>You can use the helper function <code>has_structured_support()</code> to check if
+the current API supports structured geocoding. Structured geocoding should
+be enabled on the public photon instance and all photon instances &gt;= 1.0.0,
+but older versions usually have structured queries disabled.</p>
     </div>
 
     <div class="section level2">
@@ -81,6 +75,9 @@ current API supports structured geocoding.</p>
 <span>  locbias <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  locbias_scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  zoom <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dedupe <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  include <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -151,6 +148,20 @@ to <code>locbias</code> is \(0.25\text{ km} \cdot 2^{(18 - \text{zoom})}\).
 Defaults to 16.</p></dd>
 
 
+<dt id="arg-dedupe">dedupe<a class="anchor" aria-label="anchor" href="#arg-dedupe"></a></dt>
+<dd><p>If <code>FALSE</code>, keeps duplicates in the geocoding results.
+By default, photon attempts to deduplicate results that have the same name,
+postcode, and OSM value. Defaults to <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-include-exclude">include, exclude<a class="anchor" aria-label="anchor" href="#arg-include-exclude"></a></dt>
+<dd><p>Character vector containing
+<a href="https://github.com/komoot/photon/blob/master/docs/categories.md" class="external-link">categories</a>
+to include or exclude. Places will be <em>included</em> if any category in
+<code>include</code> is present. Places will be <em>excluded</em> if all categories
+in <code>exclude</code> are present.</p></dd>
+
+
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
 <dd><p>If <code>TRUE</code>, shows a progress bar for longer queries.</p></dd>
 
@@ -191,17 +202,10 @@ R (relation), or P (polygon).</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># structured() requires an OpenSearch instance with structured support</span></span></span>
-<span class="r-in"><span><span class="co"># the following code will not work off the shelf</span></span></span>
-<span class="r-in"><span><span class="co"># refer to vignette("nominatim-import") for details</span></span></span>
-<span class="r-in"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"photon"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">photon</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_photon.html">new_photon</a></span><span class="op">(</span><span class="va">dir</span>, opensearch <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">photon</span><span class="op">$</span><span class="fu">import</span><span class="op">(</span>password <span class="op">=</span> <span class="st">"psql_password"</span>, structured <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">photon</span><span class="op">$</span><span class="fu">start</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># check if structured() is supported</span></span></span>
 <span class="r-in"><span><span class="fu">has_structured_support</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># structured() works on dataframes containing structurized data</span></span></span>
 <span class="r-in"><span><span class="va">place_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -210,20 +214,64 @@ R (relation), or P (polygon).</p></li>
 <span class="r-in"><span>  state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tuamasaga"</span>, <span class="st">"Tuamasaga"</span>, <span class="st">"Atua"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">structured</span><span class="op">(</span><span class="va">place_data</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 3 features and 14 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -171.7762 ymin: -14.00997 xmax: -171.5835 ymax: -13.83381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     idx osm_type    osm_id osm_key osm_value type  countrycode name  city  state</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 W        107<span style="text-decoration: underline;">470</span>604 highway primary   stre… WS          Fale… Tiap… Tuam…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 W        569<span style="text-decoration: underline;">855</span>981 amenity police    house WS          Poli… Apia  Tuam…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 W        141<span style="text-decoration: underline;">654</span>556 highway primary   stre… WS          Le M… <span style="color: #BB0000;">NA</span>    Ātua </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5 more variables: country &lt;chr&gt;, extent &lt;list&gt;, housenumber &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   street &lt;chr&gt;, geometry &lt;POINT [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># countries must be specified as iso2 country codes</span></span></span>
 <span class="r-in"><span><span class="fu">structured</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>countrycode <span class="op">=</span> <span class="st">"ws"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 10 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -172.12 ymin: -13.76939 xmax: -172.12 ymax: -13.76939</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     idx osm_type osm_id osm_key osm_value type  countrycode name  country extent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 R        1.87<span style="color: #949494;">e</span>6 place   country   coun… WS          Sāmoa Samoa   <span style="color: #949494;">&lt;dbl&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;POINT [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># traditional parameters from geocode() can also be used but are much more niche</span></span></span>
 <span class="r-in"><span><span class="fu">structured</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>city <span class="op">=</span> <span class="st">"Apia"</span><span class="op">)</span>, layer <span class="op">=</span> <span class="st">"house"</span><span class="op">)</span> <span class="co"># matches nothing</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 10 fields (with 1 geometry empty)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: Inf ymin: Inf xmax: -Inf ymax: -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     idx osm_type osm_id country osm_key countrycode osm_value name  type  extent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #949494;">&lt;dbl&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;POINT [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># structured geocoding can discern small differences in places</span></span></span>
 <span class="r-in"><span><span class="va">safune</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  city <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Safune"</span>, <span class="st">"Safune"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gaga'ifomauga"</span>, <span class="st">"Tuamasaga"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  city <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Berlin"</span>, <span class="st">"Berlin"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  countrycode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"US"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">structured</span><span class="op">(</span><span class="va">safune</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 2 features and 12 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -88.94662 ymin: 43.96843 xmax: 13.78453 ymax: 52.47129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     idx osm_type  osm_id osm_key osm_value type  countrycode name   county state</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 R        1<span style="text-decoration: underline;">332</span>927 place   village   city  DE          Rüder… Märki… Bran…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 R         <span style="text-decoration: underline;">251</span>729 place   town      city  US          City … Green… Wisc…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: country &lt;chr&gt;, extent &lt;list&gt;, geometry &lt;POINT [°]&gt;</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

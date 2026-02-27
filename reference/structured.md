@@ -5,14 +5,10 @@ code. Structured geocoding is generally more accurate but requires more
 information than [unstructured
 geocoding](https://jslth.github.io/photon/reference/geocode.md).
 
-Note that structured geocoding must be specifically enabled when
-building a Nominatim database. It is generally not available on komoot's
-public API and on pre-built search indices through
-[`download_searchindex`](https://jslth.github.io/photon/reference/download_searchindex.md).
-See
-[`vignette("nominatim-import", package = "photon")`](https://jslth.github.io/photon/articles/nominatim-import.md)
-for details. You can use the helper function `has_structured_support()`
-to check if the current API supports structured geocoding.
+You can use the helper function `has_structured_support()` to check if
+the current API supports structured geocoding. Structured geocoding
+should be enabled on the public photon instance and all photon instances
+\>= 1.0.0, but older versions usually have structured queries disabled.
 
 ## Usage
 
@@ -27,6 +23,9 @@ structured(
   locbias = NULL,
   locbias_scale = NULL,
   zoom = NULL,
+  dedupe = TRUE,
+  include = NULL,
+  exclude = NULL,
   progress = interactive()
 )
 
@@ -95,6 +94,20 @@ has_structured_support()
   `locbias` is \\0.25\text{ km} \cdot 2^{(18 - \text{zoom})}\\. Defaults
   to 16.
 
+- dedupe:
+
+  If `FALSE`, keeps duplicates in the geocoding results. By default,
+  photon attempts to deduplicate results that have the same name,
+  postcode, and OSM value. Defaults to `TRUE`.
+
+- include, exclude:
+
+  Character vector containing
+  [categories](https://github.com/komoot/photon/blob/master/docs/categories.md)
+  to include or exclude. Places will be *included* if any category in
+  `include` is present. Places will be *excluded* if all categories in
+  `exclude` are present.
+
 - progress:
 
   If `TRUE`, shows a progress bar for longer queries.
@@ -156,17 +169,10 @@ Filtering by OpenStreetMap tags follows a distinct syntax explained on
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# structured() requires an OpenSearch instance with structured support
-# the following code will not work off the shelf
-# refer to vignette("nominatim-import") for details
-dir <- file.path(tempdir(), "photon")
-photon <- new_photon(dir, opensearch = TRUE)
-photon$import(password = "psql_password", structured = TRUE)
-photon$start()
-
+# \donttest{
 # check if structured() is supported
 has_structured_support()
+#> [1] TRUE
 
 # structured() works on dataframes containing structurized data
 place_data <- data.frame(
@@ -175,18 +181,62 @@ place_data <- data.frame(
   state = c("Tuamasaga", "Tuamasaga", "Atua")
 )
 structured(place_data, limit = 1)
+#> Simple feature collection with 3 features and 14 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -171.7762 ymin: -14.00997 xmax: -171.5835 ymax: -13.83381
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 3 × 15
+#>     idx osm_type    osm_id osm_key osm_value type  countrycode name  city  state
+#>   <int> <chr>        <int> <chr>   <chr>     <chr> <chr>       <chr> <chr> <chr>
+#> 1     1 W        107470604 highway primary   stre… WS          Fale… Tiap… Tuam…
+#> 2     2 W        569855981 amenity police    house WS          Poli… Apia  Tuam…
+#> 3     3 W        141654556 highway primary   stre… WS          Le M… NA    Ātua 
+#> # ℹ 5 more variables: country <chr>, extent <list>, housenumber <chr>,
+#> #   street <chr>, geometry <POINT [°]>
 
 # countries must be specified as iso2 country codes
 structured(data.frame(countrycode = "ws"))
+#> Simple feature collection with 1 feature and 10 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -172.12 ymin: -13.76939 xmax: -172.12 ymax: -13.76939
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 1 × 11
+#>     idx osm_type osm_id osm_key osm_value type  countrycode name  country extent
+#>   <int> <chr>     <int> <chr>   <chr>     <chr> <chr>       <chr> <chr>   <list>
+#> 1     1 R        1.87e6 place   country   coun… WS          Sāmoa Samoa   <dbl> 
+#> # ℹ 1 more variable: geometry <POINT [°]>
 
 # traditional parameters from geocode() can also be used but are much more niche
 structured(data.frame(city = "Apia"), layer = "house") # matches nothing
+#> Simple feature collection with 1 feature and 10 fields (with 1 geometry empty)
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: Inf ymin: Inf xmax: -Inf ymax: -Inf
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 1 × 11
+#>     idx osm_type osm_id country osm_key countrycode osm_value name  type  extent
+#>   <int> <chr>     <int> <chr>   <chr>   <chr>       <chr>     <chr> <chr> <list>
+#> 1     1 NA           NA NA      NA      NA          NA        NA    NA    <dbl> 
+#> # ℹ 1 more variable: geometry <POINT [°]>
 
 # structured geocoding can discern small differences in places
 safune <- data.frame(
-  city = c("Safune", "Safune"),
-  state = c("Gaga'ifomauga", "Tuamasaga")
+  city = c("Berlin", "Berlin"),
+  countrycode = c("DE", "US")
 )
 structured(safune, limit = 1)
-} # }
+#> Simple feature collection with 2 features and 12 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -88.94662 ymin: 43.96843 xmax: 13.78453 ymax: 52.47129
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 2 × 13
+#>     idx osm_type  osm_id osm_key osm_value type  countrycode name   county state
+#>   <int> <chr>      <int> <chr>   <chr>     <chr> <chr>       <chr>  <chr>  <chr>
+#> 1     1 R        1332927 place   village   city  DE          Rüder… Märki… Bran…
+#> 2     2 R         251729 place   town      city  US          City … Green… Wisc…
+#> # ℹ 3 more variables: country <chr>, extent <list>, geometry <POINT [°]>
+# }
 ```
