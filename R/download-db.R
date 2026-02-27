@@ -135,7 +135,8 @@ download_database <- function(region,
   }
 
   dump_name <- sprintf(
-    "photon-db-%s-%s-latest.%s",
+    "photon-%s-%s-%s-latest.%s",
+    ifelse(json, "dump", "db"),
     url_region,
     substr(version, 1, 3),
     ifelse(json, "jsonl.zst", "tar.bz2")
