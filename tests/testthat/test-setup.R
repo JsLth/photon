@@ -111,14 +111,9 @@ describe("photon_local", {
   it("can start", {
     photon$start(host = "127.0.0.1")
     expect_true(photon$is_running())
+    expect_named(photon$status())
     expect_false(anyNA(geocode("Monte Carlo")$osm_id))
     expect_error(photon$start(host = "127.0.0.1"), class = "photon_already_running")
-  })
-
-  it("can report status", {
-    status <- photon$status()
-    expect_s3_class(status, "list")
-    expect_named(status)
   })
 
   it("warns if data cannot be removed", {

@@ -81,7 +81,7 @@ run_import <- function(self,
   start_supervise(self, private, proc, timeout, quiet, import = TRUE)
   versionize_logs(private)
   log_error <- assemble_log_error(private$logs)
-  abort_log_error(log_error, quiet, class = "start_error")
+  abort_log_error(log_error, quiet, class = "import_error")
   cli::cli_progress_done()
   invisible(proc)
 }
