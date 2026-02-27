@@ -131,6 +131,9 @@ check_crs <- function(x) {
   cond <- !is.na(sf::st_crs(x))
   if (!cond) {
     var <- deparse(substitute(x))
-    ph_stop("{.code {var}} must have a CRS (`?sf::st_crs`).")
+    ph_stop(
+      "{.code {var}} must have a CRS (`?sf::st_crs`).",
+      class = "check_crs"
+    )
   }
 }

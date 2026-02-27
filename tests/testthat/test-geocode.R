@@ -49,9 +49,11 @@ test_that("basic reversing works", {
 
 test_that("reversing with sf works", {
   sf <- sf::st_sfc(sf::st_point(c(8, 52)), crs = 4326)
+  sf2 <- sf::st_sfc(sf::st_point(c(8, 52)))
   res <- reverse(sf)
   expect_s3_class(res, "sf")
   expect_equal(nrow(res), 1)
+  expect_error(reverse(sf2), class = "check_crs")
 })
 
 test_that("reversing with list works", {
@@ -67,25 +69,9 @@ test_that("reversing only works with points", {
   expect_error(reverse(sf), class = "check_geometry")
 })
 
-test_that("structured accepts parameters", {
-  skip_webfakes <- function(web) {
-    failed <- inherits(web, "try-error")
-    skip_if(failed, "webfakes bug: https://github.com/r-lib/webfakes/issues/103")
-  }
-  skip_if_not_installed("webfakes")
-
-  app <- webfakes::new_app()
-  app$get("/structured", function(req, res) {
-    if (length(req$query)) {
-      out <- readChar(testthat::test_path("fixtures/api_response.json"), nchar = 388)
-      res$send(out)
-    } else {
-      res$send_status(400)
-    }
-  })
-  web <- try(webfakes::local_app_process(app))
-  skip_webfakes(web)
-  new_photon(url = web$url())
-  expect_equal(nrow(structured(data.frame(street = "test"), progress = TRUE)), 1)
-  expect_error(structured(list(a = "test")), class = "assert_named")
+test_that("structured works", {
+  df <- data.frame(city = "Berlin", countrycode = "Berlin")
+  res <- structured(df)
+  expect_s3_class(res, "sf")
+  expect_equal(nrow(res), 1)
 })

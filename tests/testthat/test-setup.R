@@ -115,6 +115,12 @@ describe("photon_local", {
     expect_error(photon$start(host = "127.0.0.1"), class = "photon_already_running")
   })
 
+  it("can report status", {
+    status <- photon$status()
+    expect_s3_class(status, "list")
+    expect_named(status)
+  })
+
   it("warns if data cannot be removed", {
     with_mocked_bindings(
       unlink = \(...) 1L,
