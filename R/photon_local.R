@@ -188,29 +188,19 @@ photon_local <- R6::R6Class(
     #' @param database Postgres database name. Defaults to \code{"nominatim"}.
     #' @param user Postgres database user. Defaults to \code{"nominatim"}.
     #' @param password Postgres database password. Defaults to \code{""}.
-    #' @param structured If \code{TRUE}, enables structured query support when
-    #' importing the database. This allows the usage of
-    #' \code{\link{structured}}. Structured queries are only supported in the
-    #' OpenSearch version of photon. See section "OpenSearch" above. Defaults
-    #' to \code{FALSE}.
-    #' @param update If \code{TRUE}, fetches updates from the Nominatim database,
-    #' updating the search index without offering an API. If \code{FALSE},
-    #' imports the database an deletes the previous index. Defaults to
-    #' \code{FALSE}.
-    #' @param enable_update_api If \code{TRUE}, enables an additional
-    #' endpoint \code{/nominatim-update}, which allows updates from
-    #' Nominatim databases.
+    #' @param json If \code{TRUE} and a JSON dump is present in the photon
+    #' directory, imports from a JSON dump. Otherwise, tries to import from
+    #' Nominatim.
     #' @param languages Character vector specifying the languages to import
     #' from the Nominatim databases. Defaults to English, French, German,
     #' and Italian.
     #' @param countries Character vector specifying the country codes to
     #' import from the Nominatim database. Defaults to all country codes.
+    #' @param full_geometries Add the full geometry for each place if
+    #' available. Considerably increases the size of the photon database.
     #' @param extra_tags Character vector specifying extra OSM tags to import
     #' from the Nominatim database. These tags are used to augment geocoding
     #' results. Defaults to \code{NULL}.
-    #' @param json If \code{TRUE}, dumps the imported Nominatim database to
-    #' a JSON file and returns the path to the output file. Defaults to
-    #' \code{FALSE}.
     #' @param timeout Time in seconds before the java process aborts. Defaults
     #' to 60 seconds.
     #' @param java_opts Character vector of further flags passed on to the
@@ -218,21 +208,28 @@ photon_local <- R6::R6Class(
     #' @param photon_opts Character vector of further flags passed on to the
     #' photon jar in the java command. See \code{\link{cmd_options}} for a
     #' helper function.
+    #' @param structured Deprecated since v1.0.0. Structured geocoding is
+    #' enabled by default now. For earlier versions, use \code{photon_opts}.
+    #' @param update Deprecated since v1.0.0. Updates are done using a distinct
+    #' command now. For earlier versions, use \code{photon_opts}.
+    #' @param enable_update_api Deprecated since v1.0.0. The update API is
+    #' enabled by default now. For earlier versions, use \code{photon_opts}.
     import = function(host = "127.0.0.1",
                       port = 5432,
                       database = "nominatim",
                       user = "nominatim",
                       password = "",
-                      structured = FALSE,
-                      update = FALSE,
-                      enable_update_api = FALSE,
+                      json = FALSE,
                       languages = c("en", "fr", "de", "it"),
                       countries = NULL,
+                      full_geometries = FALSE,
                       extra_tags = NULL,
-                      json = FALSE,
                       timeout = 60,
                       java_opts = NULL,
-                      photon_opts = NULL) {
+                      photon_opts = NULL,
+                      structured = NULL,
+                      update = NULL,
+                      enable_update_api = NULL) {
       assert_vector(host, "character", size = 1)
       assert_vector(database, "character", size = 1)
       assert_vector(user, "character", size = 1)
@@ -243,38 +240,41 @@ photon_local <- R6::R6Class(
       assert_vector(timeout, "numeric", size = 1)
       assert_vector(java_opts, "character", null = TRUE)
       assert_vector(photon_opts, "character", null = TRUE)
-      assert_flag(structured)
-      assert_flag(update)
-      assert_flag(enable_update_api)
       assert_flag(json)
 
-      if (structured && !private$opensearch) {
-        cli::cli_warn(paste( # nocov start
-          "Structured queries are only supported for OpenSearch photon.",
-          "Setting {.code structured = FALSE}."
-        ), class = "structured_elasticsearch_error")
-        structured <- FALSE
-      } # nocov end
+      deprecated(structured, "1.0.0", "Use argument `photon_opts` instead.")
+      deprecated(update, "1.0.0", "Use argument `photon_opts` instead.")
+      deprecated(enable_update_api, "1.0.0", "Use argument `photon_opts` instead.")
+
+      json_path <- NULL
+      if (json) {
+        json_path <- private$json_path %||%
+          ph_stop(c(
+            "No JSON dump found.",
+            "i" = "Download a database using $download_data(json = TRUE)"
+          ))
+      }
+
+      countries <- try_iso2(countries)
+      java_opts <- cmd_options(java_opts)
+      photon_opts <- cmd_options(photon_opts)
 
       popts <- cmd_options(
-        nominatim_import = TRUE,
+        import_file = json_path,
         host = host,
         port = port,
         database = database,
         user = user,
         password = password,
-        structured = structured,
-        nominatim_update = update,
-        enable_update_api = enable_update_api,
         languages = languages,
-        country_codes = countries,
-        extra_tags = extra_tags,
-        json = json
+        country_codes = format_csv(countries),
+        extra_tags = extra_tags
       )
 
       run_photon(
         self, private,
         mode = "import",
+        json_path = json_path,
         java_opts = java_opts,
         photon_opts = c(popts, photon_opts)
       )
@@ -345,6 +345,7 @@ photon_local <- R6::R6Class(
         )
       }
 
+      countries <- try_iso2(countries)
       java_opts <- cmd_options(java_opts)
       photon_opts <- cmd_options(photon_opts)
       popts <- cmd_options(
@@ -415,8 +416,14 @@ photon_local <- R6::R6Class(
         version = private$version,
         json = json
       )
-      untar_index(archive_path, self$path)
-      store_index_metadata(self$path, archive_path)
+
+      if (json) {
+        private$json_path <- archive_path
+      } else {
+        untar_index(archive_path, self$path)
+        store_index_metadata(self$path, archive_path)
+      }
+
       invisible(self)
     },
 
@@ -504,6 +511,7 @@ photon_local <- R6::R6Class(
     ssl = NULL,
     region = NULL,
     date = NULL,
+    json_path = NULL,
     opensearch = NULL,
     logs = NULL,
     finalize = function() {

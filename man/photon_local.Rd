@@ -229,16 +229,17 @@ a running Nominatim database that can be connected to.
   database = "nominatim",
   user = "nominatim",
   password = "",
-  structured = FALSE,
-  update = FALSE,
-  enable_update_api = FALSE,
+  json = FALSE,
   languages = c("en", "fr", "de", "it"),
   countries = NULL,
+  full_geometries = FALSE,
   extra_tags = NULL,
-  json = FALSE,
   timeout = 60,
   java_opts = NULL,
-  photon_opts = NULL
+  photon_opts = NULL,
+  structured = NULL,
+  update = NULL,
+  enable_update_api = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -255,20 +256,9 @@ a running Nominatim database that can be connected to.
 
 \item{\code{password}}{Postgres database password. Defaults to \code{""}.}
 
-\item{\code{structured}}{If \code{TRUE}, enables structured query support when
-importing the database. This allows the usage of
-\code{\link{structured}}. Structured queries are only supported in the
-OpenSearch version of photon. See section "OpenSearch" above. Defaults
-to \code{FALSE}.}
-
-\item{\code{update}}{If \code{TRUE}, fetches updates from the Nominatim database,
-updating the search index without offering an API. If \code{FALSE},
-imports the database an deletes the previous index. Defaults to
-\code{FALSE}.}
-
-\item{\code{enable_update_api}}{If \code{TRUE}, enables an additional
-endpoint \code{/nominatim-update}, which allows updates from
-Nominatim databases.}
+\item{\code{json}}{If \code{TRUE} and a JSON dump is present in the photon
+directory, imports from a JSON dump. Otherwise, tries to import from
+Nominatim.}
 
 \item{\code{languages}}{Character vector specifying the languages to import
 from the Nominatim databases. Defaults to English, French, German,
@@ -277,13 +267,12 @@ and Italian.}
 \item{\code{countries}}{Character vector specifying the country codes to
 import from the Nominatim database. Defaults to all country codes.}
 
+\item{\code{full_geometries}}{Add the full geometry for each place if
+available. Considerably increases the size of the photon database.}
+
 \item{\code{extra_tags}}{Character vector specifying extra OSM tags to import
 from the Nominatim database. These tags are used to augment geocoding
 results. Defaults to \code{NULL}.}
-
-\item{\code{json}}{If \code{TRUE}, dumps the imported Nominatim database to
-a JSON file and returns the path to the output file. Defaults to
-\code{FALSE}.}
 
 \item{\code{timeout}}{Time in seconds before the java process aborts. Defaults
 to 60 seconds.}
@@ -294,6 +283,15 @@ to 60 seconds.}
 \item{\code{photon_opts}}{Character vector of further flags passed on to the
 photon jar in the java command. See \code{\link{cmd_options}} for a
 helper function.}
+
+\item{\code{structured}}{Deprecated since v1.0.0. Structured geocoding is
+enabled by default now. For earlier versions, use \code{photon_opts}.}
+
+\item{\code{update}}{Deprecated since v1.0.0. Updates are done using a distinct
+command now. For earlier versions, use \code{photon_opts}.}
+
+\item{\code{enable_update_api}}{Deprecated since v1.0.0. The update API is
+enabled by default now. For earlier versions, use \code{photon_opts}.}
 }
 \if{html}{\out{</div>}}
 }

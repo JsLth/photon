@@ -2,6 +2,7 @@ run_photon <- function(self,
                        private,
                        mode,
                        timeout = 60,
+                       json_path = NULL,
                        java_opts = NULL,
                        photon_opts = NULL) {
   quiet <- private$quiet
@@ -19,7 +20,7 @@ run_photon <- function(self,
 
   switch(
     mode,
-    import = run_import(self, private, args, timeout, quiet),
+    import = run_import(self, private, args, timeout, json_path, quiet),
     start = run_start(self, private, args, timeout, quiet),
     help = run_help(self, private, args)
   )
@@ -39,23 +40,50 @@ run_help <- function(self, private, args) {
 }
 
 
-run_import <- function(self, private, args, timeout = 60, quiet = FALSE) {
-  stderr <- run(
+run_import <- function(self,
+                       private,
+                       args,
+                       timeout = 60,
+                       json_path = NULL,
+                       quiet = FALSE) {
+  stdin = NULL
+  if (!is.null(json_path)) {
+    check_utility("zstd") # nocov start
+    proc_zstd <- process$new(
+      Sys.which("zstd"),
+      args = c("--stdout", "-d", json_path),
+      stdout = "|"
+    )
+
+    stdin <- proc_zstd$get_output_connection() # nocov end
+  }
+
+  proc <- process$new(
     "java",
     args = args,
+    stdin = stdin,
     stdout = "|",
     stderr = "|",
     echo_cmd = globally_enabled("photon_debug"),
-    wd = self$path,
-    timeout = timeout,
-    error_on_status = FALSE,
-    stderr_callback = log_callback(private, quiet = TRUE),
-    stdout_callback = log_callback(private, quiet)
-  )$stderr
+    wd = self$path
+  )
 
+  if (globally_enabled("photon_movers")) {
+    cli::cli_progress_step(
+      msg = "Importing database...",
+      msg_done = "Database imported successfully.",
+      msg_failed = "Failed to import database.",
+      spinner = TRUE
+    )
+  }
+
+  self$proc <- proc
+  start_supervise(self, private, proc, timeout, quiet, import = TRUE)
   versionize_logs(private)
   log_error <- assemble_log_error(private$logs)
-  abort_log_error(log_error, quiet, class = "import_error")
+  abort_log_error(log_error, quiet, class = "start_error")
+  cli::cli_progress_done()
+  invisible(proc)
 }
 
 
@@ -115,12 +143,12 @@ stop_photon <- function(self) {
 }
 
 
-start_supervise <- function(self, private, proc, timeout, quiet) {
+start_supervise <- function(self, private, proc, timeout, quiet, import = FALSE) {
   stdout_callback <- log_callback(private, quiet)
   stderr_callback <- log_callback(private, quiet = TRUE)
   start <- Sys.time()
-  is_running <- self$is_running()
-  while (!is_running) {
+  is_ready <- if (import) !proc$is_alive() else self$is_running()
+  while (!is_ready) {
     out <- proc$read_output()
     out <- strsplit(out, "\r\n")[[1]]
     lapply(out, stdout_callback, proc)
@@ -130,7 +158,7 @@ start_supervise <- function(self, private, proc, timeout, quiet) {
     if (nzchar(err)) next # skip alive check to collect full error message
 
     # if photon process is dead, break the loop and collect stderr afterwards
-    if (!is_running && !proc$is_alive()) {
+    if (!is_ready && !proc$is_alive()) {
       break
     }
 
@@ -142,7 +170,7 @@ start_supervise <- function(self, private, proc, timeout, quiet) {
     }
 
     Sys.sleep(0.1) # debounce
-    is_running <- self$is_running()
+    is_ready <- if (import) !proc$is_alive() else self$is_running()
   }
 }
 

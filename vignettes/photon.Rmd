@@ -69,6 +69,18 @@ all.equal(cities1, cities2)
 #> [1] TRUE
 ```
 
+More recently, the photon geocoder started to support structured geocoding. Structured geocoding works just like `geocode()`, but you provide place data in a dataframe instead of a character string. This allows you to be much more specific in what you want to geocode. While you'd have to fiddle with location biases to geocode Moscow, MN, structured geocoding can be a little more precise.
+
+```{r}
+place <- data.frame(
+  city = "Moscow",
+  state = "Minnesota",
+  countrycode = "USA"
+)
+structured(place)
+```
+
+
 
 Online geocoding is nice and it is most likely what you need for basic tasks. But what if online geocoding is not enough? What if you need to geocode a dataset of 200,000 places? What if you need to geocode sensitive information from survey respondents? And what about structured geocoding?
 
@@ -105,83 +117,48 @@ Setting up local photon also works through `new_photon()`. This time, we pass a 
 
 ```{r local_photon, eval=FALSE}
 path <- file.path(tempdir(), "photon")
-photon <- new_photon(path, country = "Monaco")
+photon <- new_photon(path, region = "Andorra")
 #> ℹ openjdk version "24.0.1" 2025-04-15
 #> ℹ OpenJDK Runtime Environment Corretto-24.0.1.9.1 (build 24.0.1+9-FR)
 #> ℹ OpenJDK 64-Bit Server VM Corretto-24.0.1.9.1 (build 24.0.1+9-FR, mixed mode, sharing)
-#> ✔ Successfully downloaded OpenSearch photon 0.7.0. [17.9s]
+#> ✔ Successfully downloaded OpenSearch photon 1.0.0. [17.9s]
 #> ✔ Successfully downloaded search index. [854ms]
-#> • Version: 0.7.4
-#> • Coverage: Monaco
-#> • Time: 2025-09-17
+#> • Version: 1.0.0
+#> • Coverage: Andorra
+#> • Time: 2026-02-27
 ```
 
 The resulting object is an R6 class with a few methods to control the instance. To start photon, run `$start()`. This starts an external java process which can be accessed using the `$proc` attribute.
 
 ```{r start, eval=FALSE}
-photon$start()
-#> Cluster Name: photon
+#> photon$start()
+#> Cluster Name: photon 
 #> Base Path:    /tmp/RtmpLQIqmy/photon/./photon_data
-#> Num Of Node:  1
+#> Num Of Node:  1      
 #> Node Name:      Node 1
-#> HTTP Port:      9201
+#> HTTP Port:      9201 
 #> Data Directory: /tmp/RtmpLQIqmy/photon/./photon_data/node_1/data
 #> Log Directory:  /tmp/RtmpLQIqmy/photon/./photon_data/node_1/logs
-#> [2025-06-09T23:54:26,879][INFO ][o.o.n.Node               ] version[2.19.1], pid[1896], build[unknown/unknown/unknown], OS[Linux/6.6.87.1-microsoft-standard-WSL2/amd64], JVM[Amazon.com Inc./OpenJDK 64-Bit Server VM/24.0.1/24.0.1+9-FR]
-#> [2025-06-09T23:54:26,887][INFO ][o.o.n.Node               ] JVM home [/root/.cache/R/rJavaEnv/installed/linux/x64/24]
-#> [2025-06-09T23:54:26,899][INFO ][o.o.n.Node               ] JVM arguments []
-#> [2025-06-09T23:54:26,932][INFO ][o.o.p.PluginsService     ] no modules loaded
-#> [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.analysis.common.CommonAnalysisPlugin]
-#> [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.geo.GeoModulePlugin]
-#> [2025-06-09T23:54:26,934][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.transport.Netty4Plugin]
-#> [2025-06-09T23:54:27,174][INFO ][o.a.l.s.MemorySegmentIndexInputProvider] Using MemorySegmentIndexInput and native madvise support with Java 21 or later; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false
-#> [2025-06-09T23:54:27,184][INFO ][o.o.e.NodeEnvironment    ] using [1] data paths, mounts [[/ (/dev/sdd)]], net usable_space [222.3gb], net total_space [250.9gb], types [ext4]
-#> [2025-06-09T23:54:27,190][INFO ][o.o.e.NodeEnvironment    ] heap size [2.4gb], compressed ordinary object pointers [true]
-#> [2025-06-09T23:54:27,384][WARN ][o.a.l.i.v.VectorizationProvider] You are running with Java 23 or later. To make full use of the Vector API, please update Apache Lucene.
-#> [2025-06-09T23:54:27,603][INFO ][o.o.n.Node               ] node name [Node 1], node ID [IFRXmNbwTYi4SLrEQXOn3A], cluster name [photon], roles [data, cluster_manager]
-#> [2025-06-09T23:54:27,708][INFO ][o.o.e.ExtensionsManager  ] ExtensionsManager initialized
-#> [2025-06-09T23:54:29,302][INFO ][o.o.t.NettyAllocator     ] creating NettyAllocator with the following configs: [name=opensearch_configured, chunk_size=512kb, suggested_max_allocation_size=512kb, factors={opensearch.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=2mb}]
-#> [2025-06-09T23:54:29,499][INFO ][o.o.d.DiscoveryModule    ] using discovery type [single-node] and seed hosts providers [settings]
-#> [2025-06-09T23:54:30,082][WARN ][o.o.g.DanglingIndicesState] gateway.auto_import_dangling_indices is disabled, dangling indices will not be automatically detected or imported and must be managed manually
-#> [2025-06-09T23:54:30,572][INFO ][o.o.n.Node               ] initialized
-#> [2025-06-09T23:54:30,572][INFO ][o.o.n.Node               ] starting ...
-#> [2025-06-09T23:54:30,723][INFO ][o.o.t.TransportService   ] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}
-#> [2025-06-09T23:54:31,016][INFO ][o.o.c.c.Coordinator      ] cluster UUID [wbcIe8ZCQw-oX0uvwZgysw]
-#> [2025-06-09T23:54:31,199][INFO ][o.o.c.s.MasterService    ] Tasks batched with key: org.opensearch.cluster.coordination.JoinHelper, count:3 and sample tasks: elected-as-cluster-manager ([1] nodes joined)[{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true} elect leader, _BECOME_CLUSTER_MANAGER_TASK_, _FINISH_ELECTION_], term: 2, version: 11, delta: cluster-manager node changed {previous [], current [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}
-#> [2025-06-09T23:54:31,289][INFO ][o.o.c.s.ClusterApplierService] cluster-manager node changed {previous [], current [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]}, term: 2, version: 11, reason: Publication{term=2, version=11}
-#> [2025-06-09T23:54:31,316][INFO ][o.o.d.PeerFinder         ] setting findPeersInterval to [1s] as node commission status = [true] for local node [{Node 1}{IFRXmNbwTYi4SLrEQXOn3A}{RKCnk_jPQpmMLN2B0oUoaA}{127.0.0.1}{127.0.0.1:9300}{dm}{shard_indexing_pressure_enabled=true}]
-#> [2025-06-09T23:54:31,321][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:31,329][INFO ][o.o.h.AbstractHttpServerTransport] publish_address {127.0.0.1:9201}, bound_addresses {[::1]:9201}, {127.0.0.1:9201}
-#> [2025-06-09T23:54:31,330][INFO ][o.o.n.Node               ] started
-#> [2025-06-09T23:54:31,345][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:31,402][INFO ][o.o.g.GatewayService     ] recovered [1] indices into cluster_state
-#> [2025-06-09T23:54:31,403][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:31,599][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]
-#> [2025-06-09T23:54:32,346][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:32,519][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][2]]]).
-#> [2025-06-09T23:54:32,623][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:33,179][INFO ][d.k.p.App                ] Make sure that the ES cluster is ready, this might take some time.
-#> [2025-06-09T23:54:33,447][INFO ][d.k.p.App                ] ES cluster is now ready.
-#> [2025-06-09T23:54:33,637][INFO ][o.o.c.m.MetadataIndexStateService] closing indices [photon/3te8gZq4Q-u1LwWbZGtxPA]
-#> [2025-06-09T23:54:33,732][INFO ][o.o.c.m.MetadataIndexStateService] completed closing of indices [photon]
-#> [2025-06-09T23:54:33,733][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:33,837][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:33,936][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]
-#> [2025-06-09T23:54:34,245][INFO ][o.o.c.m.MetadataIndexStateService] opening indices [[photon/3te8gZq4Q-u1LwWbZGtxPA]]
-#> [2025-06-09T23:54:34,252][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]
-#> [2025-06-09T23:54:34,281][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:34,369][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:34,452][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]
-#> [2025-06-09T23:54:34,741][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:34,880][INFO ][o.o.c.r.a.AllocationService] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[photon][2]]]).
-#> [2025-06-09T23:54:34,970][WARN ][o.o.c.r.a.AllocationService] Falling back to single shard assignment since batch mode disable or multiple custom allocators set
-#> [2025-06-09T23:54:35,038][INFO ][o.o.p.PluginsService     ] PluginService:onIndexModule index:[photon/3te8gZq4Q-u1LwWbZGtxPA]
-#> [2025-06-09T23:54:35,165][INFO ][d.k.p.App                ] Starting API with the following settings:
-#>  Languages: [en, de, fr]
-#>  Import Date: 2025-06-01T03:00:01.000+0200
-#>  Support Structured Queries: false
-#>  Support Geometries: false
-#> ✔ Photon is now running. [12.8s]
+#> [2026-02-27T14:29:54,384][INFO ][o.o.n.Node               ] version[3.4.0], pid[19752], build[unknown/unknown/unknown], OS[Windows 11/10.0/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/22/22+36-2370]
+#> [2026-02-27T14:29:54,385][INFO ][o.o.n.Node               ] JVM home [/root/.cache/R/rJavaEnv/installed/linux/x64/24]
+#> [2026-02-27T14:29:54,389][INFO ][o.o.n.Node               ] JVM arguments []
+#> [2026-02-27T14:29:54,395][INFO ][o.o.p.PluginsService     ] no modules loaded
+#> [2026-02-27T14:29:54,396][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.analysis.common.CommonAnalysisModulePlugin]
+#> [2026-02-27T14:29:54,397][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.geo.GeoModulePlugin]
+#> [2026-02-27T14:29:54,397][INFO ][o.o.p.PluginsService     ] loaded plugin [org.opensearch.transport.Netty4ModulePlugin]
+#> [2026-02-27T14:29:54,438][INFO ][o.o.e.NodeEnvironment    ] using [1] data paths, mounts [[/ (/dev/sdd)]], net usable_space [103.5gb], net total_space [783.6gb], types [NTFS]
+#> [2026-02-27T14:29:54,443][INFO ][o.o.e.NodeEnvironment    ] heap size [3.9gb], compressed ordinary object pointers [true]
+#> [2026-02-27T14:29:54,536][WARN ][o.a.l.i.v.VectorizationProvider] Java vector incubator module is not readable. For optimal vector performance, pass '--add-modules jdk.incubator.vector' to enable Vector API.
+#> [2026-02-27T14:29:54,624][INFO ][o.o.n.Node               ] node name [Node 1], node ID [FYcghCrFQyi8ZcOrpZkWmA], cluster name [photon], roles [data, cluster_manager]
+#> [2026-02-27T14:29:54,664][INFO ][o.o.e.ExtensionsManager  ] ExtensionsManager initialized
+#> [2026-02-27T14:29:54,911][INFO ][o.o.i.MergeSchedulerConfig] Updating autoThrottle for index _na_ from [false] to [true]
+#> [2026-02-27T14:29:54,911][INFO ][o.o.i.MergeSchedulerConfig] Updating maxThreadCount from [0] to [4] and maxMergeCount from [0] to [9] for index _na_.
+#> [2026-02-27T14:29:54,911][INFO ][o.o.i.MergeSchedulerConfig] Initialized index _na_ with maxMergeCount=9, maxThreadCount=4, autoThrottleEnabled=true
+#> [2026-02-27T14:29:55,087][INFO ][o.o.i.MergeSchedulerConfig] Updating autoThrottle for index _na_ from [false] to [true]
+#> [2026-02-27T14:29:55,087][INFO ][o.o.i.MergeSchedulerConfig] Updating maxThreadCount from [0] to [4] and maxMergeCount from [0] to [9] for index _na_.
+#> [2026-02-27T14:29:55,087][INFO ][o.o.i.MergeSchedulerConfig] Initialized index _na_ with maxMergeCount=9, maxThreadCount=4, autoThrottleEnabled=true
+#> [2026-02-27T14:29:56,578][INFO ][o.o.t.NettyAllocator     ] creating NettyAllocator with the following configs: [name=opensearch_configured, chunk_size=512kb, suggested_max_allocation_size=512kb, factors={opensearch.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=2mb}]
+#> ✔ Photon is now running. [6.2s]
 
 photon$proc
 #> PROCESS 'java', running, pid 1896.
@@ -194,28 +171,28 @@ photon$is_ready()
 #> [1] TRUE
 ```
 
-Finally, to properly stop photon after you used it, you can run `$stop()`. You do not actually _need_ to run it manually, because it is (implicitly) executed on two occasions: 1. on garbage collection and 2. when the R session ends and external processes are killed.
-
-```{r stop, eval=FALSE}
-photon$stop()
-```
-
 To compare offline and online geocoding, let's benchmark them by geocoding the Samoan capital Apia:
 
 ```{r benchmark1, eval=FALSE}
 # offline geocoding
 bench::mark(with_photon(photon, geocode("Monte Carlo")), iterations = 25)$median
-#> [1] 17.1ms
+#> [1] 30.2ms
 ```
 
 ```{r benchmark2, eval=FALSE}
 # online geocoding
 photon_pub <- new_photon(mount = FALSE)
 bench::mark(with_photon(photon_pub, geocode("Monte Carlo")), iterations = 25)$median
-#> [1] 1.04s
+#> [1] 334ms
 ```
 
-That is a speed increase by a factor of almost 60 (and possibly more on faster machines)!
+That is a speed increase by a factor of over 10 (and possibly more on faster machines)!
+
+To properly stop photon after you used it, you can run `$stop()`. You do not actually _need_ to run it manually, because it is (implicitly) executed on two occasions: 1. on garbage collection and 2. when the R session ends and external processes are killed.
+
+```{r stop, eval=FALSE}
+photon$stop()
+```
 
 Finally, to clean up photon, i.e. stop the instance and delete the photon directory, run `$purge()`.
 

@@ -45,7 +45,7 @@ test_that("logs can be parsed", {
   expect_true(sum(vapply(logs, FUN.VALUE = logical(1), \(x) all(is.na(x)))) == 1)
 })
 
-test_that("search indices are matched", {
+test_that("databases are matched", {
   skip_if_offline("graphhopper.com")
   de_latest <- download_database(only_url = TRUE, region = "Germany")
   expect_equal(basename(de_latest), "photon-db-germany-1.0-latest.tar.bz2")
@@ -57,6 +57,16 @@ test_that("search indices are matched", {
     download_database(only_url = TRUE, region = "not a country"),
     class = "country_invalid"
   )
+})
+
+test_that("databases can be explored", {
+  reg1 <- list_regions()
+  reg2 <- list_regions("europe")
+
+  expect_named(reg1, c("region", "has_db_dump", "countries"))
+  expect_gt(nrow(reg1), 1)
+  expect_named(reg2, c("region", "has_db_dump", "countries"))
+  expect_gt(nrow(reg2), 1)
 })
 
 test_that("opensearch is denied when unsupported", {

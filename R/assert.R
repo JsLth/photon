@@ -140,3 +140,11 @@ assert_na <- function(x, name = varname(x)) {
     )
   }
 }
+
+
+check_utility <- function(x) {
+  cond <- nzchar(Sys.which(x))
+  if (!cond) {
+    ph_stop("Utility {x} is needed but not installed.")
+  }
+}

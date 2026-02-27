@@ -214,3 +214,13 @@ is_online <- function(host) { # nocov start
 photon_run_examples <- function() {
   isTRUE(as.logical(Sys.getenv("PHOTON_RUN_EXAMPLES", FALSE)))
 }
+
+
+deprecated <- function(what, when, where) {
+  if (!is.null(what)) {
+    ph_stop(c(
+      "{what} is deprecated since v{when}.",
+      "i" = where
+    ))
+  }
+}
