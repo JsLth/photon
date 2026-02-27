@@ -13,7 +13,8 @@
 #' to geocode. Can contain the columns \code{street}, \code{housenumber},
 #' \code{postcode}, \code{city}, \code{district}, \code{county}, \code{state},
 #' and \code{countrycode}. At least one of these columns must be present in the
-#' dataframe. Note that countries must be passed as ISO-2 country codes.
+#' dataframe. Country names are automatically converted to ISO-2 codes where
+#' possible.
 #' @inheritParams geocode
 #' @inherit geocode details
 #' @inherit geocode return
@@ -79,6 +80,10 @@ structured <- function(.data,
   assert_flag(progress)
   progress <- progress && globally_enabled("photon_movers")
 
+  if ("countrycode" %in% names(.data)) {
+    .data$countrycode <- try_iso2(.data$countrycode)
+  }
+
   locbias <- format_locbias(locbias)
   bbox <- format_bbox(bbox)
   include <- format_csv(include)
@@ -89,7 +94,7 @@ structured <- function(.data,
   options <- list(env = environment())
 
   if (progress) {
-    cli::cli_progress_bar(name = "Geocoding", total = length(query))
+    cli::cli_progress_bar(name = "Geocoding", total = nrow(query))
   }
 
   query$i <- seq_len(nrow(query))

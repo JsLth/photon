@@ -28,7 +28,8 @@ has_structured_support()
 to geocode. Can contain the columns \code{street}, \code{housenumber},
 \code{postcode}, \code{city}, \code{district}, \code{county}, \code{state},
 and \code{countrycode}. At least one of these columns must be present in the
-dataframe. Note that countries must be passed as ISO-2 country codes.}
+dataframe. Country names are automatically converted to ISO-2 codes where
+possible.}
 
 \item{limit}{Number of results to return. A maximum of 50 results can be
 returned for a single search term. Defaults to 1. When more than a single

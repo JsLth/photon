@@ -80,15 +80,7 @@ download_database <- function(region,
 
   if (!is_planet) {
     region_long <- region
-    country <- tolower(countrycode::countryname(
-      region,
-      destination = "iso2c",
-      warn = FALSE
-    ))
-
-    if (!is.na(country)) {
-      region <- country
-    }
+    region <- try_iso2(region)
 
     html <- rvest::read_html(req$url)
     regions <- rvest::html_table(html)[[1]]
@@ -198,6 +190,13 @@ list_regions <- function(region = NULL) {
   }, FUN.VALUE = character(1))
   regions$countries <- countries
   regions
+}
+
+
+try_iso2 <- function(country) {
+  cc <- countrycode::countryname(country, destination = "iso2c", warn = FALSE)
+  cc[is.na(cc)] <- country[is.na(cc)]
+  cc
 }
 
 
