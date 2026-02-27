@@ -186,9 +186,18 @@ Print the default arguments to the R console. This can be helpful to
 get a list of additional photon arguments for \code{$start()} or
 \code{$import()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{photon_local$help()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{photon_local$help(cmd = "start")}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{cmd}}{A command for which to display the help page. Must be one
+of \code{"start"}, \code{"import"}, \code{"update"}, \code{"update-init"},
+or \code{"dump-nominatim-db"}. Defaults to \code{"start"}.}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 Nothing, but prints to the console.
 }

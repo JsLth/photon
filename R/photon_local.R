@@ -148,9 +148,18 @@ photon_local <- R6::R6Class(
     #' Print the default arguments to the R console. This can be helpful to
     #' get a list of additional photon arguments for \code{$start()} or
     #' \code{$import()}.
+    #' @param cmd A command for which to display the help page. Must be one
+    #' of \code{"start"}, \code{"import"}, \code{"update"}, \code{"update-init"},
+    #' or \code{"dump-nominatim-db"}. Defaults to \code{"start"}.
     #' @return Nothing, but prints to the console.
-    help = function() {
-      cat(run_photon(self, private, mode = "help", photon_opts = "-h")$stdout)
+    help = function(cmd = "start") {
+      cmd <- switch(cmd, start = "serve", cmd)
+      cat(run_photon(
+        self,
+        private,
+        mode = "help",
+        photon_opts = c(cmd, "-h")
+      )$stdout)
     },
 
     #' @description
@@ -212,8 +221,8 @@ photon_local <- R6::R6Class(
     #' enabled by default now. For earlier versions, use \code{photon_opts}.
     #' @param update Deprecated since v1.0.0. Updates are done using a distinct
     #' command now. For earlier versions, use \code{photon_opts}.
-    #' @param enable_update_api Deprecated since v1.0.0. The update API is
-    #' enabled by default now. For earlier versions, use \code{photon_opts}.
+    #' @param enable_update_api Deprecated since v1.0.0. For earlier versions,
+    #' use \code{photon_opts}.
     import = function(host = "127.0.0.1",
                       port = 5432,
                       database = "nominatim",
