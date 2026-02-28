@@ -8,7 +8,7 @@
   "codeRepository": "https://github.com/jslth/photon/",
   "issueTracker": "https://github.com/jslth/photon/issues",
   "license": "Apache License 2",
-  "version": "0.7.4.1",
+  "version": "1.0.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -26,7 +26,7 @@
       "@type": "Person",
       "givenName": "Jonas",
       "familyName": "Lieth",
-      "email": "jonas.lieth@gesis.org",
+      "email": "jslth@outlook.com",
       "@id": "https://orcid.org/0000-0002-3451-3176"
     }
   ],
@@ -35,7 +35,7 @@
       "@type": "Person",
       "givenName": "Jonas",
       "familyName": "Lieth",
-      "email": "jonas.lieth@gesis.org",
+      "email": "jslth@outlook.com",
       "@id": "https://orcid.org/0000-0002-3451-3176"
     }
   ],
@@ -44,7 +44,7 @@
       "@type": "Person",
       "givenName": "Jonas",
       "familyName": "Lieth",
-      "email": "jonas.lieth@gesis.org",
+      "email": "jslth@outlook.com",
       "@id": "https://orcid.org/0000-0002-3451-3176"
     }
   ],
@@ -201,7 +201,19 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=processx"
     },
+    "8": {
+      "@type": "SoftwareApplication",
+      "identifier": "rvest",
+      "name": "rvest",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rvest"
+    },
     "SystemRequirements": null
   },
-  "fileSize": "205.712KB"
+  "fileSize": "204.67KB"
 }
