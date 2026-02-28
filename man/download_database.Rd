@@ -11,7 +11,8 @@ download_database(
   version = get_latest_photon(),
   json = FALSE,
   only_url = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  country = NULL
 )
 
 list_regions(region = NULL)
@@ -41,6 +42,8 @@ for all regions. If you wish or need to build your own database, set
 only returns a link to the file.}
 
 \item{quiet}{If \code{TRUE}, suppresses all informative messages.}
+
+\item{country}{Deprecated since photon 1.0.0. Use \code{region} instead.}
 }
 \value{
 If \code{only_url = FALSE}, returns the local path to the downloaded

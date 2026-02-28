@@ -25,6 +25,7 @@
 #' @param only_url If \code{TRUE}, performs a download. Otherwise,
 #' only returns a link to the file.
 #' @param quiet If \code{TRUE}, suppresses all informative messages.
+#' @param country Deprecated since photon 1.0.0. Use \code{region} instead.
 #' @returns If \code{only_url = FALSE}, returns the local path to the downloaded
 #' file. Otherwise, returns the URL to the remote file.
 #'
@@ -71,8 +72,10 @@ download_database <- function(region,
                               version = get_latest_photon(),
                               json = FALSE,
                               only_url = FALSE,
-                              quiet = FALSE) {
+                              quiet = FALSE,
+                              country = NULL) {
   assert_vector(region, "character", size = 1, null = TRUE)
+  deprecated(country, "1.0.0", "Use argument `region` instead.")
 
   req <- httr2::request("https://download1.graphhopper.com/public/")
   is_planet <- identical(region, "planet")

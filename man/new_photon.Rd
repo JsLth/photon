@@ -12,7 +12,8 @@ new_photon(
   opensearch = TRUE,
   mount = TRUE,
   overwrite = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  country = NULL
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ search indices when initializing a new instance. Defaults to
 \code{FALSE}.}
 
 \item{quiet}{If \code{TRUE}, suppresses all informative messages.}
+
+\item{country}{Deprecated since photon 1.0.0. Use \code{region} instead.}
 }
 \value{
 An R6 object of class \code{photon}.

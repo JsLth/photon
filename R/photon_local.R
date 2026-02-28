@@ -87,13 +87,15 @@ photon_local <- R6::R6Class(
     #' search indices when initializing a new instance. Defaults to
     #' \code{FALSE}.
     #' @param quiet If \code{TRUE}, suppresses all informative messages.
+    #' @param country Deprecated since photon 1.0.0. Use \code{region} instead.
     initialize = function(path,
                           photon_version = NULL,
                           region = NULL,
                           opensearch = TRUE,
                           mount = TRUE,
                           overwrite = FALSE,
-                          quiet = FALSE) {
+                          quiet = FALSE,
+                          country = NULL) {
       assert_flag(quiet)
       assert_flag(opensearch)
       check_jdk_version("11", quiet = quiet)

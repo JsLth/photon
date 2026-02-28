@@ -109,7 +109,8 @@ executable, the search index, and Java.
   opensearch = TRUE,
   mount = TRUE,
   overwrite = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  country = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -147,6 +148,8 @@ search indices when initializing a new instance. Defaults to
 \code{FALSE}.}
 
 \item{\code{quiet}}{If \code{TRUE}, suppresses all informative messages.}
+
+\item{\code{country}}{Deprecated since photon 1.0.0. Use \code{region} instead.}
 }
 \if{html}{\out{</div>}}
 }
@@ -299,8 +302,8 @@ enabled by default now. For earlier versions, use \code{photon_opts}.}
 \item{\code{update}}{Deprecated since v1.0.0. Updates are done using a distinct
 command now. For earlier versions, use \code{photon_opts}.}
 
-\item{\code{enable_update_api}}{Deprecated since v1.0.0. The update API is
-enabled by default now. For earlier versions, use \code{photon_opts}.}
+\item{\code{enable_update_api}}{Deprecated since v1.0.0. For earlier versions,
+use \code{photon_opts}.}
 }
 \if{html}{\out{</div>}}
 }

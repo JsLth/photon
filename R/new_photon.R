@@ -59,7 +59,8 @@ new_photon <- function(path = NULL,
                        opensearch = TRUE,
                        mount = TRUE,
                        overwrite = FALSE,
-                       quiet = FALSE) {
+                       quiet = FALSE,
+                       country = NULL) {
   if (is.null(path) && is.null(url)) {
     photon_remote$new(url = "https://photon.komoot.io/", mount = mount)
   } else if (is.null(path)) {
