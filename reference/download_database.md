@@ -15,7 +15,8 @@ download_database(
   version = get_latest_photon(),
   json = FALSE,
   only_url = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  country = NULL
 )
 
 list_regions(region = NULL)
@@ -59,6 +60,10 @@ list_regions(region = NULL)
 - quiet:
 
   If `TRUE`, suppresses all informative messages.
+
+- country:
+
+  Deprecated since photon 1.0.0. Use `region` instead.
 
 ## Value
 

@@ -22,7 +22,8 @@ new_photon(
   opensearch = TRUE,
   mount = TRUE,
   overwrite = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  country = NULL
 )
 ```
 
@@ -80,6 +81,10 @@ new_photon(
 - quiet:
 
   If `TRUE`, suppresses all informative messages.
+
+- country:
+
+  Deprecated since photon 1.0.0. Use `region` instead.
 
 ## Value
 

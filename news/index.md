@@ -1,5 +1,42 @@
 # Changelog
 
+## photon 1.0.0
+
+Adjusts to changes in version 1.0.0 of photon geocoder
+
+### Major changes
+
+- structured() geocoding does not require special setups anymore
+- [`download_database()`](https://jslth.github.io/photon/reference/download_database.md)
+  is adjusted for the new interface of the download server.
+- [`list_regions()`](https://jslth.github.io/photon/reference/download_database.md)
+  provides an overview of possible regions for
+  [`download_database()`](https://jslth.github.io/photon/reference/download_database.md)
+- Add `$status()` method that interfaces new `/status` endpoint
+- Deprecate `date`, `exact`, and `section` arguments in
+  [`download_database()`](https://jslth.github.io/photon/reference/download_database.md)
+  without replacement
+- Deprecate `country` argument in
+  [`download_database()`](https://jslth.github.io/photon/reference/download_database.md)
+  in favor of `region`
+- Deprecate `structured`, `update`, and `enable_update_api` arguments in
+  `$import()`. Use `photon_opts` for older versions of the photon
+  geocoder.
+
+### Minor changes
+
+- Add support for unpacking and importing JSON dumps in `$import()`
+- Automatically convert countries to countrycodes in `.data` argument of
+  [`structured()`](https://jslth.github.io/photon/reference/structured.md)
+- Add new API parameters `dedupe`, `inlude`, and `exclude` as function
+  arguments
+- Fix progress bar termination condition in
+  [`structured()`](https://jslth.github.io/photon/reference/structured.md)
+- Align behavior of `$import()` with `$start()` more consistently
+- Adjust log parsing of `$start()` and `$import()` to new format
+- `$is_ready()` now uses new `/status` endpoint
+- Add new subsection on JSON dump imports to vignette
+
 ## photon 0.7.4-1
 
 CRAN release: 2026-01-17

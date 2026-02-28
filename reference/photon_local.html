@@ -135,7 +135,8 @@ executable, the search index, and Java.</p><div class="section">
 <span>  opensearch <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mount <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  country <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -185,6 +186,10 @@ search indices when initializing a new instance. Defaults to
 
 <dt><code>quiet</code></dt>
 <dd><p>If <code>TRUE</code>, suppresses all informative messages.</p></dd>
+
+
+<dt><code>country</code></dt>
+<dd><p>Deprecated since photon 1.0.0. Use <code>region</code> instead.</p></dd>
 
 
 </dl><p></p></div>
@@ -363,8 +368,8 @@ command now. For earlier versions, use <code>photon_opts</code>.</p></dd>
 
 
 <dt><code>enable_update_api</code></dt>
-<dd><p>Deprecated since v1.0.0. The update API is
-enabled by default now. For earlier versions, use <code>photon_opts</code>.</p></dd>
+<dd><p>Deprecated since v1.0.0. For earlier versions,
+use <code>photon_opts</code>.</p></dd>
 
 
 </dl><p></p></div>

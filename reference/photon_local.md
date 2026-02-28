@@ -102,7 +102,8 @@ executable, the search index, and Java.
       opensearch = TRUE,
       mount = TRUE,
       overwrite = FALSE,
-      quiet = FALSE
+      quiet = FALSE,
+      country = NULL
     )
 
 #### Arguments
@@ -152,6 +153,10 @@ executable, the search index, and Java.
 - `quiet`:
 
   If `TRUE`, suppresses all informative messages.
+
+- `country`:
+
+  Deprecated since photon 1.0.0. Use `region` instead.
 
 ------------------------------------------------------------------------
 
@@ -330,8 +335,7 @@ Nominatim database that can be connected to.
 
 - `enable_update_api`:
 
-  Deprecated since v1.0.0. The update API is enabled by default now. For
-  earlier versions, use `photon_opts`.
+  Deprecated since v1.0.0. For earlier versions, use `photon_opts`.
 
 ------------------------------------------------------------------------
 

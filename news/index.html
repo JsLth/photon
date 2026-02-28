@@ -41,6 +41,39 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="photon-100">photon 1.0.0<a class="anchor" aria-label="anchor" href="#photon-100"></a></h2>
+<p>Adjusts to changes in version 1.0.0 of photon geocoder</p>
+<div class="section level3">
+<h3 id="major-changes-1-0-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-0-0"></a></h3>
+<ul><li>structured() geocoding does not require special setups anymore</li>
+<li>
+<code><a href="../reference/download_database.html">download_database()</a></code> is adjusted for the new interface of the download server.</li>
+<li>
+<code><a href="../reference/download_database.html">list_regions()</a></code> provides an overview of possible regions for <code><a href="../reference/download_database.html">download_database()</a></code>
+</li>
+<li>Add <code>$status()</code> method that interfaces new <code>/status</code> endpoint</li>
+<li>Deprecate <code>date</code>, <code>exact</code>, and <code>section</code> arguments in <code><a href="../reference/download_database.html">download_database()</a></code> without replacement</li>
+<li>Deprecate <code>country</code> argument in <code><a href="../reference/download_database.html">download_database()</a></code> in favor of <code>region</code>
+</li>
+<li>Deprecate <code>structured</code>, <code>update</code>, and <code>enable_update_api</code> arguments in <code>$import()</code>. Use <code>photon_opts</code> for older versions of the photon geocoder.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="minor-changes-1-0-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-0-0"></a></h3>
+<ul><li>Add support for unpacking and importing JSON dumps in <code>$import()</code>
+</li>
+<li>Automatically convert countries to countrycodes in <code>.data</code> argument of <code><a href="../reference/structured.html">structured()</a></code>
+</li>
+<li>Add new API parameters <code>dedupe</code>, <code>inlude</code>, and <code>exclude</code> as function arguments</li>
+<li>Fix progress bar termination condition in <code><a href="../reference/structured.html">structured()</a></code>
+</li>
+<li>Align behavior of <code>$import()</code> with <code>$start()</code> more consistently</li>
+<li>Adjust log parsing of <code>$start()</code> and <code>$import()</code> to new format</li>
+<li>
+<code>$is_ready()</code> now uses new <code>/status</code> endpoint</li>
+<li>Add new subsection on JSON dump imports to vignette</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.4-1" id="photon-074-1">photon 0.7.4-1<a class="anchor" aria-label="anchor" href="#photon-074-1"></a></h2><p class="text-muted">CRAN release: 2026-01-17</p>
 <ul><li>Adjusted tests and examples to be more resilient to server outages</li>
 </ul></div>

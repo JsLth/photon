@@ -53,7 +53,7 @@ downloaded file. Otherwise, returns the URL to be downloaded.
 ``` r
 download_photon(tempdir(), version = "0.4.1", opensearch = FALSE)
 #> ℹ Fetching ElasticSearch photon 0.4.1.
-#> ✔ Successfully downloaded ElasticSearch photon 0.4.1. [442ms]
+#> ✔ Successfully downloaded ElasticSearch photon 0.4.1. [546ms]
 #> 
-#> [1] "/tmp/RtmpJFrspL/photon-0.4.1.jar"
+#> [1] "/tmp/Rtmpz0hOQ9/photon-0.4.1.jar"
 ```
