@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   nominatim-import: nominatim-import.html
   photon: photon.html
-last_built: 2026-03-01T11:30Z
+last_built: 2026-03-01T11:37Z
 urls:
   reference: https://jslth.github.io/photon/reference
   article: https://jslth.github.io/photon/articles

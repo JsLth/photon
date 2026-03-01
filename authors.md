@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/jslth/photon/blob/v1.0.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/jslth/photon/blob/main/DESCRIPTION)
 
 Lieth J (2026). *photon: High-Performance Geocoding using 'photon'*. R
 package version 1.0.0, <https://github.com/jslth/photon/>.
