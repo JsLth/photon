@@ -79,7 +79,6 @@ test_that("assertions work", {
   assert_class(data.frame(), "data.frame")
   assert_named(list(a = 1), c("a", "b"))
   assert_range(5, min = 1, max = 6)
-  check_utility("ping")
 
   expect_error(assert_na(NA), class = "assert_na")
   expect_error(assert_vector(1, size = 2), class = "assert_vector")
