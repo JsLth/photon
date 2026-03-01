@@ -2,6 +2,8 @@
 
 ## photon 1.0.0
 
+CRAN release: 2026-02-28
+
 Adjusts to changes in version 1.0.0 of photon geocoder
 
 ### Major changes

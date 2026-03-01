@@ -130,7 +130,7 @@ geocode("Apia", limit = 3)
 
 Since photon 0.7.0, databases can be dumped to and imported from JSON
 files (so called Nominatim Dump Files, see the
-[https://github.com/komoot/photon/blob/master/docs/json-dump-format-0.1.0.md](https://jslth.github.io/photon/articles/docs)).
+[docs](https://github.com/komoot/photon/blob/master/docs/json-dump-format-0.1.0.md)).
 While pre-built databases are not available for every region through
 `$download_data()`, JSON dumps are. You can choose to download JSON
 dumps instead of pre-built databases by setting `json = TRUE`.
